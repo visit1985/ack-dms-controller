@@ -1,0 +1,30 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  creationTimestamp: null
+  name: ack-dms-writer
+  namespace: default
+rules:
+- apiGroups:
+  - dms.services.k8s.aws
+  resources:
+  - endpoints
+  - replicationtasks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - dms.services.k8s.aws
+  resources:
+  - endpoints
+  - replicationtasks
+  verbs:
+  - get
+  - patch
+  - update

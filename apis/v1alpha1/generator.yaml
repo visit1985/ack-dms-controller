@@ -1,0 +1,41 @@
+ignore:
+  resource_names:
+    - DataMigration
+    - DataProvider
+#    - Endpoint
+    - EventSubscription
+    - FleetAdvisorCollector
+    - InstanceProfile
+    - MigrationProject
+    - ReplicationConfig
+    - ReplicationInstance
+    - ReplicationSubnetGroup
+#    - ReplicationTask
+resources:
+  Endpoint:
+    fields:
+      ResourceIdentifier:
+        is_primary_key: true
+        is_immutable: true
+      OracleSettings.ExtraArchivedLogDestIDs:
+        compare:
+          is_ignored: true
+    hooks:
+      delta_pre_compare:
+        code: compareOracleSettings(delta, a, b)
+  ReplicationTask:
+    fields:
+      ResourceIdentifier:
+        is_primary_key: true
+        is_immutable: true
+      SourceEndpointARN:
+        references:
+            resource: Endpoint
+            path: Status.ACKResourceMetadata.ARN
+      TargetEndpointARN:
+        references:
+            resource: Endpoint
+            path: Status.ACKResourceMetadata.ARN
+sdk_names:
+  model_name: database-migration-service
+  package_name: databasemigrationservice
