@@ -40,7 +40,7 @@ func newResourceDelta(
 		delta.Add("", a, b)
 		return delta
 	}
-	compareOracleSettings(delta, a, b)
+	customPreCompare(delta, a, b)
 
 	if ackcompare.HasNilDifference(a.ko.Spec.CertificateARN, b.ko.Spec.CertificateARN) {
 		delta.Add("Spec.CertificateARN", a.ko.Spec.CertificateARN, b.ko.Spec.CertificateARN)
@@ -217,13 +217,6 @@ func newResourceDelta(
 			if *a.ko.Spec.ElasticsearchSettings.UseNewMappingType != *b.ko.Spec.ElasticsearchSettings.UseNewMappingType {
 				delta.Add("Spec.ElasticsearchSettings.UseNewMappingType", a.ko.Spec.ElasticsearchSettings.UseNewMappingType, b.ko.Spec.ElasticsearchSettings.UseNewMappingType)
 			}
-		}
-	}
-	if ackcompare.HasNilDifference(a.ko.Spec.EndpointIdentifier, b.ko.Spec.EndpointIdentifier) {
-		delta.Add("Spec.EndpointIdentifier", a.ko.Spec.EndpointIdentifier, b.ko.Spec.EndpointIdentifier)
-	} else if a.ko.Spec.EndpointIdentifier != nil && b.ko.Spec.EndpointIdentifier != nil {
-		if *a.ko.Spec.EndpointIdentifier != *b.ko.Spec.EndpointIdentifier {
-			delta.Add("Spec.EndpointIdentifier", a.ko.Spec.EndpointIdentifier, b.ko.Spec.EndpointIdentifier)
 		}
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.EndpointType, b.ko.Spec.EndpointType) {
@@ -1064,6 +1057,13 @@ func newResourceDelta(
 			if *a.ko.Spec.MySQLSettings.Username != *b.ko.Spec.MySQLSettings.Username {
 				delta.Add("Spec.MySQLSettings.Username", a.ko.Spec.MySQLSettings.Username, b.ko.Spec.MySQLSettings.Username)
 			}
+		}
+	}
+	if ackcompare.HasNilDifference(a.ko.Spec.Name, b.ko.Spec.Name) {
+		delta.Add("Spec.Name", a.ko.Spec.Name, b.ko.Spec.Name)
+	} else if a.ko.Spec.Name != nil && b.ko.Spec.Name != nil {
+		if *a.ko.Spec.Name != *b.ko.Spec.Name {
+			delta.Add("Spec.Name", a.ko.Spec.Name, b.ko.Spec.Name)
 		}
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.NeptuneSettings, b.ko.Spec.NeptuneSettings) {
@@ -2276,11 +2276,6 @@ func newResourceDelta(
 				delta.Add("Spec.SybaseSettings.Username", a.ko.Spec.SybaseSettings.Username, b.ko.Spec.SybaseSettings.Username)
 			}
 		}
-	}
-	desiredACKTags, _ := convertToOrderedACKTags(a.ko.Spec.Tags)
-	latestACKTags, _ := convertToOrderedACKTags(b.ko.Spec.Tags)
-	if !ackcompare.MapStringStringEqual(desiredACKTags, latestACKTags) {
-		delta.Add("Spec.Tags", a.ko.Spec.Tags, b.ko.Spec.Tags)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.TimestreamSettings, b.ko.Spec.TimestreamSettings) {
 		delta.Add("Spec.TimestreamSettings", a.ko.Spec.TimestreamSettings, b.ko.Spec.TimestreamSettings)

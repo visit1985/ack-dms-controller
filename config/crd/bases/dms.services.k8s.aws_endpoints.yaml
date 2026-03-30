@@ -141,12 +141,6 @@ spec:
                   useNewMappingType:
                     type: boolean
                 type: object
-              endpointIdentifier:
-                description: |-
-                  The database endpoint identifier. Identifiers must begin with a letter and
-                  must contain only ASCII letters, digits, and hyphens. They can't end with
-                  a hyphen, or contain two consecutive hyphens.
-                type: string
               endpointType:
                 description: The type of endpoint. Valid values are source and target.
                 type: string
@@ -479,6 +473,15 @@ spec:
                   username:
                     type: string
                 type: object
+              name:
+                description: |-
+                  The database endpoint identifier. Identifiers must begin with a letter and
+                  must contain only ASCII letters, digits, and hyphens. They can't end with
+                  a hyphen, or contain two consecutive hyphens.
+                type: string
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
               neptuneSettings:
                 description: |-
                   Settings in JSON format for the target Amazon Neptune endpoint. For more
@@ -970,9 +973,9 @@ spec:
                 description: The user name to be used to log in to the endpoint database.
                 type: string
             required:
-            - endpointIdentifier
             - endpointType
             - engineName
+            - name
             type: object
           status:
             description: EndpointStatus defines the observed state of Endpoint
@@ -1041,6 +1044,9 @@ spec:
                   - type
                   type: object
                 type: array
+              endpointStatus:
+                description: The status of the endpoint.
+                type: string
               engineDisplayName:
                 description: |-
                   The expanded name for the engine name. For example, if the EngineName parameter
@@ -1068,9 +1074,6 @@ spec:
                   arn:
                     type: string
                 type: object
-              status:
-                description: The status of the endpoint.
-                type: string
             type: object
         type: object
     served: true

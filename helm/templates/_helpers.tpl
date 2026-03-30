@@ -70,6 +70,28 @@ rules:
   - list
   - watch
 - apiGroups:
+  - dms.services.k8s.aws
+  resources:
+  - endpoints
+  - replicationtasks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - dms.services.k8s.aws
+  resources:
+  - endpoints/status
+  - replicationtasks/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - services.k8s.aws
   resources:
   - fieldexports

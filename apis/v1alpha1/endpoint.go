@@ -63,11 +63,6 @@ type EndpointSpec struct {
 	// OpenSearch as a Target for DMS (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.Elasticsearch.html#CHAP_Target.Elasticsearch.Configuration)
 	// in the Database Migration Service User Guide.
 	ElasticsearchSettings *ElasticsearchSettings `json:"elasticsearchSettings,omitempty"`
-	// The database endpoint identifier. Identifiers must begin with a letter and
-	// must contain only ASCII letters, digits, and hyphens. They can't end with
-	// a hyphen, or contain two consecutive hyphens.
-	// +kubebuilder:validation:Required
-	EndpointIdentifier *string `json:"endpointIdentifier"`
 	// The type of endpoint. Valid values are source and target.
 	// +kubebuilder:validation:Required
 	EndpointType *string `json:"endpointType"`
@@ -134,6 +129,12 @@ type EndpointSpec struct {
 	// a target for DMS (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.MySQL.html#CHAP_Target.MySQL.ConnectionAttrib)
 	// in the Database Migration Service User Guide.
 	MySQLSettings *MySQLSettings `json:"mySQLSettings,omitempty"`
+	// The database endpoint identifier. Identifiers must begin with a letter and
+	// must contain only ASCII letters, digits, and hyphens. They can't end with
+	// a hyphen, or contain two consecutive hyphens.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	// +kubebuilder:validation:Required
+	Name *string `json:"name"`
 	// Settings in JSON format for the target Amazon Neptune endpoint. For more
 	// information about the available settings, see Specifying graph-mapping rules
 	// using Gremlin and R2RML for Amazon Neptune as a target (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.Neptune.html#CHAP_Target.Neptune.EndpointSettings)
@@ -209,6 +210,9 @@ type EndpointStatus struct {
 	// resource
 	// +kubebuilder:validation:Optional
 	Conditions []*ackv1alpha1.Condition `json:"conditions"`
+	// The status of the endpoint.
+	// +kubebuilder:validation:Optional
+	EndpointStatus *string `json:"endpointStatus,omitempty"`
 	// The expanded name for the engine name. For example, if the EngineName parameter
 	// is "aurora", this value would be "Amazon Aurora MySQL".
 	// +kubebuilder:validation:Optional
@@ -229,9 +233,6 @@ type EndpointStatus struct {
 	// data warehouse as part of a zero-ETL integration.
 	// +kubebuilder:validation:Optional
 	LakehouseSettings *LakehouseSettings `json:"lakehouseSettings,omitempty"`
-	// The status of the endpoint.
-	// +kubebuilder:validation:Optional
-	Status *string `json:"status,omitempty"`
 }
 
 // Endpoint is the Schema for the Endpoints API

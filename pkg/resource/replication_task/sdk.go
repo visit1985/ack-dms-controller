@@ -133,11 +133,6 @@ func (rm *resourceManager) sdkFind(
 		} else {
 			ko.Status.ReplicationTaskCreationDate = nil
 		}
-		if elem.ReplicationTaskIdentifier != nil {
-			ko.Spec.ReplicationTaskIdentifier = elem.ReplicationTaskIdentifier
-		} else {
-			ko.Spec.ReplicationTaskIdentifier = nil
-		}
 		if elem.ReplicationTaskSettings != nil {
 			ko.Spec.ReplicationTaskSettings = elem.ReplicationTaskSettings
 		} else {
@@ -186,9 +181,9 @@ func (rm *resourceManager) sdkFind(
 			ko.Spec.SourceEndpointARN = nil
 		}
 		if elem.Status != nil {
-			ko.Status.Status = elem.Status
+			ko.Status.TaskStatus = elem.Status
 		} else {
-			ko.Status.Status = nil
+			ko.Status.TaskStatus = nil
 		}
 		if elem.StopReason != nil {
 			ko.Status.StopReason = elem.StopReason
@@ -316,9 +311,9 @@ func (rm *resourceManager) sdkCreate(
 		ko.Status.ReplicationTaskCreationDate = nil
 	}
 	if resp.ReplicationTask.ReplicationTaskIdentifier != nil {
-		ko.Spec.ReplicationTaskIdentifier = resp.ReplicationTask.ReplicationTaskIdentifier
+		ko.Spec.Name = resp.ReplicationTask.ReplicationTaskIdentifier
 	} else {
-		ko.Spec.ReplicationTaskIdentifier = nil
+		ko.Spec.Name = nil
 	}
 	if resp.ReplicationTask.ReplicationTaskSettings != nil {
 		ko.Spec.ReplicationTaskSettings = resp.ReplicationTask.ReplicationTaskSettings
@@ -368,9 +363,9 @@ func (rm *resourceManager) sdkCreate(
 		ko.Spec.SourceEndpointARN = nil
 	}
 	if resp.ReplicationTask.Status != nil {
-		ko.Status.Status = resp.ReplicationTask.Status
+		ko.Status.TaskStatus = resp.ReplicationTask.Status
 	} else {
-		ko.Status.Status = nil
+		ko.Status.TaskStatus = nil
 	}
 	if resp.ReplicationTask.StopReason != nil {
 		ko.Status.StopReason = resp.ReplicationTask.StopReason
@@ -425,8 +420,8 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.ReplicationInstanceARN != nil {
 		res.ReplicationInstanceArn = r.ko.Spec.ReplicationInstanceARN
 	}
-	if r.ko.Spec.ReplicationTaskIdentifier != nil {
-		res.ReplicationTaskIdentifier = r.ko.Spec.ReplicationTaskIdentifier
+	if r.ko.Spec.Name != nil {
+		res.ReplicationTaskIdentifier = r.ko.Spec.Name
 	}
 	if r.ko.Spec.ReplicationTaskSettings != nil {
 		res.ReplicationTaskSettings = r.ko.Spec.ReplicationTaskSettings
@@ -538,11 +533,6 @@ func (rm *resourceManager) sdkUpdate(
 	} else {
 		ko.Status.ReplicationTaskCreationDate = nil
 	}
-	if resp.ReplicationTask.ReplicationTaskIdentifier != nil {
-		ko.Spec.ReplicationTaskIdentifier = resp.ReplicationTask.ReplicationTaskIdentifier
-	} else {
-		ko.Spec.ReplicationTaskIdentifier = nil
-	}
 	if resp.ReplicationTask.ReplicationTaskSettings != nil {
 		ko.Spec.ReplicationTaskSettings = resp.ReplicationTask.ReplicationTaskSettings
 	} else {
@@ -591,9 +581,9 @@ func (rm *resourceManager) sdkUpdate(
 		ko.Spec.SourceEndpointARN = nil
 	}
 	if resp.ReplicationTask.Status != nil {
-		ko.Status.Status = resp.ReplicationTask.Status
+		ko.Status.TaskStatus = resp.ReplicationTask.Status
 	} else {
-		ko.Status.Status = nil
+		ko.Status.TaskStatus = nil
 	}
 	if resp.ReplicationTask.StopReason != nil {
 		ko.Status.StopReason = resp.ReplicationTask.StopReason
@@ -648,9 +638,6 @@ func (rm *resourceManager) newUpdateRequestPayload(
 	}
 	if r.ko.Status.ACKResourceMetadata != nil && r.ko.Status.ACKResourceMetadata.ARN != nil {
 		res.ReplicationTaskArn = (*string)(r.ko.Status.ACKResourceMetadata.ARN)
-	}
-	if r.ko.Spec.ReplicationTaskIdentifier != nil {
-		res.ReplicationTaskIdentifier = r.ko.Spec.ReplicationTaskIdentifier
 	}
 	if r.ko.Spec.ReplicationTaskSettings != nil {
 		res.ReplicationTaskSettings = r.ko.Spec.ReplicationTaskSettings

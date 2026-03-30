@@ -41,6 +41,7 @@ func newResourceDelta(
 		delta.Add("", a, b)
 		return delta
 	}
+	compareTags(delta, a, b)
 
 	if ackcompare.HasNilDifference(a.ko.Spec.CdcStartPosition, b.ko.Spec.CdcStartPosition) {
 		delta.Add("Spec.CdcStartPosition", a.ko.Spec.CdcStartPosition, b.ko.Spec.CdcStartPosition)
@@ -70,18 +71,18 @@ func newResourceDelta(
 			delta.Add("Spec.MigrationType", a.ko.Spec.MigrationType, b.ko.Spec.MigrationType)
 		}
 	}
+	if ackcompare.HasNilDifference(a.ko.Spec.Name, b.ko.Spec.Name) {
+		delta.Add("Spec.Name", a.ko.Spec.Name, b.ko.Spec.Name)
+	} else if a.ko.Spec.Name != nil && b.ko.Spec.Name != nil {
+		if *a.ko.Spec.Name != *b.ko.Spec.Name {
+			delta.Add("Spec.Name", a.ko.Spec.Name, b.ko.Spec.Name)
+		}
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.ReplicationInstanceARN, b.ko.Spec.ReplicationInstanceARN) {
 		delta.Add("Spec.ReplicationInstanceARN", a.ko.Spec.ReplicationInstanceARN, b.ko.Spec.ReplicationInstanceARN)
 	} else if a.ko.Spec.ReplicationInstanceARN != nil && b.ko.Spec.ReplicationInstanceARN != nil {
 		if *a.ko.Spec.ReplicationInstanceARN != *b.ko.Spec.ReplicationInstanceARN {
 			delta.Add("Spec.ReplicationInstanceARN", a.ko.Spec.ReplicationInstanceARN, b.ko.Spec.ReplicationInstanceARN)
-		}
-	}
-	if ackcompare.HasNilDifference(a.ko.Spec.ReplicationTaskIdentifier, b.ko.Spec.ReplicationTaskIdentifier) {
-		delta.Add("Spec.ReplicationTaskIdentifier", a.ko.Spec.ReplicationTaskIdentifier, b.ko.Spec.ReplicationTaskIdentifier)
-	} else if a.ko.Spec.ReplicationTaskIdentifier != nil && b.ko.Spec.ReplicationTaskIdentifier != nil {
-		if *a.ko.Spec.ReplicationTaskIdentifier != *b.ko.Spec.ReplicationTaskIdentifier {
-			delta.Add("Spec.ReplicationTaskIdentifier", a.ko.Spec.ReplicationTaskIdentifier, b.ko.Spec.ReplicationTaskIdentifier)
 		}
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.ReplicationTaskSettings, b.ko.Spec.ReplicationTaskSettings) {
@@ -114,11 +115,6 @@ func newResourceDelta(
 		if *a.ko.Spec.TableMappings != *b.ko.Spec.TableMappings {
 			delta.Add("Spec.TableMappings", a.ko.Spec.TableMappings, b.ko.Spec.TableMappings)
 		}
-	}
-	desiredACKTags, _ := convertToOrderedACKTags(a.ko.Spec.Tags)
-	latestACKTags, _ := convertToOrderedACKTags(b.ko.Spec.Tags)
-	if !ackcompare.MapStringStringEqual(desiredACKTags, latestACKTags) {
-		delta.Add("Spec.Tags", a.ko.Spec.Tags, b.ko.Spec.Tags)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.TargetEndpointARN, b.ko.Spec.TargetEndpointARN) {
 		delta.Add("Spec.TargetEndpointARN", a.ko.Spec.TargetEndpointARN, b.ko.Spec.TargetEndpointARN)

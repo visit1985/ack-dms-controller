@@ -14,28 +14,67 @@ ignore:
 resources:
   Endpoint:
     fields:
-      ResourceIdentifier:
+      Name:
         is_primary_key: true
         is_immutable: true
       OracleSettings.ExtraArchivedLogDestIDs:
         compare:
           is_ignored: true
+      ResourceIdentifier:
+        is_immutable: true
+      Tags:
+        compare:
+          is_ignored: true
     hooks:
       delta_pre_compare:
-        code: compareOracleSettings(delta, a, b)
+        code: customPreCompare(delta, a, b)
+    renames:
+      operations:
+        CreateEndpoint:
+          input_fields:
+            EndpointIdentifier: Name
+          output_fields:
+            Status: EndpointStatus
+        DescribeEndpoints:
+          output_fields:
+            Status: EndpointStatus
+        ModifyEndpoint:
+          output_fields:
+            Status: EndpointStatus
   ReplicationTask:
     fields:
-      ResourceIdentifier:
+      Name:
         is_primary_key: true
+        is_immutable: true
+      ResourceIdentifier:
         is_immutable: true
       SourceEndpointARN:
         references:
             resource: Endpoint
             path: Status.ACKResourceMetadata.ARN
+      Tags:
+        compare:
+          is_ignored: true
       TargetEndpointARN:
         references:
             resource: Endpoint
             path: Status.ACKResourceMetadata.ARN
+    hooks:
+      delta_pre_compare:
+        code: compareTags(delta, a, b)
+    renames:
+      operations:
+        CreateReplicationTask:
+          input_fields:
+            ReplicationTaskIdentifier: Name
+          output_fields:
+            Status: TaskStatus
+        DescribeReplicationTasks:
+          output_fields:
+            Status: TaskStatus
+        ModifyReplicationTask:
+          output_fields:
+            Status: TaskStatus
 sdk_names:
   model_name: database-migration-service
   package_name: databasemigrationservice

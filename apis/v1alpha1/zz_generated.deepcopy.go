@@ -1108,11 +1108,6 @@ func (in *EndpointSpec) DeepCopyInto(out *EndpointSpec) {
 		*out = new(ElasticsearchSettings)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.EndpointIdentifier != nil {
-		in, out := &in.EndpointIdentifier, &out.EndpointIdentifier
-		*out = new(string)
-		**out = **in
-	}
 	if in.EndpointType != nil {
 		in, out := &in.EndpointType, &out.EndpointType
 		*out = new(string)
@@ -1172,6 +1167,11 @@ func (in *EndpointSpec) DeepCopyInto(out *EndpointSpec) {
 		in, out := &in.MySQLSettings, &out.MySQLSettings
 		*out = new(MySQLSettings)
 		(*in).DeepCopyInto(*out)
+	}
+	if in.Name != nil {
+		in, out := &in.Name, &out.Name
+		*out = new(string)
+		**out = **in
 	}
 	if in.NeptuneSettings != nil {
 		in, out := &in.NeptuneSettings, &out.NeptuneSettings
@@ -1290,6 +1290,11 @@ func (in *EndpointStatus) DeepCopyInto(out *EndpointStatus) {
 			}
 		}
 	}
+	if in.EndpointStatus != nil {
+		in, out := &in.EndpointStatus, &out.EndpointStatus
+		*out = new(string)
+		**out = **in
+	}
 	if in.EngineDisplayName != nil {
 		in, out := &in.EngineDisplayName, &out.EngineDisplayName
 		*out = new(string)
@@ -1309,11 +1314,6 @@ func (in *EndpointStatus) DeepCopyInto(out *EndpointStatus) {
 		in, out := &in.LakehouseSettings, &out.LakehouseSettings
 		*out = new(LakehouseSettings)
 		(*in).DeepCopyInto(*out)
-	}
-	if in.Status != nil {
-		in, out := &in.Status, &out.Status
-		*out = new(string)
-		**out = **in
 	}
 }
 
@@ -4976,13 +4976,13 @@ func (in *ReplicationTaskSpec) DeepCopyInto(out *ReplicationTaskSpec) {
 		*out = new(string)
 		**out = **in
 	}
-	if in.ReplicationInstanceARN != nil {
-		in, out := &in.ReplicationInstanceARN, &out.ReplicationInstanceARN
+	if in.Name != nil {
+		in, out := &in.Name, &out.Name
 		*out = new(string)
 		**out = **in
 	}
-	if in.ReplicationTaskIdentifier != nil {
-		in, out := &in.ReplicationTaskIdentifier, &out.ReplicationTaskIdentifier
+	if in.ReplicationInstanceARN != nil {
+		in, out := &in.ReplicationInstanceARN, &out.ReplicationInstanceARN
 		*out = new(string)
 		**out = **in
 	}
@@ -5156,11 +5156,6 @@ func (in *ReplicationTaskStatus) DeepCopyInto(out *ReplicationTaskStatus) {
 		*out = new(ReplicationTaskStats)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.Status != nil {
-		in, out := &in.Status, &out.Status
-		*out = new(string)
-		**out = **in
-	}
 	if in.StopReason != nil {
 		in, out := &in.StopReason, &out.StopReason
 		*out = new(string)
@@ -5168,6 +5163,11 @@ func (in *ReplicationTaskStatus) DeepCopyInto(out *ReplicationTaskStatus) {
 	}
 	if in.TargetReplicationInstanceARN != nil {
 		in, out := &in.TargetReplicationInstanceARN, &out.TargetReplicationInstanceARN
+		*out = new(string)
+		**out = **in
+	}
+	if in.TaskStatus != nil {
+		in, out := &in.TaskStatus, &out.TaskStatus
 		*out = new(string)
 		**out = **in
 	}

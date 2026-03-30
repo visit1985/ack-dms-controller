@@ -85,10 +85,7 @@ spec:
                 description: 'The migration type. Valid values: full-load | cdc |
                   full-load-and-cdc'
                 type: string
-              replicationInstanceARN:
-                description: The Amazon Resource Name (ARN) of a replication instance.
-                type: string
-              replicationTaskIdentifier:
+              name:
                 description: |-
                   An identifier for the replication task.
 
@@ -99,6 +96,12 @@ spec:
                      * First character must be a letter.
 
                      * Cannot end with a hyphen or contain two consecutive hyphens.
+                type: string
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
+              replicationInstanceARN:
+                description: The Amazon Resource Name (ARN) of a replication instance.
                 type: string
               replicationTaskSettings:
                 description: |-
@@ -198,8 +201,8 @@ spec:
                 type: string
             required:
             - migrationType
+            - name
             - replicationInstanceARN
-            - replicationTaskIdentifier
             - tableMappings
             type: object
           status:
@@ -326,7 +329,55 @@ spec:
                     format: int64
                     type: integer
                 type: object
-              status:
+              stopReason:
+                description: |-
+                  The reason the replication task was stopped. This response parameter can
+                  return one of the following values:
+
+                     * "Stop Reason NORMAL" – The task completed successfully with no additional
+                     information returned.
+
+                     * "Stop Reason RECOVERABLE_ERROR"
+
+                     * "Stop Reason FATAL_ERROR"
+
+                     * "Stop Reason FULL_LOAD_ONLY_FINISHED" – The task completed the full
+                     load phase. DMS applied cached changes if you set StopTaskCachedChangesApplied
+                     to true.
+
+                     * "Stop Reason STOPPED_AFTER_FULL_LOAD" – Full load completed, with
+                     cached changes not applied
+
+                     * "Stop Reason STOPPED_AFTER_CACHED_EVENTS" – Full load completed, with
+                     cached changes applied
+
+                     * "Stop Reason EXPRESS_LICENSE_LIMITS_REACHED"
+
+                     * "Stop Reason STOPPED_AFTER_DDL_APPLY" – User-defined stop task after
+                     DDL applied
+
+                     * "Stop Reason STOPPED_DUE_TO_LOW_MEMORY"
+
+                     * "Stop Reason STOPPED_DUE_TO_LOW_DISK"
+
+                     * "Stop Reason STOPPED_AT_SERVER_TIME" – User-defined server time for
+                     stopping task
+
+                     * "Stop Reason STOPPED_AT_COMMIT_TIME" – User-defined commit time for
+                     stopping task
+
+                     * "Stop Reason RECONFIGURATION_RESTART"
+
+                     * "Stop Reason RECYCLE_TASK"
+                type: string
+              targetReplicationInstanceARN:
+                description: |-
+                  The ARN of the replication instance to which this task is moved in response
+                  to running the MoveReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_MoveReplicationTask.html)
+                  operation. Otherwise, this response parameter isn't a member of the ReplicationTask
+                  object.
+                type: string
+              taskStatus:
                 description: |-
                   The status of the replication task. This response parameter can return one
                   of the following values:
@@ -389,54 +440,6 @@ spec:
                      to data type compatibility. These assessments include ones for the validity
                      of primary key definitions and likely issues with database migration performance,
                      among others.
-                type: string
-              stopReason:
-                description: |-
-                  The reason the replication task was stopped. This response parameter can
-                  return one of the following values:
-
-                     * "Stop Reason NORMAL" – The task completed successfully with no additional
-                     information returned.
-
-                     * "Stop Reason RECOVERABLE_ERROR"
-
-                     * "Stop Reason FATAL_ERROR"
-
-                     * "Stop Reason FULL_LOAD_ONLY_FINISHED" – The task completed the full
-                     load phase. DMS applied cached changes if you set StopTaskCachedChangesApplied
-                     to true.
-
-                     * "Stop Reason STOPPED_AFTER_FULL_LOAD" – Full load completed, with
-                     cached changes not applied
-
-                     * "Stop Reason STOPPED_AFTER_CACHED_EVENTS" – Full load completed, with
-                     cached changes applied
-
-                     * "Stop Reason EXPRESS_LICENSE_LIMITS_REACHED"
-
-                     * "Stop Reason STOPPED_AFTER_DDL_APPLY" – User-defined stop task after
-                     DDL applied
-
-                     * "Stop Reason STOPPED_DUE_TO_LOW_MEMORY"
-
-                     * "Stop Reason STOPPED_DUE_TO_LOW_DISK"
-
-                     * "Stop Reason STOPPED_AT_SERVER_TIME" – User-defined server time for
-                     stopping task
-
-                     * "Stop Reason STOPPED_AT_COMMIT_TIME" – User-defined commit time for
-                     stopping task
-
-                     * "Stop Reason RECONFIGURATION_RESTART"
-
-                     * "Stop Reason RECYCLE_TASK"
-                type: string
-              targetReplicationInstanceARN:
-                description: |-
-                  The ARN of the replication instance to which this task is moved in response
-                  to running the MoveReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_MoveReplicationTask.html)
-                  operation. Otherwise, this response parameter isn't a member of the ReplicationTask
-                  object.
                 type: string
             type: object
         type: object

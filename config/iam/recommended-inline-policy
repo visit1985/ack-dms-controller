@@ -1,0 +1,22 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Statement1",
+      "Effect": "Allow",
+      "Action": [
+        "dms:CreateEndpoint",
+        "dms:CreateReplicationTask",
+        "dms:DeleteEndpoint",
+        "dms:DeleteReplicationTask",
+        "dms:DescribeEndpoints",
+        "dms:DescribeReplicationTasks",
+        "dms:ModifyEndpoint"
+        "dms:ModifyReplicationTask",
+        "dms:StartReplicationTask",
+        "dms:StopReplicationTask",
+      ],
+      "Resource": "*"
+    }
+  ]
+}

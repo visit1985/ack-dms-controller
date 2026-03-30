@@ -200,11 +200,6 @@ func (rm *resourceManager) sdkFind(
 			tmpARN := ackv1alpha1.AWSResourceName(*elem.EndpointArn)
 			ko.Status.ACKResourceMetadata.ARN = &tmpARN
 		}
-		if elem.EndpointIdentifier != nil {
-			ko.Spec.EndpointIdentifier = elem.EndpointIdentifier
-		} else {
-			ko.Spec.EndpointIdentifier = nil
-		}
 		if elem.EndpointType != "" {
 			ko.Spec.EndpointType = aws.String(string(elem.EndpointType))
 		} else {
@@ -1211,9 +1206,9 @@ func (rm *resourceManager) sdkFind(
 			ko.Spec.SSLMode = nil
 		}
 		if elem.Status != nil {
-			ko.Status.Status = elem.Status
+			ko.Status.EndpointStatus = elem.Status
 		} else {
-			ko.Status.Status = nil
+			ko.Status.EndpointStatus = nil
 		}
 		if elem.SybaseSettings != nil {
 			f35 := &svcapitypes.SybaseSettings{}
@@ -1438,9 +1433,9 @@ func (rm *resourceManager) sdkCreate(
 		ko.Status.ACKResourceMetadata.ARN = &arn
 	}
 	if resp.Endpoint.EndpointIdentifier != nil {
-		ko.Spec.EndpointIdentifier = resp.Endpoint.EndpointIdentifier
+		ko.Spec.Name = resp.Endpoint.EndpointIdentifier
 	} else {
-		ko.Spec.EndpointIdentifier = nil
+		ko.Spec.Name = nil
 	}
 	if resp.Endpoint.EndpointType != "" {
 		ko.Spec.EndpointType = aws.String(string(resp.Endpoint.EndpointType))
@@ -2448,9 +2443,9 @@ func (rm *resourceManager) sdkCreate(
 		ko.Spec.SSLMode = nil
 	}
 	if resp.Endpoint.Status != nil {
-		ko.Status.Status = resp.Endpoint.Status
+		ko.Status.EndpointStatus = resp.Endpoint.Status
 	} else {
-		ko.Status.Status = nil
+		ko.Status.EndpointStatus = nil
 	}
 	if resp.Endpoint.SybaseSettings != nil {
 		f35 := &svcapitypes.SybaseSettings{}
@@ -2626,8 +2621,8 @@ func (rm *resourceManager) newCreateRequestPayload(
 		}
 		res.ElasticsearchSettings = f5
 	}
-	if r.ko.Spec.EndpointIdentifier != nil {
-		res.EndpointIdentifier = r.ko.Spec.EndpointIdentifier
+	if r.ko.Spec.Name != nil {
+		res.EndpointIdentifier = r.ko.Spec.Name
 	}
 	if r.ko.Spec.EndpointType != nil {
 		res.EndpointType = svcsdktypes.ReplicationEndpointTypeValue(*r.ko.Spec.EndpointType)
@@ -3994,11 +3989,6 @@ func (rm *resourceManager) sdkUpdate(
 		arn := ackv1alpha1.AWSResourceName(*resp.Endpoint.EndpointArn)
 		ko.Status.ACKResourceMetadata.ARN = &arn
 	}
-	if resp.Endpoint.EndpointIdentifier != nil {
-		ko.Spec.EndpointIdentifier = resp.Endpoint.EndpointIdentifier
-	} else {
-		ko.Spec.EndpointIdentifier = nil
-	}
 	if resp.Endpoint.EndpointType != "" {
 		ko.Spec.EndpointType = aws.String(string(resp.Endpoint.EndpointType))
 	} else {
@@ -5005,9 +4995,9 @@ func (rm *resourceManager) sdkUpdate(
 		ko.Spec.SSLMode = nil
 	}
 	if resp.Endpoint.Status != nil {
-		ko.Status.Status = resp.Endpoint.Status
+		ko.Status.EndpointStatus = resp.Endpoint.Status
 	} else {
-		ko.Status.Status = nil
+		ko.Status.EndpointStatus = nil
 	}
 	if resp.Endpoint.SybaseSettings != nil {
 		f35 := &svcapitypes.SybaseSettings{}
@@ -5186,9 +5176,6 @@ func (rm *resourceManager) newUpdateRequestPayload(
 	}
 	if r.ko.Status.ACKResourceMetadata != nil && r.ko.Status.ACKResourceMetadata.ARN != nil {
 		res.EndpointArn = (*string)(r.ko.Status.ACKResourceMetadata.ARN)
-	}
-	if r.ko.Spec.EndpointIdentifier != nil {
-		res.EndpointIdentifier = r.ko.Spec.EndpointIdentifier
 	}
 	if r.ko.Spec.EndpointType != nil {
 		res.EndpointType = svcsdktypes.ReplicationEndpointTypeValue(*r.ko.Spec.EndpointType)

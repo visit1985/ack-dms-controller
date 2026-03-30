@@ -60,9 +60,6 @@ type ReplicationTaskSpec struct {
 	// The migration type. Valid values: full-load | cdc | full-load-and-cdc
 	// +kubebuilder:validation:Required
 	MigrationType *string `json:"migrationType"`
-	// The Amazon Resource Name (ARN) of a replication instance.
-	// +kubebuilder:validation:Required
-	ReplicationInstanceARN *string `json:"replicationInstanceARN"`
 	// An identifier for the replication task.
 	//
 	// Constraints:
@@ -73,8 +70,12 @@ type ReplicationTaskSpec struct {
 	//
 	//   - Cannot end with a hyphen or contain two consecutive hyphens.
 	//
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	// +kubebuilder:validation:Required
-	ReplicationTaskIdentifier *string `json:"replicationTaskIdentifier"`
+	Name *string `json:"name"`
+	// The Amazon Resource Name (ARN) of a replication instance.
+	// +kubebuilder:validation:Required
+	ReplicationInstanceARN *string `json:"replicationInstanceARN"`
 	// Overall settings for the task, in JSON format. For more information, see
 	// Specifying Task Settings for Database Migration Service Tasks (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TaskSettings.html)
 	// in the Database Migration Service User Guide.
@@ -140,6 +141,52 @@ type ReplicationTaskStatus struct {
 	// errors.
 	// +kubebuilder:validation:Optional
 	ReplicationTaskStats *ReplicationTaskStats `json:"replicationTaskStats,omitempty"`
+	// The reason the replication task was stopped. This response parameter can
+	// return one of the following values:
+	//
+	//    * "Stop Reason NORMAL" – The task completed successfully with no additional
+	//    information returned.
+	//
+	//    * "Stop Reason RECOVERABLE_ERROR"
+	//
+	//    * "Stop Reason FATAL_ERROR"
+	//
+	//    * "Stop Reason FULL_LOAD_ONLY_FINISHED" – The task completed the full
+	//    load phase. DMS applied cached changes if you set StopTaskCachedChangesApplied
+	//    to true.
+	//
+	//    * "Stop Reason STOPPED_AFTER_FULL_LOAD" – Full load completed, with
+	//    cached changes not applied
+	//
+	//    * "Stop Reason STOPPED_AFTER_CACHED_EVENTS" – Full load completed, with
+	//    cached changes applied
+	//
+	//    * "Stop Reason EXPRESS_LICENSE_LIMITS_REACHED"
+	//
+	//    * "Stop Reason STOPPED_AFTER_DDL_APPLY" – User-defined stop task after
+	//    DDL applied
+	//
+	//    * "Stop Reason STOPPED_DUE_TO_LOW_MEMORY"
+	//
+	//    * "Stop Reason STOPPED_DUE_TO_LOW_DISK"
+	//
+	//    * "Stop Reason STOPPED_AT_SERVER_TIME" – User-defined server time for
+	//    stopping task
+	//
+	//    * "Stop Reason STOPPED_AT_COMMIT_TIME" – User-defined commit time for
+	//    stopping task
+	//
+	//    * "Stop Reason RECONFIGURATION_RESTART"
+	//
+	//    * "Stop Reason RECYCLE_TASK"
+	// +kubebuilder:validation:Optional
+	StopReason *string `json:"stopReason,omitempty"`
+	// The ARN of the replication instance to which this task is moved in response
+	// to running the MoveReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_MoveReplicationTask.html)
+	// operation. Otherwise, this response parameter isn't a member of the ReplicationTask
+	// object.
+	// +kubebuilder:validation:Optional
+	TargetReplicationInstanceARN *string `json:"targetReplicationInstanceARN,omitempty"`
 	// The status of the replication task. This response parameter can return one
 	// of the following values:
 	//
@@ -202,53 +249,7 @@ type ReplicationTaskStatus struct {
 	//    of primary key definitions and likely issues with database migration performance,
 	//    among others.
 	// +kubebuilder:validation:Optional
-	Status *string `json:"status,omitempty"`
-	// The reason the replication task was stopped. This response parameter can
-	// return one of the following values:
-	//
-	//    * "Stop Reason NORMAL" – The task completed successfully with no additional
-	//    information returned.
-	//
-	//    * "Stop Reason RECOVERABLE_ERROR"
-	//
-	//    * "Stop Reason FATAL_ERROR"
-	//
-	//    * "Stop Reason FULL_LOAD_ONLY_FINISHED" – The task completed the full
-	//    load phase. DMS applied cached changes if you set StopTaskCachedChangesApplied
-	//    to true.
-	//
-	//    * "Stop Reason STOPPED_AFTER_FULL_LOAD" – Full load completed, with
-	//    cached changes not applied
-	//
-	//    * "Stop Reason STOPPED_AFTER_CACHED_EVENTS" – Full load completed, with
-	//    cached changes applied
-	//
-	//    * "Stop Reason EXPRESS_LICENSE_LIMITS_REACHED"
-	//
-	//    * "Stop Reason STOPPED_AFTER_DDL_APPLY" – User-defined stop task after
-	//    DDL applied
-	//
-	//    * "Stop Reason STOPPED_DUE_TO_LOW_MEMORY"
-	//
-	//    * "Stop Reason STOPPED_DUE_TO_LOW_DISK"
-	//
-	//    * "Stop Reason STOPPED_AT_SERVER_TIME" – User-defined server time for
-	//    stopping task
-	//
-	//    * "Stop Reason STOPPED_AT_COMMIT_TIME" – User-defined commit time for
-	//    stopping task
-	//
-	//    * "Stop Reason RECONFIGURATION_RESTART"
-	//
-	//    * "Stop Reason RECYCLE_TASK"
-	// +kubebuilder:validation:Optional
-	StopReason *string `json:"stopReason,omitempty"`
-	// The ARN of the replication instance to which this task is moved in response
-	// to running the MoveReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_MoveReplicationTask.html)
-	// operation. Otherwise, this response parameter isn't a member of the ReplicationTask
-	// object.
-	// +kubebuilder:validation:Optional
-	TargetReplicationInstanceARN *string `json:"targetReplicationInstanceARN,omitempty"`
+	TaskStatus *string `json:"taskStatus,omitempty"`
 }
 
 // ReplicationTask is the Schema for the ReplicationTasks API
