@@ -91,8 +91,9 @@ type ReplicationTaskSpec struct {
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	ResourceIdentifier *string `json:"resourceIdentifier,omitempty"`
 	// An Amazon Resource Name (ARN) that uniquely identifies the source endpoint.
-	SourceEndpointARN *string                                  `json:"sourceEndpointARN,omitempty"`
-	SourceEndpointRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"sourceEndpointRef,omitempty"`
+	SourceEndpointARN    *string                                  `json:"sourceEndpointARN,omitempty"`
+	SourceEndpointRef    *ackv1alpha1.AWSResourceReferenceWrapper `json:"sourceEndpointRef,omitempty"`
+	StartReplicationTask *string                                  `json:"startReplicationTask,omitempty"`
 	// The table mappings for the task, in JSON format. For more information, see
 	// Using Table Mapping to Specify Task Settings (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.html)
 	// in the Database Migration Service User Guide.

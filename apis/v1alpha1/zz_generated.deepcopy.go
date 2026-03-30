@@ -5006,6 +5006,11 @@ func (in *ReplicationTaskSpec) DeepCopyInto(out *ReplicationTaskSpec) {
 		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.StartReplicationTask != nil {
+		in, out := &in.StartReplicationTask, &out.StartReplicationTask
+		*out = new(string)
+		**out = **in
+	}
 	if in.TableMappings != nil {
 		in, out := &in.TableMappings, &out.TableMappings
 		*out = new(string)

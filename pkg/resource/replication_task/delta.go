@@ -109,6 +109,13 @@ func newResourceDelta(
 	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.SourceEndpointRef, b.ko.Spec.SourceEndpointRef) {
 		delta.Add("Spec.SourceEndpointRef", a.ko.Spec.SourceEndpointRef, b.ko.Spec.SourceEndpointRef)
 	}
+	if ackcompare.HasNilDifference(a.ko.Spec.StartReplicationTask, b.ko.Spec.StartReplicationTask) {
+		delta.Add("Spec.StartReplicationTask", a.ko.Spec.StartReplicationTask, b.ko.Spec.StartReplicationTask)
+	} else if a.ko.Spec.StartReplicationTask != nil && b.ko.Spec.StartReplicationTask != nil {
+		if *a.ko.Spec.StartReplicationTask != *b.ko.Spec.StartReplicationTask {
+			delta.Add("Spec.StartReplicationTask", a.ko.Spec.StartReplicationTask, b.ko.Spec.StartReplicationTask)
+		}
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.TableMappings, b.ko.Spec.TableMappings) {
 		delta.Add("Spec.TableMappings", a.ko.Spec.TableMappings, b.ko.Spec.TableMappings)
 	} else if a.ko.Spec.TableMappings != nil && b.ko.Spec.TableMappings != nil {

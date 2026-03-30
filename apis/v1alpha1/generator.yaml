@@ -52,6 +52,8 @@ resources:
         references:
             resource: Endpoint
             path: Status.ACKResourceMetadata.ARN
+      StartReplicationTask:
+        type: boolean
       Tags:
         compare:
           is_ignored: true
@@ -62,6 +64,14 @@ resources:
     hooks:
       delta_pre_compare:
         code: compareTags(delta, a, b)
+      sdk_create_pre_set_output:
+        template_path: hooks/replication_task/sdk_create_pre_set_output.go.tpl
+      sdk_update_pre_build_request:
+        template_path: hooks/replication_task/sdk_update_pre_build_request.go.tpl
+      sdk_update_pre_set_output:
+        template_path: hooks/replication_task/sdk_update_pre_set_output.go.tpl
+    reconcile:
+      requeue_on_success_seconds: 60
     renames:
       operations:
         CreateReplicationTask:

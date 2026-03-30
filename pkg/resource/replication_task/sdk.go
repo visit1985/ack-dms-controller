@@ -268,6 +268,10 @@ func (rm *resourceManager) sdkCreate(
 	// the original Kubernetes object we passed to the function
 	ko := desired.ko.DeepCopy()
 
+	// If replication task has custom field .Spec.StartReplicationTask == true
+	//     Wait for replication task to have TaskStatus == "ready"
+	//     Start replication task
+
 	if resp.ReplicationTask.CdcStartPosition != nil {
 		ko.Spec.CdcStartPosition = resp.ReplicationTask.CdcStartPosition
 	} else {
@@ -475,6 +479,11 @@ func (rm *resourceManager) sdkUpdate(
 	defer func() {
 		exit(err)
 	}()
+
+	// If replication task has TaskStatus == "running"
+	//     Stop replication task
+	//     Wait until replication task has TaskStatus == "stopped"
+
 	input, err := rm.newUpdateRequestPayload(ctx, desired, delta)
 	if err != nil {
 		return nil, err
@@ -490,6 +499,10 @@ func (rm *resourceManager) sdkUpdate(
 	// Merge in the information we read from the API call above to the copy of
 	// the original Kubernetes object we passed to the function
 	ko := desired.ko.DeepCopy()
+
+	// If replication task has custom field .Spec.StartReplicationTask == true
+	//     Wait for replication task to have TaskStatus == "ready"
+	//     Resume replication task
 
 	if resp.ReplicationTask.CdcStartPosition != nil {
 		ko.Spec.CdcStartPosition = resp.ReplicationTask.CdcStartPosition
@@ -774,8 +787,13 @@ func (rm *resourceManager) updateConditions(
 			recoverableCondition.Message = nil
 		}
 	}
-	// Required to avoid the "declared but not used" error in the default case
-	_ = syncCondition
+	if syncCondition == nil && onSuccess {
+		syncCondition = &ackv1alpha1.Condition{
+			Type:   ackv1alpha1.ConditionTypeResourceSynced,
+			Status: corev1.ConditionTrue,
+		}
+		ko.Status.Conditions = append(ko.Status.Conditions, syncCondition)
+	}
 	if terminalCondition != nil || recoverableCondition != nil || syncCondition != nil {
 		return &resource{ko}, true // updated
 	}
