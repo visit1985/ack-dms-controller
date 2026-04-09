@@ -14,7 +14,11 @@ spec:
     singular: endpoint
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - additionalPrinterColumns:
+    - jsonPath: .status.endpointStatus
+      name: STATUS
+      type: string
+    name: v1alpha1
     schema:
       openAPIV3Schema:
         description: Endpoint is the Schema for the Endpoints API
@@ -794,9 +798,6 @@ spec:
                   If you don't specify a ResourceIdentifier value, DMS generates a default
                   identifier value for the end of EndpointArn.
                 type: string
-                x-kubernetes-validations:
-                - message: Value is immutable once set
-                  rule: self == oldSelf
               s3Settings:
                 description: |-
                   Settings in JSON format for the target Amazon S3 endpoint. For more information

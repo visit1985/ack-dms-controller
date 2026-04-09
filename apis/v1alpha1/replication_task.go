@@ -88,7 +88,6 @@ type ReplicationTaskSpec struct {
 	// For example, this value might result in the EndpointArn value arn:aws:dms:eu-west-1:012345678901:rep:Example-App-ARN1.
 	// If you don't specify a ResourceIdentifier value, DMS generates a default
 	// identifier value for the end of EndpointArn.
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	ResourceIdentifier *string `json:"resourceIdentifier,omitempty"`
 	// An Amazon Resource Name (ARN) that uniquely identifies the source endpoint.
 	SourceEndpointARN    *string                                  `json:"sourceEndpointARN,omitempty"`
@@ -256,6 +255,7 @@ type ReplicationTaskStatus struct {
 // ReplicationTask is the Schema for the ReplicationTasks API
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="STATUS",type=string,priority=0,JSONPath=`.status.taskStatus`
 type ReplicationTask struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

@@ -74,8 +74,33 @@ func (rm *resourceManager) sdkFind(
 	if err != nil {
 		return nil, err
 	}
+
+	// sdk_read_many_post_build_request hook
+	//
+	// DescribeReplicationTasks does not provide any identifier input fields,
+	// so we need to build a filter on our own.
+	input.Filters = []svcsdktypes.Filter{
+		{
+			Name:   aws.String("replication-task-id"),
+			Values: []string{aws.ToString(r.ko.Spec.Name)},
+		},
+	}
+
 	var resp *svcsdk.DescribeReplicationTasksOutput
 	resp, err = rm.sdkapi.DescribeReplicationTasks(ctx, input)
+
+	// sdk_read_many_post_request hook
+	//
+	// Map ResourceNotFoundFault to NotFound error so ACK can trigger createResource
+	// correctly.
+	if err != nil {
+		var awsErr smithy.APIError
+		if errors.As(err, &awsErr) && awsErr.ErrorCode() == "ResourceNotFoundFault" {
+			rm.metrics.RecordAPICall("READ_MANY", "DescribeReplicationTasks", err)
+			return nil, ackerr.NotFound
+		}
+	}
+
 	rm.metrics.RecordAPICall("READ_MANY", "DescribeReplicationTasks", err)
 	if err != nil {
 		var awsErr smithy.APIError

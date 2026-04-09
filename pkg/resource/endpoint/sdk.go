@@ -75,8 +75,33 @@ func (rm *resourceManager) sdkFind(
 	if err != nil {
 		return nil, err
 	}
+
+	// sdk_read_many_post_build_request hook
+	//
+	// DescribeEndpoints does not provide any identifier input fields,
+	// so we need to build a filter on our own.
+	input.Filters = []svcsdktypes.Filter{
+		{
+			Name:   aws.String("endpoint-id"),
+			Values: []string{aws.ToString(r.ko.Spec.Name)},
+		},
+	}
+
 	var resp *svcsdk.DescribeEndpointsOutput
 	resp, err = rm.sdkapi.DescribeEndpoints(ctx, input)
+
+	// sdk_read_many_post_request hook
+	//
+	// Map ResourceNotFoundFault to NotFound error so ACK can trigger createResource
+	// correctly.
+	if err != nil {
+		var awsErr smithy.APIError
+		if errors.As(err, &awsErr) && awsErr.ErrorCode() == "ResourceNotFoundFault" {
+			rm.metrics.RecordAPICall("READ_MANY", "DescribeEndpoints", err)
+			return nil, ackerr.NotFound
+		}
+	}
+
 	rm.metrics.RecordAPICall("READ_MANY", "DescribeEndpoints", err)
 	if err != nil {
 		var awsErr smithy.APIError

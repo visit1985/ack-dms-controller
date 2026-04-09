@@ -14,7 +14,11 @@ spec:
     singular: replicationtask
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - additionalPrinterColumns:
+    - jsonPath: .status.taskStatus
+      name: STATUS
+      type: string
+    name: v1alpha1
     schema:
       openAPIV3Schema:
         description: ReplicationTask is the Schema for the ReplicationTasks API
@@ -120,9 +124,6 @@ spec:
                   If you don't specify a ResourceIdentifier value, DMS generates a default
                   identifier value for the end of EndpointArn.
                 type: string
-                x-kubernetes-validations:
-                - message: Value is immutable once set
-                  rule: self == oldSelf
               sourceEndpointARN:
                 description: An Amazon Resource Name (ARN) that uniquely identifies
                   the source endpoint.

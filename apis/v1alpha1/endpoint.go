@@ -168,7 +168,6 @@ type EndpointSpec struct {
 	// For example, this value might result in the EndpointArn value arn:aws:dms:eu-west-1:012345678901:rep:Example-App-ARN1.
 	// If you don't specify a ResourceIdentifier value, DMS generates a default
 	// identifier value for the end of EndpointArn.
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	ResourceIdentifier *string `json:"resourceIdentifier,omitempty"`
 	// Settings in JSON format for the target Amazon S3 endpoint. For more information
 	// about the available settings, see Extra Connection Attributes When Using
@@ -238,6 +237,7 @@ type EndpointStatus struct {
 // Endpoint is the Schema for the Endpoints API
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="STATUS",type=string,priority=0,JSONPath=`.status.endpointStatus`
 type Endpoint struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

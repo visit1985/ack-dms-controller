@@ -14,6 +14,9 @@ ignore:
 resources:
   Endpoint:
     fields:
+      EndpointStatus:
+        print:
+          name: STATUS
       Name:
         is_primary_key: true
         is_immutable: true
@@ -21,13 +24,17 @@ resources:
         compare:
           is_ignored: true
       ResourceIdentifier:
-        is_immutable: true
+        late_initialize: {}
       Tags:
         compare:
           is_ignored: true
     hooks:
       delta_pre_compare:
         code: customPreCompare(delta, a, b)
+      sdk_read_many_post_build_request:
+        template_path: hooks/endpoint/sdk_read_many_post_build_request.go.tpl
+      sdk_read_many_post_request:
+        template_path: hooks/endpoint/sdk_read_many_post_request.go.tpl
     renames:
       operations:
         CreateEndpoint:
@@ -46,8 +53,11 @@ resources:
       Name:
         is_primary_key: true
         is_immutable: true
+      TaskStatus:
+        print:
+          name: STATUS
       ResourceIdentifier:
-        is_immutable: true
+        late_initialize: {}
       SourceEndpointARN:
         references:
             resource: Endpoint
@@ -66,6 +76,10 @@ resources:
         code: compareTags(delta, a, b)
       sdk_create_pre_set_output:
         template_path: hooks/replication_task/sdk_create_pre_set_output.go.tpl
+      sdk_read_many_post_build_request:
+        template_path: hooks/replication_task/sdk_read_many_post_build_request.go.tpl
+      sdk_read_many_post_request:
+        template_path: hooks/replication_task/sdk_read_many_post_request.go.tpl
       sdk_update_pre_build_request:
         template_path: hooks/replication_task/sdk_update_pre_build_request.go.tpl
       sdk_update_pre_set_output:
