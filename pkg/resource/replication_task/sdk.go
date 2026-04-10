@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
@@ -243,6 +244,25 @@ func (rm *resourceManager) sdkFind(
 	}
 
 	rm.setStatusDefaults(ko)
+
+	// sdk_read_many_post_set_output hook
+	//
+	// Start the replication task if the custom StartReplicationTask field in
+	// the Spec is set to true and the task is not already started and is in a
+	// steady state.
+	if shouldStartReplicationTask(ko) {
+		if hasSteadyState(ko) {
+			startReplicationTaskInput := newStartReplicationTaskRequestPayload(ko)
+			_, err := rm.sdkapi.StartReplicationTask(ctx, startReplicationTaskInput)
+			rm.metrics.RecordAPICall("UPDATE", "StartReplicationTask", err)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			return &resource{ko}, ackrequeue.NeededAfter(nil, 10*time.Second)
+		}
+	}
+
 	return &resource{ko}, nil
 }
 
@@ -292,10 +312,6 @@ func (rm *resourceManager) sdkCreate(
 	// Merge in the information we read from the API call above to the copy of
 	// the original Kubernetes object we passed to the function
 	ko := desired.ko.DeepCopy()
-
-	// If replication task has custom field .Spec.StartReplicationTask == true
-	//     Wait for replication task to have TaskStatus == "ready"
-	//     Start replication task
 
 	if resp.ReplicationTask.CdcStartPosition != nil {
 		ko.Spec.CdcStartPosition = resp.ReplicationTask.CdcStartPosition
@@ -505,9 +521,24 @@ func (rm *resourceManager) sdkUpdate(
 		exit(err)
 	}()
 
-	// If replication task has TaskStatus == "running"
-	//     Stop replication task
-	//     Wait until replication task has TaskStatus == "stopped"
+	// sdk_update_pre_build_request hook
+	//
+	// Stop the replication task and make sure it is in a steady state
+	// before updating it.
+	if hasSteadyState(latest.ko) {
+		if shouldStopReplicationTask(latest.ko) {
+			stopReplicationTaskInput := newStopReplicationTaskRequestPayload(latest.ko)
+			_, err := rm.sdkapi.StopReplicationTask(ctx, stopReplicationTaskInput)
+			rm.metrics.RecordAPICall("UPDATE", "StopReplicationTask", err)
+			if err != nil {
+				return nil, err
+			}
+			// requeue because we are in "stopping" state now
+			return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
+		}
+	} else {
+		return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
+	}
 
 	input, err := rm.newUpdateRequestPayload(ctx, desired, delta)
 	if err != nil {
@@ -524,10 +555,6 @@ func (rm *resourceManager) sdkUpdate(
 	// Merge in the information we read from the API call above to the copy of
 	// the original Kubernetes object we passed to the function
 	ko := desired.ko.DeepCopy()
-
-	// If replication task has custom field .Spec.StartReplicationTask == true
-	//     Wait for replication task to have TaskStatus == "ready"
-	//     Resume replication task
 
 	if resp.ReplicationTask.CdcStartPosition != nil {
 		ko.Spec.CdcStartPosition = resp.ReplicationTask.CdcStartPosition
@@ -700,6 +727,26 @@ func (rm *resourceManager) sdkDelete(
 	defer func() {
 		exit(err)
 	}()
+
+	// sdk_delete_pre_build_request hook
+	//
+	// Stop the replication task and make sure it is in a steady state
+	// before deleting it.
+	if hasSteadyState(r.ko) {
+		if shouldStopReplicationTask(r.ko) {
+			stopReplicationTaskInput := newStopReplicationTaskRequestPayload(r.ko)
+			_, err := rm.sdkapi.StopReplicationTask(ctx, stopReplicationTaskInput)
+			rm.metrics.RecordAPICall("UPDATE", "StopReplicationTask", err)
+			if err != nil {
+				return nil, err
+			}
+			// requeue because we are in "stopping" state now
+			return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
+		}
+	} else {
+		return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
+	}
+
 	input, err := rm.newDeleteRequestPayload(r)
 	if err != nil {
 		return nil, err

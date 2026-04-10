@@ -14,8 +14,28 @@
 package replication_task
 
 import (
-	commonutil "github.com/aws-controllers-k8s/dms-controller/pkg/util"
+	"slices"
+
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	svcsdk "github.com/aws/aws-sdk-go-v2/service/databasemigrationservice"
+	svcsdktypes "github.com/aws/aws-sdk-go-v2/service/databasemigrationservice/types"
+
+	svcapitypes "github.com/aws-controllers-k8s/dms-controller/apis/v1alpha1"
+	commonutil "github.com/aws-controllers-k8s/dms-controller/pkg/util"
+)
+
+const (
+	replicationTaskStatusCreating  = "creating"
+	replicationTaskStatusDeleting  = "deleting"
+	replicationTaskStatusFailed    = "failed"
+	replicationTaskStatusModifying = "modifying"
+	replicationTaskStatusMoving    = "moving"
+	replicationTaskStatusReady     = "ready"
+	replicationTaskStatusStopped   = "stopped"
+	replicationTaskStatusStopping  = "stopping"
+	replicationTaskStatusRunning   = "running"
+	replicationTaskStatusStarting  = "starting"
 )
 
 // compareTags is a custom comparison function for comparing lists of Tag
@@ -31,5 +51,78 @@ func compareTags(
 		if !commonutil.EqualTags(a.ko.Spec.Tags, b.ko.Spec.Tags) {
 			delta.Add("Spec.Tags", a.ko.Spec.Tags, b.ko.Spec.Tags)
 		}
+	}
+}
+
+// hasSteadyState is a custom function to determine if a ReplicationTask
+// is in a steady state.
+func hasSteadyState(ko *svcapitypes.ReplicationTask) bool {
+	return ko.Status.TaskStatus != nil && slices.Contains(
+		[]string{
+			replicationTaskStatusFailed,
+			replicationTaskStatusReady,
+			replicationTaskStatusRunning,
+			replicationTaskStatusStopped,
+		},
+		*ko.Status.TaskStatus,
+	)
+}
+
+// alreadyStarted is a custom function to determine if a ReplicationTask
+// is already started.
+func alreadyStarted(ko *svcapitypes.ReplicationTask) bool {
+	return ko.Status.TaskStatus != nil && slices.Contains(
+		[]string{
+			replicationTaskStatusRunning,
+			replicationTaskStatusStarting,
+		},
+		*ko.Status.TaskStatus,
+	)
+}
+
+// alreadyStopped is a custom function to determine if a ReplicationTask
+// is already stopped.
+func alreadyStopped(ko *svcapitypes.ReplicationTask) bool {
+	return ko.Status.TaskStatus != nil && slices.Contains(
+		[]string{
+			replicationTaskStatusFailed,
+			replicationTaskStatusStopping,
+			replicationTaskStatusStopped,
+		},
+		*ko.Status.TaskStatus,
+	)
+}
+
+// shouldStartReplicationTask is a custom function to determine if a
+// ReplicationTask should be started.
+func shouldStartReplicationTask(ko *svcapitypes.ReplicationTask) bool {
+	return ko.Spec.StartReplicationTask != nil && *ko.Spec.StartReplicationTask && !alreadyStarted(ko)
+}
+
+// shouldStopReplicationTask is a custom function to determine if a
+// ReplicationTask should be stopped.
+func shouldStopReplicationTask(ko *svcapitypes.ReplicationTask) bool {
+	return ko.Spec.StartReplicationTask != nil && !*ko.Spec.StartReplicationTask && !alreadyStopped(ko)
+}
+
+// newStartReplicationTaskRequestPayload is a custom function to
+// constructs the input for the StartReplicationTask operation based
+// on the current state of the ReplicationTask.
+func newStartReplicationTaskRequestPayload(ko *svcapitypes.ReplicationTask) *svcsdk.StartReplicationTaskInput {
+	startReplicationTaskType := svcsdktypes.StartReplicationTaskTypeValueStartReplication
+	if ko.Status.TaskStatus != nil && *ko.Status.TaskStatus == replicationTaskStatusReady {
+		startReplicationTaskType = svcsdktypes.StartReplicationTaskTypeValueResumeProcessing
+	}
+	return &svcsdk.StartReplicationTaskInput{
+		ReplicationTaskArn:       aws.String(string(*ko.Status.ACKResourceMetadata.ARN)),
+		StartReplicationTaskType: startReplicationTaskType,
+	}
+}
+
+// newStopReplicationTaskRequestPayload is a custom function to
+// constructs the input for the StopReplicationTask operation.
+func newStopReplicationTaskRequestPayload(ko *svcapitypes.ReplicationTask) *svcsdk.StopReplicationTaskInput {
+	return &svcsdk.StopReplicationTaskInput{
+		ReplicationTaskArn: aws.String(string(*ko.Status.ACKResourceMetadata.ARN)),
 	}
 }

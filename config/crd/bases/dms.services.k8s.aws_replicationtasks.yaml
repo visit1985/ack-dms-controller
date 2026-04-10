@@ -146,7 +146,7 @@ spec:
                     type: object
                 type: object
               startReplicationTask:
-                type: string
+                type: boolean
               tableMappings:
                 description: |-
                   The table mappings for the task, in JSON format. For more information, see

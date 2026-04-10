@@ -5008,7 +5008,7 @@ func (in *ReplicationTaskSpec) DeepCopyInto(out *ReplicationTaskSpec) {
 	}
 	if in.StartReplicationTask != nil {
 		in, out := &in.StartReplicationTask, &out.StartReplicationTask
-		*out = new(string)
+		*out = new(bool)
 		**out = **in
 	}
 	if in.TableMappings != nil {
