@@ -147,7 +147,7 @@ type EndpointSpec struct {
 	// in the Database Migration Service User Guide.
 	OracleSettings *OracleSettings `json:"oracleSettings,omitempty"`
 	// The password to be used to log in to the endpoint database.
-	Password *string `json:"password,omitempty"`
+	Password *ackv1alpha1.SecretKeyReference `json:"password,omitempty"`
 	// The port used by the endpoint database.
 	Port *int64 `json:"port,omitempty"`
 	// Settings in JSON format for the source and target PostgreSQL endpoint. For

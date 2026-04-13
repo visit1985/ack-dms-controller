@@ -223,19 +223,19 @@ type DocDBDataProviderSettings struct {
 
 // Provides information that defines a DocumentDB endpoint.
 type DocDBSettings struct {
-	DatabaseName                *string `json:"databaseName,omitempty"`
-	DocsToInvestigate           *int64  `json:"docsToInvestigate,omitempty"`
-	ExtractDocID                *bool   `json:"extractDocID,omitempty"`
-	KMSKeyID                    *string `json:"kmsKeyID,omitempty"`
-	NestingLevel                *string `json:"nestingLevel,omitempty"`
-	Password                    *string `json:"password,omitempty"`
-	Port                        *int64  `json:"port,omitempty"`
-	ReplicateShardCollections   *bool   `json:"replicateShardCollections,omitempty"`
-	SecretsManagerAccessRoleARN *string `json:"secretsManagerAccessRoleARN,omitempty"`
-	SecretsManagerSecretID      *string `json:"secretsManagerSecretID,omitempty"`
-	ServerName                  *string `json:"serverName,omitempty"`
-	UseUpdateLookUp             *bool   `json:"useUpdateLookUp,omitempty"`
-	Username                    *string `json:"username,omitempty"`
+	DatabaseName                *string                         `json:"databaseName,omitempty"`
+	DocsToInvestigate           *int64                          `json:"docsToInvestigate,omitempty"`
+	ExtractDocID                *bool                           `json:"extractDocID,omitempty"`
+	KMSKeyID                    *string                         `json:"kmsKeyID,omitempty"`
+	NestingLevel                *string                         `json:"nestingLevel,omitempty"`
+	Password                    *ackv1alpha1.SecretKeyReference `json:"password,omitempty"`
+	Port                        *int64                          `json:"port,omitempty"`
+	ReplicateShardCollections   *bool                           `json:"replicateShardCollections,omitempty"`
+	SecretsManagerAccessRoleARN *string                         `json:"secretsManagerAccessRoleARN,omitempty"`
+	SecretsManagerSecretID      *string                         `json:"secretsManagerSecretID,omitempty"`
+	ServerName                  *string                         `json:"serverName,omitempty"`
+	UseUpdateLookUp             *bool                           `json:"useUpdateLookUp,omitempty"`
+	Username                    *string                         `json:"username,omitempty"`
 }
 
 // Provides the Amazon Resource Name (ARN) of the Identity and Access Management
@@ -413,38 +413,38 @@ type FleetAdvisorSchemaObjectResponse struct {
 
 // Settings in JSON format for the source GCP MySQL endpoint.
 type GcpMySQLSettings struct {
-	AfterConnectScript            *string `json:"afterConnectScript,omitempty"`
-	CleanSourceMetadataOnMismatch *bool   `json:"cleanSourceMetadataOnMismatch,omitempty"`
-	DatabaseName                  *string `json:"databaseName,omitempty"`
-	EventsPollInterval            *int64  `json:"eventsPollInterval,omitempty"`
-	MaxFileSize                   *int64  `json:"maxFileSize,omitempty"`
-	ParallelLoadThreads           *int64  `json:"parallelLoadThreads,omitempty"`
-	Password                      *string `json:"password,omitempty"`
-	Port                          *int64  `json:"port,omitempty"`
-	SecretsManagerAccessRoleARN   *string `json:"secretsManagerAccessRoleARN,omitempty"`
-	SecretsManagerSecretID        *string `json:"secretsManagerSecretID,omitempty"`
-	ServerName                    *string `json:"serverName,omitempty"`
-	ServerTimezone                *string `json:"serverTimezone,omitempty"`
-	TargetDBType                  *string `json:"targetDBType,omitempty"`
-	Username                      *string `json:"username,omitempty"`
+	AfterConnectScript            *string                         `json:"afterConnectScript,omitempty"`
+	CleanSourceMetadataOnMismatch *bool                           `json:"cleanSourceMetadataOnMismatch,omitempty"`
+	DatabaseName                  *string                         `json:"databaseName,omitempty"`
+	EventsPollInterval            *int64                          `json:"eventsPollInterval,omitempty"`
+	MaxFileSize                   *int64                          `json:"maxFileSize,omitempty"`
+	ParallelLoadThreads           *int64                          `json:"parallelLoadThreads,omitempty"`
+	Password                      *ackv1alpha1.SecretKeyReference `json:"password,omitempty"`
+	Port                          *int64                          `json:"port,omitempty"`
+	SecretsManagerAccessRoleARN   *string                         `json:"secretsManagerAccessRoleARN,omitempty"`
+	SecretsManagerSecretID        *string                         `json:"secretsManagerSecretID,omitempty"`
+	ServerName                    *string                         `json:"serverName,omitempty"`
+	ServerTimezone                *string                         `json:"serverTimezone,omitempty"`
+	TargetDBType                  *string                         `json:"targetDBType,omitempty"`
+	Username                      *string                         `json:"username,omitempty"`
 }
 
 // Provides information that defines an IBM Db2 LUW endpoint.
 type IBMDB2Settings struct {
-	CurrentLsn                  *string `json:"currentLsn,omitempty"`
-	DatabaseName                *string `json:"databaseName,omitempty"`
-	KeepCsvFiles                *bool   `json:"keepCsvFiles,omitempty"`
-	LoadTimeout                 *int64  `json:"loadTimeout,omitempty"`
-	MaxFileSize                 *int64  `json:"maxFileSize,omitempty"`
-	MaxKBytesPerRead            *int64  `json:"maxKBytesPerRead,omitempty"`
-	Password                    *string `json:"password,omitempty"`
-	Port                        *int64  `json:"port,omitempty"`
-	SecretsManagerAccessRoleARN *string `json:"secretsManagerAccessRoleARN,omitempty"`
-	SecretsManagerSecretID      *string `json:"secretsManagerSecretID,omitempty"`
-	ServerName                  *string `json:"serverName,omitempty"`
-	SetDataCaptureChanges       *bool   `json:"setDataCaptureChanges,omitempty"`
-	Username                    *string `json:"username,omitempty"`
-	WriteBufferSize             *int64  `json:"writeBufferSize,omitempty"`
+	CurrentLsn                  *string                         `json:"currentLsn,omitempty"`
+	DatabaseName                *string                         `json:"databaseName,omitempty"`
+	KeepCsvFiles                *bool                           `json:"keepCsvFiles,omitempty"`
+	LoadTimeout                 *int64                          `json:"loadTimeout,omitempty"`
+	MaxFileSize                 *int64                          `json:"maxFileSize,omitempty"`
+	MaxKBytesPerRead            *int64                          `json:"maxKBytesPerRead,omitempty"`
+	Password                    *ackv1alpha1.SecretKeyReference `json:"password,omitempty"`
+	Port                        *int64                          `json:"port,omitempty"`
+	SecretsManagerAccessRoleARN *string                         `json:"secretsManagerAccessRoleARN,omitempty"`
+	SecretsManagerSecretID      *string                         `json:"secretsManagerSecretID,omitempty"`
+	ServerName                  *string                         `json:"serverName,omitempty"`
+	SetDataCaptureChanges       *bool                           `json:"setDataCaptureChanges,omitempty"`
+	Username                    *string                         `json:"username,omitempty"`
+	WriteBufferSize             *int64                          `json:"writeBufferSize,omitempty"`
 }
 
 // Provides information about an IBM DB2 LUW data provider.
@@ -592,24 +592,24 @@ type MicrosoftSQLServerDataProviderSettings struct {
 
 // Provides information that defines a Microsoft SQL Server endpoint.
 type MicrosoftSQLServerSettings struct {
-	AuthenticationMethod        *string `json:"authenticationMethod,omitempty"`
-	BcpPacketSize               *int64  `json:"bcpPacketSize,omitempty"`
-	ControlTablesFileGroup      *string `json:"controlTablesFileGroup,omitempty"`
-	DatabaseName                *string `json:"databaseName,omitempty"`
-	ForceLobLookup              *bool   `json:"forceLobLookup,omitempty"`
-	Password                    *string `json:"password,omitempty"`
-	Port                        *int64  `json:"port,omitempty"`
-	QuerySingleAlwaysOnNode     *bool   `json:"querySingleAlwaysOnNode,omitempty"`
-	ReadBackupOnly              *bool   `json:"readBackupOnly,omitempty"`
-	SafeguardPolicy             *string `json:"safeguardPolicy,omitempty"`
-	SecretsManagerAccessRoleARN *string `json:"secretsManagerAccessRoleARN,omitempty"`
-	SecretsManagerSecretID      *string `json:"secretsManagerSecretID,omitempty"`
-	ServerName                  *string `json:"serverName,omitempty"`
-	TlogAccessMode              *string `json:"tlogAccessMode,omitempty"`
-	TrimSpaceInChar             *bool   `json:"trimSpaceInChar,omitempty"`
-	UseBcpFullLoad              *bool   `json:"useBcpFullLoad,omitempty"`
-	UseThirdPartyBackupDevice   *bool   `json:"useThirdPartyBackupDevice,omitempty"`
-	Username                    *string `json:"username,omitempty"`
+	AuthenticationMethod        *string                         `json:"authenticationMethod,omitempty"`
+	BcpPacketSize               *int64                          `json:"bcpPacketSize,omitempty"`
+	ControlTablesFileGroup      *string                         `json:"controlTablesFileGroup,omitempty"`
+	DatabaseName                *string                         `json:"databaseName,omitempty"`
+	ForceLobLookup              *bool                           `json:"forceLobLookup,omitempty"`
+	Password                    *ackv1alpha1.SecretKeyReference `json:"password,omitempty"`
+	Port                        *int64                          `json:"port,omitempty"`
+	QuerySingleAlwaysOnNode     *bool                           `json:"querySingleAlwaysOnNode,omitempty"`
+	ReadBackupOnly              *bool                           `json:"readBackupOnly,omitempty"`
+	SafeguardPolicy             *string                         `json:"safeguardPolicy,omitempty"`
+	SecretsManagerAccessRoleARN *string                         `json:"secretsManagerAccessRoleARN,omitempty"`
+	SecretsManagerSecretID      *string                         `json:"secretsManagerSecretID,omitempty"`
+	ServerName                  *string                         `json:"serverName,omitempty"`
+	TlogAccessMode              *string                         `json:"tlogAccessMode,omitempty"`
+	TrimSpaceInChar             *bool                           `json:"trimSpaceInChar,omitempty"`
+	UseBcpFullLoad              *bool                           `json:"useBcpFullLoad,omitempty"`
+	UseThirdPartyBackupDevice   *bool                           `json:"useThirdPartyBackupDevice,omitempty"`
+	Username                    *string                         `json:"username,omitempty"`
 }
 
 // Provides information that defines a migration project.
@@ -636,22 +636,22 @@ type MongoDBDataProviderSettings struct {
 
 // Provides information that defines a MongoDB endpoint.
 type MongoDBSettings struct {
-	AuthMechanism               *string `json:"authMechanism,omitempty"`
-	AuthSource                  *string `json:"authSource,omitempty"`
-	AuthType                    *string `json:"authType,omitempty"`
-	DatabaseName                *string `json:"databaseName,omitempty"`
-	DocsToInvestigate           *string `json:"docsToInvestigate,omitempty"`
-	ExtractDocID                *string `json:"extractDocID,omitempty"`
-	KMSKeyID                    *string `json:"kmsKeyID,omitempty"`
-	NestingLevel                *string `json:"nestingLevel,omitempty"`
-	Password                    *string `json:"password,omitempty"`
-	Port                        *int64  `json:"port,omitempty"`
-	ReplicateShardCollections   *bool   `json:"replicateShardCollections,omitempty"`
-	SecretsManagerAccessRoleARN *string `json:"secretsManagerAccessRoleARN,omitempty"`
-	SecretsManagerSecretID      *string `json:"secretsManagerSecretID,omitempty"`
-	ServerName                  *string `json:"serverName,omitempty"`
-	UseUpdateLookUp             *bool   `json:"useUpdateLookUp,omitempty"`
-	Username                    *string `json:"username,omitempty"`
+	AuthMechanism               *string                         `json:"authMechanism,omitempty"`
+	AuthSource                  *string                         `json:"authSource,omitempty"`
+	AuthType                    *string                         `json:"authType,omitempty"`
+	DatabaseName                *string                         `json:"databaseName,omitempty"`
+	DocsToInvestigate           *string                         `json:"docsToInvestigate,omitempty"`
+	ExtractDocID                *string                         `json:"extractDocID,omitempty"`
+	KMSKeyID                    *string                         `json:"kmsKeyID,omitempty"`
+	NestingLevel                *string                         `json:"nestingLevel,omitempty"`
+	Password                    *ackv1alpha1.SecretKeyReference `json:"password,omitempty"`
+	Port                        *int64                          `json:"port,omitempty"`
+	ReplicateShardCollections   *bool                           `json:"replicateShardCollections,omitempty"`
+	SecretsManagerAccessRoleARN *string                         `json:"secretsManagerAccessRoleARN,omitempty"`
+	SecretsManagerSecretID      *string                         `json:"secretsManagerSecretID,omitempty"`
+	ServerName                  *string                         `json:"serverName,omitempty"`
+	UseUpdateLookUp             *bool                           `json:"useUpdateLookUp,omitempty"`
+	Username                    *string                         `json:"username,omitempty"`
 }
 
 // Provides information that defines a MySQL data provider.
@@ -666,23 +666,23 @@ type MySQLDataProviderSettings struct {
 
 // Provides information that defines a MySQL endpoint.
 type MySQLSettings struct {
-	AfterConnectScript            *string `json:"afterConnectScript,omitempty"`
-	AuthenticationMethod          *string `json:"authenticationMethod,omitempty"`
-	CleanSourceMetadataOnMismatch *bool   `json:"cleanSourceMetadataOnMismatch,omitempty"`
-	DatabaseName                  *string `json:"databaseName,omitempty"`
-	EventsPollInterval            *int64  `json:"eventsPollInterval,omitempty"`
-	ExecuteTimeout                *int64  `json:"executeTimeout,omitempty"`
-	MaxFileSize                   *int64  `json:"maxFileSize,omitempty"`
-	ParallelLoadThreads           *int64  `json:"parallelLoadThreads,omitempty"`
-	Password                      *string `json:"password,omitempty"`
-	Port                          *int64  `json:"port,omitempty"`
-	SecretsManagerAccessRoleARN   *string `json:"secretsManagerAccessRoleARN,omitempty"`
-	SecretsManagerSecretID        *string `json:"secretsManagerSecretID,omitempty"`
-	ServerName                    *string `json:"serverName,omitempty"`
-	ServerTimezone                *string `json:"serverTimezone,omitempty"`
-	ServiceAccessRoleARN          *string `json:"serviceAccessRoleARN,omitempty"`
-	TargetDBType                  *string `json:"targetDBType,omitempty"`
-	Username                      *string `json:"username,omitempty"`
+	AfterConnectScript            *string                         `json:"afterConnectScript,omitempty"`
+	AuthenticationMethod          *string                         `json:"authenticationMethod,omitempty"`
+	CleanSourceMetadataOnMismatch *bool                           `json:"cleanSourceMetadataOnMismatch,omitempty"`
+	DatabaseName                  *string                         `json:"databaseName,omitempty"`
+	EventsPollInterval            *int64                          `json:"eventsPollInterval,omitempty"`
+	ExecuteTimeout                *int64                          `json:"executeTimeout,omitempty"`
+	MaxFileSize                   *int64                          `json:"maxFileSize,omitempty"`
+	ParallelLoadThreads           *int64                          `json:"parallelLoadThreads,omitempty"`
+	Password                      *ackv1alpha1.SecretKeyReference `json:"password,omitempty"`
+	Port                          *int64                          `json:"port,omitempty"`
+	SecretsManagerAccessRoleARN   *string                         `json:"secretsManagerAccessRoleARN,omitempty"`
+	SecretsManagerSecretID        *string                         `json:"secretsManagerSecretID,omitempty"`
+	ServerName                    *string                         `json:"serverName,omitempty"`
+	ServerTimezone                *string                         `json:"serverTimezone,omitempty"`
+	ServiceAccessRoleARN          *string                         `json:"serviceAccessRoleARN,omitempty"`
+	TargetDBType                  *string                         `json:"targetDBType,omitempty"`
+	Username                      *string                         `json:"username,omitempty"`
 }
 
 // Provides information that defines an Amazon Neptune endpoint.
@@ -714,50 +714,50 @@ type OracleDataProviderSettings struct {
 
 // Provides information that defines an Oracle endpoint.
 type OracleSettings struct {
-	AccessAlternateDirectly                *bool    `json:"accessAlternateDirectly,omitempty"`
-	AddSupplementalLogging                 *bool    `json:"addSupplementalLogging,omitempty"`
-	AdditionalArchivedLogDestID            *int64   `json:"additionalArchivedLogDestID,omitempty"`
-	AllowSelectNestedTables                *bool    `json:"allowSelectNestedTables,omitempty"`
-	ArchivedLogDestID                      *int64   `json:"archivedLogDestID,omitempty"`
-	ArchivedLogsOnly                       *bool    `json:"archivedLogsOnly,omitempty"`
-	AsmPassword                            *string  `json:"asmPassword,omitempty"`
-	AsmServer                              *string  `json:"asmServer,omitempty"`
-	AsmUser                                *string  `json:"asmUser,omitempty"`
-	AuthenticationMethod                   *string  `json:"authenticationMethod,omitempty"`
-	CharLengthSemantics                    *string  `json:"charLengthSemantics,omitempty"`
-	ConvertTimestampWithZoneToUTC          *bool    `json:"convertTimestampWithZoneToUTC,omitempty"`
-	DatabaseName                           *string  `json:"databaseName,omitempty"`
-	DirectPathNoLog                        *bool    `json:"directPathNoLog,omitempty"`
-	DirectPathParallelLoad                 *bool    `json:"directPathParallelLoad,omitempty"`
-	EnableHomogenousTablespace             *bool    `json:"enableHomogenousTablespace,omitempty"`
-	ExtraArchivedLogDestIDs                []*int64 `json:"extraArchivedLogDestIDs,omitempty"`
-	FailTasksOnLobTruncation               *bool    `json:"failTasksOnLobTruncation,omitempty"`
-	NumberDatatypeScale                    *int64   `json:"numberDatatypeScale,omitempty"`
-	OpenTransactionWindow                  *int64   `json:"openTransactionWindow,omitempty"`
-	OraclePathPrefix                       *string  `json:"oraclePathPrefix,omitempty"`
-	ParallelAsmReadThreads                 *int64   `json:"parallelAsmReadThreads,omitempty"`
-	Password                               *string  `json:"password,omitempty"`
-	Port                                   *int64   `json:"port,omitempty"`
-	ReadAheadBlocks                        *int64   `json:"readAheadBlocks,omitempty"`
-	ReadTableSpaceName                     *bool    `json:"readTableSpaceName,omitempty"`
-	ReplacePathPrefix                      *bool    `json:"replacePathPrefix,omitempty"`
-	RetryInterval                          *int64   `json:"retryInterval,omitempty"`
-	SecretsManagerAccessRoleARN            *string  `json:"secretsManagerAccessRoleARN,omitempty"`
-	SecretsManagerOracleAsmAccessRoleARN   *string  `json:"secretsManagerOracleAsmAccessRoleARN,omitempty"`
-	SecretsManagerOracleAsmSecretID        *string  `json:"secretsManagerOracleAsmSecretID,omitempty"`
-	SecretsManagerSecretID                 *string  `json:"secretsManagerSecretID,omitempty"`
-	SecurityDBEncryption                   *string  `json:"securityDBEncryption,omitempty"`
-	SecurityDBEncryptionName               *string  `json:"securityDBEncryptionName,omitempty"`
-	ServerName                             *string  `json:"serverName,omitempty"`
-	SpatialDataOptionToGeoJSONFunctionName *string  `json:"spatialDataOptionToGeoJSONFunctionName,omitempty"`
-	StandbyDelayTime                       *int64   `json:"standbyDelayTime,omitempty"`
-	TrimSpaceInChar                        *bool    `json:"trimSpaceInChar,omitempty"`
-	UseAlternateFolderForOnline            *bool    `json:"useAlternateFolderForOnline,omitempty"`
-	UseBFile                               *bool    `json:"useBFile,omitempty"`
-	UseDirectPathFullLoad                  *bool    `json:"useDirectPathFullLoad,omitempty"`
-	UseLogminerReader                      *bool    `json:"useLogminerReader,omitempty"`
-	UsePathPrefix                          *string  `json:"usePathPrefix,omitempty"`
-	Username                               *string  `json:"username,omitempty"`
+	AccessAlternateDirectly                *bool                           `json:"accessAlternateDirectly,omitempty"`
+	AddSupplementalLogging                 *bool                           `json:"addSupplementalLogging,omitempty"`
+	AdditionalArchivedLogDestID            *int64                          `json:"additionalArchivedLogDestID,omitempty"`
+	AllowSelectNestedTables                *bool                           `json:"allowSelectNestedTables,omitempty"`
+	ArchivedLogDestID                      *int64                          `json:"archivedLogDestID,omitempty"`
+	ArchivedLogsOnly                       *bool                           `json:"archivedLogsOnly,omitempty"`
+	AsmPassword                            *string                         `json:"asmPassword,omitempty"`
+	AsmServer                              *string                         `json:"asmServer,omitempty"`
+	AsmUser                                *string                         `json:"asmUser,omitempty"`
+	AuthenticationMethod                   *string                         `json:"authenticationMethod,omitempty"`
+	CharLengthSemantics                    *string                         `json:"charLengthSemantics,omitempty"`
+	ConvertTimestampWithZoneToUTC          *bool                           `json:"convertTimestampWithZoneToUTC,omitempty"`
+	DatabaseName                           *string                         `json:"databaseName,omitempty"`
+	DirectPathNoLog                        *bool                           `json:"directPathNoLog,omitempty"`
+	DirectPathParallelLoad                 *bool                           `json:"directPathParallelLoad,omitempty"`
+	EnableHomogenousTablespace             *bool                           `json:"enableHomogenousTablespace,omitempty"`
+	ExtraArchivedLogDestIDs                []*int64                        `json:"extraArchivedLogDestIDs,omitempty"`
+	FailTasksOnLobTruncation               *bool                           `json:"failTasksOnLobTruncation,omitempty"`
+	NumberDatatypeScale                    *int64                          `json:"numberDatatypeScale,omitempty"`
+	OpenTransactionWindow                  *int64                          `json:"openTransactionWindow,omitempty"`
+	OraclePathPrefix                       *string                         `json:"oraclePathPrefix,omitempty"`
+	ParallelAsmReadThreads                 *int64                          `json:"parallelAsmReadThreads,omitempty"`
+	Password                               *ackv1alpha1.SecretKeyReference `json:"password,omitempty"`
+	Port                                   *int64                          `json:"port,omitempty"`
+	ReadAheadBlocks                        *int64                          `json:"readAheadBlocks,omitempty"`
+	ReadTableSpaceName                     *bool                           `json:"readTableSpaceName,omitempty"`
+	ReplacePathPrefix                      *bool                           `json:"replacePathPrefix,omitempty"`
+	RetryInterval                          *int64                          `json:"retryInterval,omitempty"`
+	SecretsManagerAccessRoleARN            *string                         `json:"secretsManagerAccessRoleARN,omitempty"`
+	SecretsManagerOracleAsmAccessRoleARN   *string                         `json:"secretsManagerOracleAsmAccessRoleARN,omitempty"`
+	SecretsManagerOracleAsmSecretID        *string                         `json:"secretsManagerOracleAsmSecretID,omitempty"`
+	SecretsManagerSecretID                 *string                         `json:"secretsManagerSecretID,omitempty"`
+	SecurityDBEncryption                   *string                         `json:"securityDBEncryption,omitempty"`
+	SecurityDBEncryptionName               *string                         `json:"securityDBEncryptionName,omitempty"`
+	ServerName                             *string                         `json:"serverName,omitempty"`
+	SpatialDataOptionToGeoJSONFunctionName *string                         `json:"spatialDataOptionToGeoJSONFunctionName,omitempty"`
+	StandbyDelayTime                       *int64                          `json:"standbyDelayTime,omitempty"`
+	TrimSpaceInChar                        *bool                           `json:"trimSpaceInChar,omitempty"`
+	UseAlternateFolderForOnline            *bool                           `json:"useAlternateFolderForOnline,omitempty"`
+	UseBFile                               *bool                           `json:"useBFile,omitempty"`
+	UseDirectPathFullLoad                  *bool                           `json:"useDirectPathFullLoad,omitempty"`
+	UseLogminerReader                      *bool                           `json:"useLogminerReader,omitempty"`
+	UsePathPrefix                          *string                         `json:"usePathPrefix,omitempty"`
+	Username                               *string                         `json:"username,omitempty"`
 }
 
 // In response to the DescribeOrderableReplicationInstances operation, this
@@ -797,33 +797,33 @@ type PostgreSQLDataProviderSettings struct {
 
 // Provides information that defines a PostgreSQL endpoint.
 type PostgreSQLSettings struct {
-	AfterConnectScript          *string `json:"afterConnectScript,omitempty"`
-	AuthenticationMethod        *string `json:"authenticationMethod,omitempty"`
-	BabelfishDatabaseName       *string `json:"babelfishDatabaseName,omitempty"`
-	CaptureDdls                 *bool   `json:"captureDdls,omitempty"`
-	DatabaseMode                *string `json:"databaseMode,omitempty"`
-	DatabaseName                *string `json:"databaseName,omitempty"`
-	DdlArtifactsSchema          *string `json:"ddlArtifactsSchema,omitempty"`
-	DisableUnicodeSourceFilter  *bool   `json:"disableUnicodeSourceFilter,omitempty"`
-	ExecuteTimeout              *int64  `json:"executeTimeout,omitempty"`
-	FailTasksOnLobTruncation    *bool   `json:"failTasksOnLobTruncation,omitempty"`
-	HeartbeatEnable             *bool   `json:"heartbeatEnable,omitempty"`
-	HeartbeatFrequency          *int64  `json:"heartbeatFrequency,omitempty"`
-	HeartbeatSchema             *string `json:"heartbeatSchema,omitempty"`
-	MapBooleanAsBoolean         *bool   `json:"mapBooleanAsBoolean,omitempty"`
-	MapJSONbAsClob              *bool   `json:"mapJSONbAsClob,omitempty"`
-	MapLongVarcharAs            *string `json:"mapLongVarcharAs,omitempty"`
-	MaxFileSize                 *int64  `json:"maxFileSize,omitempty"`
-	Password                    *string `json:"password,omitempty"`
-	PluginName                  *string `json:"pluginName,omitempty"`
-	Port                        *int64  `json:"port,omitempty"`
-	SecretsManagerAccessRoleARN *string `json:"secretsManagerAccessRoleARN,omitempty"`
-	SecretsManagerSecretID      *string `json:"secretsManagerSecretID,omitempty"`
-	ServerName                  *string `json:"serverName,omitempty"`
-	ServiceAccessRoleARN        *string `json:"serviceAccessRoleARN,omitempty"`
-	SlotName                    *string `json:"slotName,omitempty"`
-	TrimSpaceInChar             *bool   `json:"trimSpaceInChar,omitempty"`
-	Username                    *string `json:"username,omitempty"`
+	AfterConnectScript          *string                         `json:"afterConnectScript,omitempty"`
+	AuthenticationMethod        *string                         `json:"authenticationMethod,omitempty"`
+	BabelfishDatabaseName       *string                         `json:"babelfishDatabaseName,omitempty"`
+	CaptureDdls                 *bool                           `json:"captureDdls,omitempty"`
+	DatabaseMode                *string                         `json:"databaseMode,omitempty"`
+	DatabaseName                *string                         `json:"databaseName,omitempty"`
+	DdlArtifactsSchema          *string                         `json:"ddlArtifactsSchema,omitempty"`
+	DisableUnicodeSourceFilter  *bool                           `json:"disableUnicodeSourceFilter,omitempty"`
+	ExecuteTimeout              *int64                          `json:"executeTimeout,omitempty"`
+	FailTasksOnLobTruncation    *bool                           `json:"failTasksOnLobTruncation,omitempty"`
+	HeartbeatEnable             *bool                           `json:"heartbeatEnable,omitempty"`
+	HeartbeatFrequency          *int64                          `json:"heartbeatFrequency,omitempty"`
+	HeartbeatSchema             *string                         `json:"heartbeatSchema,omitempty"`
+	MapBooleanAsBoolean         *bool                           `json:"mapBooleanAsBoolean,omitempty"`
+	MapJSONbAsClob              *bool                           `json:"mapJSONbAsClob,omitempty"`
+	MapLongVarcharAs            *string                         `json:"mapLongVarcharAs,omitempty"`
+	MaxFileSize                 *int64                          `json:"maxFileSize,omitempty"`
+	Password                    *ackv1alpha1.SecretKeyReference `json:"password,omitempty"`
+	PluginName                  *string                         `json:"pluginName,omitempty"`
+	Port                        *int64                          `json:"port,omitempty"`
+	SecretsManagerAccessRoleARN *string                         `json:"secretsManagerAccessRoleARN,omitempty"`
+	SecretsManagerSecretID      *string                         `json:"secretsManagerSecretID,omitempty"`
+	ServerName                  *string                         `json:"serverName,omitempty"`
+	ServiceAccessRoleARN        *string                         `json:"serviceAccessRoleARN,omitempty"`
+	SlotName                    *string                         `json:"slotName,omitempty"`
+	TrimSpaceInChar             *bool                           `json:"trimSpaceInChar,omitempty"`
+	Username                    *string                         `json:"username,omitempty"`
 }
 
 // The results returned in describe-replications to display the results of the
@@ -1303,13 +1303,13 @@ type SybaseAseDataProviderSettings struct {
 
 // Provides information that defines a SAP ASE endpoint.
 type SybaseSettings struct {
-	DatabaseName                *string `json:"databaseName,omitempty"`
-	Password                    *string `json:"password,omitempty"`
-	Port                        *int64  `json:"port,omitempty"`
-	SecretsManagerAccessRoleARN *string `json:"secretsManagerAccessRoleARN,omitempty"`
-	SecretsManagerSecretID      *string `json:"secretsManagerSecretID,omitempty"`
-	ServerName                  *string `json:"serverName,omitempty"`
-	Username                    *string `json:"username,omitempty"`
+	DatabaseName                *string                         `json:"databaseName,omitempty"`
+	Password                    *ackv1alpha1.SecretKeyReference `json:"password,omitempty"`
+	Port                        *int64                          `json:"port,omitempty"`
+	SecretsManagerAccessRoleARN *string                         `json:"secretsManagerAccessRoleARN,omitempty"`
+	SecretsManagerSecretID      *string                         `json:"secretsManagerSecretID,omitempty"`
+	ServerName                  *string                         `json:"serverName,omitempty"`
+	Username                    *string                         `json:"username,omitempty"`
 }
 
 // Provides a collection of table statistics in response to a request by the

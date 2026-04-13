@@ -14,15 +14,37 @@ ignore:
 resources:
   Endpoint:
     fields:
+      DocDBSettings.Password:
+        is_secret: true
       EndpointStatus:
         print:
           name: STATUS
+      GcpMySQLSettings.Password:
+        is_secret: true
+      IBMDB2Settings.Password:
+        is_secret: true
+      MicrosoftSQLServerSettings.Password:
+        is_secret: true
+      MongoDBSettings.Password:
+        is_secret: true
+      MySQLSettings.Password:
+        is_secret: true
       Name:
         is_primary_key: true
         is_immutable: true
       OracleSettings.ExtraArchivedLogDestIDs:
         compare:
           is_ignored: true
+      OracleSettings.Password:
+        is_secret: true
+      Password:
+        is_secret: true
+      PostgreSQLSettings.Password:
+        is_secret: true
+      RedshiftSettings.AuthPassword:
+        is_secret: true
+      SybaseSettings.Password:
+        is_secret: true
       Tags:
         compare:
           is_ignored: true

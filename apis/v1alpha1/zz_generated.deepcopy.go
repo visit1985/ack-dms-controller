@@ -856,7 +856,7 @@ func (in *DocDBSettings) DeepCopyInto(out *DocDBSettings) {
 	}
 	if in.Password != nil {
 		in, out := &in.Password, &out.Password
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.Port != nil {
@@ -1185,7 +1185,7 @@ func (in *EndpointSpec) DeepCopyInto(out *EndpointSpec) {
 	}
 	if in.Password != nil {
 		in, out := &in.Password, &out.Password
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.Port != nil {
@@ -1833,7 +1833,7 @@ func (in *GcpMySQLSettings) DeepCopyInto(out *GcpMySQLSettings) {
 	}
 	if in.Password != nil {
 		in, out := &in.Password, &out.Password
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.Port != nil {
@@ -1918,7 +1918,7 @@ func (in *IBMDB2Settings) DeepCopyInto(out *IBMDB2Settings) {
 	}
 	if in.Password != nil {
 		in, out := &in.Password, &out.Password
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.Port != nil {
@@ -2583,7 +2583,7 @@ func (in *MicrosoftSQLServerSettings) DeepCopyInto(out *MicrosoftSQLServerSettin
 	}
 	if in.Password != nil {
 		in, out := &in.Password, &out.Password
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.Port != nil {
@@ -2803,7 +2803,7 @@ func (in *MongoDBSettings) DeepCopyInto(out *MongoDBSettings) {
 	}
 	if in.Password != nil {
 		in, out := &in.Password, &out.Password
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.Port != nil {
@@ -2943,7 +2943,7 @@ func (in *MySQLSettings) DeepCopyInto(out *MySQLSettings) {
 	}
 	if in.Password != nil {
 		in, out := &in.Password, &out.Password
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.Port != nil {
@@ -3244,7 +3244,7 @@ func (in *OracleSettings) DeepCopyInto(out *OracleSettings) {
 	}
 	if in.Password != nil {
 		in, out := &in.Password, &out.Password
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.Port != nil {
@@ -3591,7 +3591,7 @@ func (in *PostgreSQLSettings) DeepCopyInto(out *PostgreSQLSettings) {
 	}
 	if in.Password != nil {
 		in, out := &in.Password, &out.Password
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.PluginName != nil {
@@ -5871,7 +5871,7 @@ func (in *SybaseSettings) DeepCopyInto(out *SybaseSettings) {
 	}
 	if in.Password != nil {
 		in, out := &in.Password, &out.Password
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.Port != nil {

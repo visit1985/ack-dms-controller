@@ -2580,7 +2580,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f3.NestingLevel = svcsdktypes.NestingLevelValue(*r.ko.Spec.DocDBSettings.NestingLevel)
 		}
 		if r.ko.Spec.DocDBSettings.Password != nil {
-			f3.Password = r.ko.Spec.DocDBSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.DocDBSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f3.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.DocDBSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.DocDBSettings.Port
@@ -2697,7 +2703,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f11.ParallelLoadThreads = &parallelLoadThreadsCopy
 		}
 		if r.ko.Spec.GcpMySQLSettings.Password != nil {
-			f11.Password = r.ko.Spec.GcpMySQLSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.GcpMySQLSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f11.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.GcpMySQLSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.GcpMySQLSettings.Port
@@ -2763,7 +2775,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f12.MaxKBytesPerRead = &maxKBytesPerReadCopy
 		}
 		if r.ko.Spec.IBMDB2Settings.Password != nil {
-			f12.Password = r.ko.Spec.IBMDB2Settings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.IBMDB2Settings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f12.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.IBMDB2Settings.Port != nil {
 			portCopy0 := *r.ko.Spec.IBMDB2Settings.Port
@@ -2933,7 +2951,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f16.ForceLobLookup = r.ko.Spec.MicrosoftSQLServerSettings.ForceLobLookup
 		}
 		if r.ko.Spec.MicrosoftSQLServerSettings.Password != nil {
-			f16.Password = r.ko.Spec.MicrosoftSQLServerSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.MicrosoftSQLServerSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f16.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.MicrosoftSQLServerSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.MicrosoftSQLServerSettings.Port
@@ -3005,7 +3029,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f17.NestingLevel = svcsdktypes.NestingLevelValue(*r.ko.Spec.MongoDBSettings.NestingLevel)
 		}
 		if r.ko.Spec.MongoDBSettings.Password != nil {
-			f17.Password = r.ko.Spec.MongoDBSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.MongoDBSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f17.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.MongoDBSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.MongoDBSettings.Port
@@ -3082,7 +3112,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f18.ParallelLoadThreads = &parallelLoadThreadsCopy
 		}
 		if r.ko.Spec.MySQLSettings.Password != nil {
-			f18.Password = r.ko.Spec.MySQLSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.MySQLSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f18.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.MySQLSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.MySQLSettings.Port
@@ -3260,7 +3296,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f20.ParallelAsmReadThreads = &parallelAsmReadThreadsCopy
 		}
 		if r.ko.Spec.OracleSettings.Password != nil {
-			f20.Password = r.ko.Spec.OracleSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.OracleSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f20.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.OracleSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.OracleSettings.Port
@@ -3348,7 +3390,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 		res.OracleSettings = f20
 	}
 	if r.ko.Spec.Password != nil {
-		res.Password = r.ko.Spec.Password
+		tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.Password)
+		if err != nil {
+			return nil, ackrequeue.Needed(err)
+		}
+		if tmpSecret != "" {
+			res.Password = aws.String(tmpSecret)
+		}
 	}
 	if r.ko.Spec.Port != nil {
 		portCopy0 := *r.ko.Spec.Port
@@ -3427,7 +3475,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f23.MaxFileSize = &maxFileSizeCopy
 		}
 		if r.ko.Spec.PostgreSQLSettings.Password != nil {
-			f23.Password = r.ko.Spec.PostgreSQLSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.PostgreSQLSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f23.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.PostgreSQLSettings.PluginName != nil {
 			f23.PluginName = svcsdktypes.PluginNameValue(*r.ko.Spec.PostgreSQLSettings.PluginName)
@@ -3800,7 +3854,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f31.DatabaseName = r.ko.Spec.SybaseSettings.DatabaseName
 		}
 		if r.ko.Spec.SybaseSettings.Password != nil {
-			f31.Password = r.ko.Spec.SybaseSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.SybaseSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f31.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.SybaseSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.SybaseSettings.Port
@@ -5133,7 +5193,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f3.NestingLevel = svcsdktypes.NestingLevelValue(*r.ko.Spec.DocDBSettings.NestingLevel)
 		}
 		if r.ko.Spec.DocDBSettings.Password != nil {
-			f3.Password = r.ko.Spec.DocDBSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.DocDBSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f3.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.DocDBSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.DocDBSettings.Port
@@ -5250,7 +5316,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f13.ParallelLoadThreads = &parallelLoadThreadsCopy
 		}
 		if r.ko.Spec.GcpMySQLSettings.Password != nil {
-			f13.Password = r.ko.Spec.GcpMySQLSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.GcpMySQLSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f13.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.GcpMySQLSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.GcpMySQLSettings.Port
@@ -5316,7 +5388,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f14.MaxKBytesPerRead = &maxKBytesPerReadCopy
 		}
 		if r.ko.Spec.IBMDB2Settings.Password != nil {
-			f14.Password = r.ko.Spec.IBMDB2Settings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.IBMDB2Settings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f14.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.IBMDB2Settings.Port != nil {
 			portCopy0 := *r.ko.Spec.IBMDB2Settings.Port
@@ -5483,7 +5561,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f17.ForceLobLookup = r.ko.Spec.MicrosoftSQLServerSettings.ForceLobLookup
 		}
 		if r.ko.Spec.MicrosoftSQLServerSettings.Password != nil {
-			f17.Password = r.ko.Spec.MicrosoftSQLServerSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.MicrosoftSQLServerSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f17.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.MicrosoftSQLServerSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.MicrosoftSQLServerSettings.Port
@@ -5555,7 +5639,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f18.NestingLevel = svcsdktypes.NestingLevelValue(*r.ko.Spec.MongoDBSettings.NestingLevel)
 		}
 		if r.ko.Spec.MongoDBSettings.Password != nil {
-			f18.Password = r.ko.Spec.MongoDBSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.MongoDBSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f18.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.MongoDBSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.MongoDBSettings.Port
@@ -5632,7 +5722,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f19.ParallelLoadThreads = &parallelLoadThreadsCopy
 		}
 		if r.ko.Spec.MySQLSettings.Password != nil {
-			f19.Password = r.ko.Spec.MySQLSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.MySQLSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f19.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.MySQLSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.MySQLSettings.Port
@@ -5810,7 +5906,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f21.ParallelAsmReadThreads = &parallelAsmReadThreadsCopy
 		}
 		if r.ko.Spec.OracleSettings.Password != nil {
-			f21.Password = r.ko.Spec.OracleSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.OracleSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f21.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.OracleSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.OracleSettings.Port
@@ -5898,7 +6000,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 		res.OracleSettings = f21
 	}
 	if r.ko.Spec.Password != nil {
-		res.Password = r.ko.Spec.Password
+		tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.Password)
+		if err != nil {
+			return nil, ackrequeue.Needed(err)
+		}
+		if tmpSecret != "" {
+			res.Password = aws.String(tmpSecret)
+		}
 	}
 	if r.ko.Spec.Port != nil {
 		portCopy0 := *r.ko.Spec.Port
@@ -5977,7 +6085,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f24.MaxFileSize = &maxFileSizeCopy
 		}
 		if r.ko.Spec.PostgreSQLSettings.Password != nil {
-			f24.Password = r.ko.Spec.PostgreSQLSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.PostgreSQLSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f24.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.PostgreSQLSettings.PluginName != nil {
 			f24.PluginName = svcsdktypes.PluginNameValue(*r.ko.Spec.PostgreSQLSettings.PluginName)
@@ -6347,7 +6461,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f31.DatabaseName = r.ko.Spec.SybaseSettings.DatabaseName
 		}
 		if r.ko.Spec.SybaseSettings.Password != nil {
-			f31.Password = r.ko.Spec.SybaseSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.SybaseSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f31.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.SybaseSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.SybaseSettings.Port
