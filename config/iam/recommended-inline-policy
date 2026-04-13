@@ -5,16 +5,17 @@
       "Sid": "Statement1",
       "Effect": "Allow",
       "Action": [
+        "dms:AddTagsToResource",
         "dms:CreateEndpoint",
         "dms:CreateReplicationTask",
         "dms:DeleteEndpoint",
         "dms:DeleteReplicationTask",
         "dms:DescribeEndpoints",
         "dms:DescribeReplicationTasks",
-        "dms:ModifyEndpoint"
+        "dms:ModifyEndpoint",
         "dms:ModifyReplicationTask",
         "dms:StartReplicationTask",
-        "dms:StopReplicationTask",
+        "dms:StopReplicationTask"
       ],
       "Resource": "*"
     }
