@@ -23,8 +23,6 @@ resources:
       OracleSettings.ExtraArchivedLogDestIDs:
         compare:
           is_ignored: true
-      ResourceIdentifier:
-        late_initialize: {}
       Tags:
         compare:
           is_ignored: true
@@ -53,8 +51,6 @@ resources:
       Name:
         is_primary_key: true
         is_immutable: true
-      ResourceIdentifier:
-        late_initialize: {}
       SourceEndpointARN:
         references:
             resource: Endpoint
