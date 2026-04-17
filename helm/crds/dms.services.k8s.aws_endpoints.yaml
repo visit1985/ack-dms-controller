@@ -331,7 +331,25 @@ spec:
                   saslMechanism:
                     type: string
                   saslPassword:
-                    type: string
+                    description: |-
+                      SecretKeyReference combines a k8s corev1.SecretReference with a
+                      specific key within the referred-to Secret
+                    properties:
+                      key:
+                        description: Key is the key within the secret
+                        type: string
+                      name:
+                        description: name is unique within a namespace to reference
+                          a secret resource.
+                        type: string
+                      namespace:
+                        description: namespace defines the space within which the
+                          secret name must be unique.
+                        type: string
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
                   saslUsername:
                     type: string
                   securityProtocol:
@@ -343,7 +361,25 @@ spec:
                   sslClientKeyARN:
                     type: string
                   sslClientKeyPassword:
-                    type: string
+                    description: |-
+                      SecretKeyReference combines a k8s corev1.SecretReference with a
+                      specific key within the referred-to Secret
+                    properties:
+                      key:
+                        description: Key is the key within the secret
+                        type: string
+                      name:
+                        description: name is unique within a namespace to reference
+                          a secret resource.
+                        type: string
+                      namespace:
+                        description: namespace defines the space within which the
+                          secret name must be unique.
+                        type: string
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
                   sslEndpointIDentificationAlgorithm:
                     type: string
                   topic:
@@ -642,7 +678,25 @@ spec:
                   archivedLogsOnly:
                     type: boolean
                   asmPassword:
-                    type: string
+                    description: |-
+                      SecretKeyReference combines a k8s corev1.SecretReference with a
+                      specific key within the referred-to Secret
+                    properties:
+                      key:
+                        description: Key is the key within the secret
+                        type: string
+                      name:
+                        description: name is unique within a namespace to reference
+                          a secret resource.
+                        type: string
+                      namespace:
+                        description: namespace defines the space within which the
+                          secret name must be unique.
+                        type: string
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
                   asmServer:
                     type: string
                   asmUser:
@@ -858,7 +912,25 @@ spec:
                 description: Settings in JSON format for the target Redis endpoint.
                 properties:
                   authPassword:
-                    type: string
+                    description: |-
+                      SecretKeyReference combines a k8s corev1.SecretReference with a
+                      specific key within the referred-to Secret
+                    properties:
+                      key:
+                        description: Key is the key within the secret
+                        type: string
+                      name:
+                        description: name is unique within a namespace to reference
+                          a secret resource.
+                        type: string
+                      namespace:
+                        description: namespace defines the space within which the
+                          secret name must be unique.
+                        type: string
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
                   authType:
                     type: string
                   authUserName:

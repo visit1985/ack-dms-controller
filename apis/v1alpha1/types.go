@@ -491,27 +491,27 @@ type InventoryData struct {
 // includes the output format of records applied to the endpoint and details
 // of transaction and control table data information.
 type KafkaSettings struct {
-	Broker                             *string `json:"broker,omitempty"`
-	IncludeControlDetails              *bool   `json:"includeControlDetails,omitempty"`
-	IncludeNullAndEmpty                *bool   `json:"includeNullAndEmpty,omitempty"`
-	IncludePartitionValue              *bool   `json:"includePartitionValue,omitempty"`
-	IncludeTableAlterOperations        *bool   `json:"includeTableAlterOperations,omitempty"`
-	IncludeTransactionDetails          *bool   `json:"includeTransactionDetails,omitempty"`
-	MessageFormat                      *string `json:"messageFormat,omitempty"`
-	MessageMaxBytes                    *int64  `json:"messageMaxBytes,omitempty"`
-	NoHexPrefix                        *bool   `json:"noHexPrefix,omitempty"`
-	PartitionIncludeSchemaTable        *bool   `json:"partitionIncludeSchemaTable,omitempty"`
-	SASLMechanism                      *string `json:"saslMechanism,omitempty"`
-	SASLPassword                       *string `json:"saslPassword,omitempty"`
-	SASLUsername                       *string `json:"saslUsername,omitempty"`
-	SecurityProtocol                   *string `json:"securityProtocol,omitempty"`
-	SSLCaCertificateARN                *string `json:"sslCaCertificateARN,omitempty"`
-	SSLClientCertificateARN            *string `json:"sslClientCertificateARN,omitempty"`
-	SSLClientKeyARN                    *string `json:"sslClientKeyARN,omitempty"`
-	SSLClientKeyPassword               *string `json:"sslClientKeyPassword,omitempty"`
-	SSLEndpointIDentificationAlgorithm *string `json:"sslEndpointIDentificationAlgorithm,omitempty"`
-	Topic                              *string `json:"topic,omitempty"`
-	UseLargeIntegerValue               *bool   `json:"useLargeIntegerValue,omitempty"`
+	Broker                             *string                         `json:"broker,omitempty"`
+	IncludeControlDetails              *bool                           `json:"includeControlDetails,omitempty"`
+	IncludeNullAndEmpty                *bool                           `json:"includeNullAndEmpty,omitempty"`
+	IncludePartitionValue              *bool                           `json:"includePartitionValue,omitempty"`
+	IncludeTableAlterOperations        *bool                           `json:"includeTableAlterOperations,omitempty"`
+	IncludeTransactionDetails          *bool                           `json:"includeTransactionDetails,omitempty"`
+	MessageFormat                      *string                         `json:"messageFormat,omitempty"`
+	MessageMaxBytes                    *int64                          `json:"messageMaxBytes,omitempty"`
+	NoHexPrefix                        *bool                           `json:"noHexPrefix,omitempty"`
+	PartitionIncludeSchemaTable        *bool                           `json:"partitionIncludeSchemaTable,omitempty"`
+	SASLMechanism                      *string                         `json:"saslMechanism,omitempty"`
+	SASLPassword                       *ackv1alpha1.SecretKeyReference `json:"saslPassword,omitempty"`
+	SASLUsername                       *string                         `json:"saslUsername,omitempty"`
+	SecurityProtocol                   *string                         `json:"securityProtocol,omitempty"`
+	SSLCaCertificateARN                *string                         `json:"sslCaCertificateARN,omitempty"`
+	SSLClientCertificateARN            *string                         `json:"sslClientCertificateARN,omitempty"`
+	SSLClientKeyARN                    *string                         `json:"sslClientKeyARN,omitempty"`
+	SSLClientKeyPassword               *ackv1alpha1.SecretKeyReference `json:"sslClientKeyPassword,omitempty"`
+	SSLEndpointIDentificationAlgorithm *string                         `json:"sslEndpointIDentificationAlgorithm,omitempty"`
+	Topic                              *string                         `json:"topic,omitempty"`
+	UseLargeIntegerValue               *bool                           `json:"useLargeIntegerValue,omitempty"`
 }
 
 // Specifies the settings required for kerberos authentication when creating
@@ -720,7 +720,7 @@ type OracleSettings struct {
 	AllowSelectNestedTables                *bool                           `json:"allowSelectNestedTables,omitempty"`
 	ArchivedLogDestID                      *int64                          `json:"archivedLogDestID,omitempty"`
 	ArchivedLogsOnly                       *bool                           `json:"archivedLogsOnly,omitempty"`
-	AsmPassword                            *string                         `json:"asmPassword,omitempty"`
+	AsmPassword                            *ackv1alpha1.SecretKeyReference `json:"asmPassword,omitempty"`
 	AsmServer                              *string                         `json:"asmServer,omitempty"`
 	AsmUser                                *string                         `json:"asmUser,omitempty"`
 	AuthenticationMethod                   *string                         `json:"authenticationMethod,omitempty"`
@@ -911,13 +911,13 @@ type RecommendationSettings struct {
 
 // Provides information that defines a Redis target endpoint.
 type RedisSettings struct {
-	AuthPassword        *string `json:"authPassword,omitempty"`
-	AuthType            *string `json:"authType,omitempty"`
-	AuthUserName        *string `json:"authUserName,omitempty"`
-	Port                *int64  `json:"port,omitempty"`
-	ServerName          *string `json:"serverName,omitempty"`
-	SSLCaCertificateARN *string `json:"sslCaCertificateARN,omitempty"`
-	SSLSecurityProtocol *string `json:"sslSecurityProtocol,omitempty"`
+	AuthPassword        *ackv1alpha1.SecretKeyReference `json:"authPassword,omitempty"`
+	AuthType            *string                         `json:"authType,omitempty"`
+	AuthUserName        *string                         `json:"authUserName,omitempty"`
+	Port                *int64                          `json:"port,omitempty"`
+	ServerName          *string                         `json:"serverName,omitempty"`
+	SSLCaCertificateARN *string                         `json:"sslCaCertificateARN,omitempty"`
+	SSLSecurityProtocol *string                         `json:"sslSecurityProtocol,omitempty"`
 }
 
 // Provides information that defines an Amazon Redshift data provider.

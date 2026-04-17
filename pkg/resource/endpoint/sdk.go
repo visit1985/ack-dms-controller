@@ -157,9 +157,6 @@ func (rm *resourceManager) sdkFind(
 			if elem.DocDbSettings.NestingLevel != "" {
 				f3.NestingLevel = aws.String(string(elem.DocDbSettings.NestingLevel))
 			}
-			if elem.DocDbSettings.Password != nil {
-				f3.Password = elem.DocDbSettings.Password
-			}
 			if elem.DocDbSettings.Port != nil {
 				portCopy := int64(*elem.DocDbSettings.Port)
 				f3.Port = &portCopy
@@ -278,9 +275,6 @@ func (rm *resourceManager) sdkFind(
 				parallelLoadThreadsCopy := int64(*elem.GcpMySQLSettings.ParallelLoadThreads)
 				f14.ParallelLoadThreads = &parallelLoadThreadsCopy
 			}
-			if elem.GcpMySQLSettings.Password != nil {
-				f14.Password = elem.GcpMySQLSettings.Password
-			}
 			if elem.GcpMySQLSettings.Port != nil {
 				portCopy := int64(*elem.GcpMySQLSettings.Port)
 				f14.Port = &portCopy
@@ -329,9 +323,6 @@ func (rm *resourceManager) sdkFind(
 			if elem.IBMDb2Settings.MaxKBytesPerRead != nil {
 				maxKBytesPerReadCopy := int64(*elem.IBMDb2Settings.MaxKBytesPerRead)
 				f15.MaxKBytesPerRead = &maxKBytesPerReadCopy
-			}
-			if elem.IBMDb2Settings.Password != nil {
-				f15.Password = elem.IBMDb2Settings.Password
 			}
 			if elem.IBMDb2Settings.Port != nil {
 				portCopy := int64(*elem.IBMDb2Settings.Port)
@@ -506,9 +497,6 @@ func (rm *resourceManager) sdkFind(
 			if elem.MicrosoftSQLServerSettings.ForceLobLookup != nil {
 				f21.ForceLobLookup = elem.MicrosoftSQLServerSettings.ForceLobLookup
 			}
-			if elem.MicrosoftSQLServerSettings.Password != nil {
-				f21.Password = elem.MicrosoftSQLServerSettings.Password
-			}
 			if elem.MicrosoftSQLServerSettings.Port != nil {
 				portCopy := int64(*elem.MicrosoftSQLServerSettings.Port)
 				f21.Port = &portCopy
@@ -576,9 +564,6 @@ func (rm *resourceManager) sdkFind(
 			if elem.MongoDbSettings.NestingLevel != "" {
 				f22.NestingLevel = aws.String(string(elem.MongoDbSettings.NestingLevel))
 			}
-			if elem.MongoDbSettings.Password != nil {
-				f22.Password = elem.MongoDbSettings.Password
-			}
 			if elem.MongoDbSettings.Port != nil {
 				portCopy := int64(*elem.MongoDbSettings.Port)
 				f22.Port = &portCopy
@@ -634,9 +619,6 @@ func (rm *resourceManager) sdkFind(
 			if elem.MySQLSettings.ParallelLoadThreads != nil {
 				parallelLoadThreadsCopy := int64(*elem.MySQLSettings.ParallelLoadThreads)
 				f23.ParallelLoadThreads = &parallelLoadThreadsCopy
-			}
-			if elem.MySQLSettings.Password != nil {
-				f23.Password = elem.MySQLSettings.Password
 			}
 			if elem.MySQLSettings.Port != nil {
 				portCopy := int64(*elem.MySQLSettings.Port)
@@ -719,9 +701,6 @@ func (rm *resourceManager) sdkFind(
 			if elem.OracleSettings.ArchivedLogsOnly != nil {
 				f25.ArchivedLogsOnly = elem.OracleSettings.ArchivedLogsOnly
 			}
-			if elem.OracleSettings.AsmPassword != nil {
-				f25.AsmPassword = elem.OracleSettings.AsmPassword
-			}
 			if elem.OracleSettings.AsmServer != nil {
 				f25.AsmServer = elem.OracleSettings.AsmServer
 			}
@@ -776,9 +755,6 @@ func (rm *resourceManager) sdkFind(
 			if elem.OracleSettings.ParallelAsmReadThreads != nil {
 				parallelAsmReadThreadsCopy := int64(*elem.OracleSettings.ParallelAsmReadThreads)
 				f25.ParallelAsmReadThreads = &parallelAsmReadThreadsCopy
-			}
-			if elem.OracleSettings.Password != nil {
-				f25.Password = elem.OracleSettings.Password
 			}
 			if elem.OracleSettings.Port != nil {
 				portCopy := int64(*elem.OracleSettings.Port)
@@ -913,9 +889,6 @@ func (rm *resourceManager) sdkFind(
 				maxFileSizeCopy := int64(*elem.PostgreSQLSettings.MaxFileSize)
 				f27.MaxFileSize = &maxFileSizeCopy
 			}
-			if elem.PostgreSQLSettings.Password != nil {
-				f27.Password = elem.PostgreSQLSettings.Password
-			}
 			if elem.PostgreSQLSettings.PluginName != "" {
 				f27.PluginName = aws.String(string(elem.PostgreSQLSettings.PluginName))
 			}
@@ -950,9 +923,6 @@ func (rm *resourceManager) sdkFind(
 		}
 		if elem.RedisSettings != nil {
 			f28 := &svcapitypes.RedisSettings{}
-			if elem.RedisSettings.AuthPassword != nil {
-				f28.AuthPassword = elem.RedisSettings.AuthPassword
-			}
 			if elem.RedisSettings.AuthType != "" {
 				f28.AuthType = aws.String(string(elem.RedisSettings.AuthType))
 			}
@@ -1240,9 +1210,6 @@ func (rm *resourceManager) sdkFind(
 			if elem.SybaseSettings.DatabaseName != nil {
 				f35.DatabaseName = elem.SybaseSettings.DatabaseName
 			}
-			if elem.SybaseSettings.Password != nil {
-				f35.Password = elem.SybaseSettings.Password
-			}
 			if elem.SybaseSettings.Port != nil {
 				portCopy := int64(*elem.SybaseSettings.Port)
 				f35.Port = &portCopy
@@ -1389,9 +1356,6 @@ func (rm *resourceManager) sdkCreate(
 		if resp.Endpoint.DocDbSettings.NestingLevel != "" {
 			f3.NestingLevel = aws.String(string(resp.Endpoint.DocDbSettings.NestingLevel))
 		}
-		if resp.Endpoint.DocDbSettings.Password != nil {
-			f3.Password = resp.Endpoint.DocDbSettings.Password
-		}
 		if resp.Endpoint.DocDbSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.DocDbSettings.Port)
 			f3.Port = &portCopy
@@ -1515,9 +1479,6 @@ func (rm *resourceManager) sdkCreate(
 			parallelLoadThreadsCopy := int64(*resp.Endpoint.GcpMySQLSettings.ParallelLoadThreads)
 			f14.ParallelLoadThreads = &parallelLoadThreadsCopy
 		}
-		if resp.Endpoint.GcpMySQLSettings.Password != nil {
-			f14.Password = resp.Endpoint.GcpMySQLSettings.Password
-		}
 		if resp.Endpoint.GcpMySQLSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.GcpMySQLSettings.Port)
 			f14.Port = &portCopy
@@ -1566,9 +1527,6 @@ func (rm *resourceManager) sdkCreate(
 		if resp.Endpoint.IBMDb2Settings.MaxKBytesPerRead != nil {
 			maxKBytesPerReadCopy := int64(*resp.Endpoint.IBMDb2Settings.MaxKBytesPerRead)
 			f15.MaxKBytesPerRead = &maxKBytesPerReadCopy
-		}
-		if resp.Endpoint.IBMDb2Settings.Password != nil {
-			f15.Password = resp.Endpoint.IBMDb2Settings.Password
 		}
 		if resp.Endpoint.IBMDb2Settings.Port != nil {
 			portCopy := int64(*resp.Endpoint.IBMDb2Settings.Port)
@@ -1743,9 +1701,6 @@ func (rm *resourceManager) sdkCreate(
 		if resp.Endpoint.MicrosoftSQLServerSettings.ForceLobLookup != nil {
 			f21.ForceLobLookup = resp.Endpoint.MicrosoftSQLServerSettings.ForceLobLookup
 		}
-		if resp.Endpoint.MicrosoftSQLServerSettings.Password != nil {
-			f21.Password = resp.Endpoint.MicrosoftSQLServerSettings.Password
-		}
 		if resp.Endpoint.MicrosoftSQLServerSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.MicrosoftSQLServerSettings.Port)
 			f21.Port = &portCopy
@@ -1813,9 +1768,6 @@ func (rm *resourceManager) sdkCreate(
 		if resp.Endpoint.MongoDbSettings.NestingLevel != "" {
 			f22.NestingLevel = aws.String(string(resp.Endpoint.MongoDbSettings.NestingLevel))
 		}
-		if resp.Endpoint.MongoDbSettings.Password != nil {
-			f22.Password = resp.Endpoint.MongoDbSettings.Password
-		}
 		if resp.Endpoint.MongoDbSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.MongoDbSettings.Port)
 			f22.Port = &portCopy
@@ -1871,9 +1823,6 @@ func (rm *resourceManager) sdkCreate(
 		if resp.Endpoint.MySQLSettings.ParallelLoadThreads != nil {
 			parallelLoadThreadsCopy := int64(*resp.Endpoint.MySQLSettings.ParallelLoadThreads)
 			f23.ParallelLoadThreads = &parallelLoadThreadsCopy
-		}
-		if resp.Endpoint.MySQLSettings.Password != nil {
-			f23.Password = resp.Endpoint.MySQLSettings.Password
 		}
 		if resp.Endpoint.MySQLSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.MySQLSettings.Port)
@@ -1956,9 +1905,6 @@ func (rm *resourceManager) sdkCreate(
 		if resp.Endpoint.OracleSettings.ArchivedLogsOnly != nil {
 			f25.ArchivedLogsOnly = resp.Endpoint.OracleSettings.ArchivedLogsOnly
 		}
-		if resp.Endpoint.OracleSettings.AsmPassword != nil {
-			f25.AsmPassword = resp.Endpoint.OracleSettings.AsmPassword
-		}
 		if resp.Endpoint.OracleSettings.AsmServer != nil {
 			f25.AsmServer = resp.Endpoint.OracleSettings.AsmServer
 		}
@@ -2013,9 +1959,6 @@ func (rm *resourceManager) sdkCreate(
 		if resp.Endpoint.OracleSettings.ParallelAsmReadThreads != nil {
 			parallelAsmReadThreadsCopy := int64(*resp.Endpoint.OracleSettings.ParallelAsmReadThreads)
 			f25.ParallelAsmReadThreads = &parallelAsmReadThreadsCopy
-		}
-		if resp.Endpoint.OracleSettings.Password != nil {
-			f25.Password = resp.Endpoint.OracleSettings.Password
 		}
 		if resp.Endpoint.OracleSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.OracleSettings.Port)
@@ -2150,9 +2093,6 @@ func (rm *resourceManager) sdkCreate(
 			maxFileSizeCopy := int64(*resp.Endpoint.PostgreSQLSettings.MaxFileSize)
 			f27.MaxFileSize = &maxFileSizeCopy
 		}
-		if resp.Endpoint.PostgreSQLSettings.Password != nil {
-			f27.Password = resp.Endpoint.PostgreSQLSettings.Password
-		}
 		if resp.Endpoint.PostgreSQLSettings.PluginName != "" {
 			f27.PluginName = aws.String(string(resp.Endpoint.PostgreSQLSettings.PluginName))
 		}
@@ -2187,9 +2127,6 @@ func (rm *resourceManager) sdkCreate(
 	}
 	if resp.Endpoint.RedisSettings != nil {
 		f28 := &svcapitypes.RedisSettings{}
-		if resp.Endpoint.RedisSettings.AuthPassword != nil {
-			f28.AuthPassword = resp.Endpoint.RedisSettings.AuthPassword
-		}
 		if resp.Endpoint.RedisSettings.AuthType != "" {
 			f28.AuthType = aws.String(string(resp.Endpoint.RedisSettings.AuthType))
 		}
@@ -2476,9 +2413,6 @@ func (rm *resourceManager) sdkCreate(
 		f35 := &svcapitypes.SybaseSettings{}
 		if resp.Endpoint.SybaseSettings.DatabaseName != nil {
 			f35.DatabaseName = resp.Endpoint.SybaseSettings.DatabaseName
-		}
-		if resp.Endpoint.SybaseSettings.Password != nil {
-			f35.Password = resp.Endpoint.SybaseSettings.Password
 		}
 		if resp.Endpoint.SybaseSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.SybaseSettings.Port)
@@ -2857,7 +2791,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f13.SaslMechanism = svcsdktypes.KafkaSaslMechanism(*r.ko.Spec.KafkaSettings.SASLMechanism)
 		}
 		if r.ko.Spec.KafkaSettings.SASLPassword != nil {
-			f13.SaslPassword = r.ko.Spec.KafkaSettings.SASLPassword
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.KafkaSettings.SASLPassword)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f13.SaslPassword = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.KafkaSettings.SASLUsername != nil {
 			f13.SaslUsername = r.ko.Spec.KafkaSettings.SASLUsername
@@ -2875,7 +2815,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f13.SslClientKeyArn = r.ko.Spec.KafkaSettings.SSLClientKeyARN
 		}
 		if r.ko.Spec.KafkaSettings.SSLClientKeyPassword != nil {
-			f13.SslClientKeyPassword = r.ko.Spec.KafkaSettings.SSLClientKeyPassword
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.KafkaSettings.SSLClientKeyPassword)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f13.SslClientKeyPassword = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.KafkaSettings.SSLEndpointIDentificationAlgorithm != nil {
 			f13.SslEndpointIdentificationAlgorithm = svcsdktypes.KafkaSslEndpointIdentificationAlgorithm(*r.ko.Spec.KafkaSettings.SSLEndpointIDentificationAlgorithm)
@@ -3222,7 +3168,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f20.ArchivedLogsOnly = r.ko.Spec.OracleSettings.ArchivedLogsOnly
 		}
 		if r.ko.Spec.OracleSettings.AsmPassword != nil {
-			f20.AsmPassword = r.ko.Spec.OracleSettings.AsmPassword
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.OracleSettings.AsmPassword)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f20.AsmPassword = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.OracleSettings.AsmServer != nil {
 			f20.AsmServer = r.ko.Spec.OracleSettings.AsmServer
@@ -3520,7 +3472,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.RedisSettings != nil {
 		f24 := &svcsdktypes.RedisSettings{}
 		if r.ko.Spec.RedisSettings.AuthPassword != nil {
-			f24.AuthPassword = r.ko.Spec.RedisSettings.AuthPassword
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.RedisSettings.AuthPassword)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f24.AuthPassword = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.RedisSettings.AuthType != nil {
 			f24.AuthType = svcsdktypes.RedisAuthTypeValue(*r.ko.Spec.RedisSettings.AuthType)
@@ -4006,9 +3964,6 @@ func (rm *resourceManager) sdkUpdate(
 		if resp.Endpoint.DocDbSettings.NestingLevel != "" {
 			f3.NestingLevel = aws.String(string(resp.Endpoint.DocDbSettings.NestingLevel))
 		}
-		if resp.Endpoint.DocDbSettings.Password != nil {
-			f3.Password = resp.Endpoint.DocDbSettings.Password
-		}
 		if resp.Endpoint.DocDbSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.DocDbSettings.Port)
 			f3.Port = &portCopy
@@ -4127,9 +4082,6 @@ func (rm *resourceManager) sdkUpdate(
 			parallelLoadThreadsCopy := int64(*resp.Endpoint.GcpMySQLSettings.ParallelLoadThreads)
 			f14.ParallelLoadThreads = &parallelLoadThreadsCopy
 		}
-		if resp.Endpoint.GcpMySQLSettings.Password != nil {
-			f14.Password = resp.Endpoint.GcpMySQLSettings.Password
-		}
 		if resp.Endpoint.GcpMySQLSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.GcpMySQLSettings.Port)
 			f14.Port = &portCopy
@@ -4178,9 +4130,6 @@ func (rm *resourceManager) sdkUpdate(
 		if resp.Endpoint.IBMDb2Settings.MaxKBytesPerRead != nil {
 			maxKBytesPerReadCopy := int64(*resp.Endpoint.IBMDb2Settings.MaxKBytesPerRead)
 			f15.MaxKBytesPerRead = &maxKBytesPerReadCopy
-		}
-		if resp.Endpoint.IBMDb2Settings.Password != nil {
-			f15.Password = resp.Endpoint.IBMDb2Settings.Password
 		}
 		if resp.Endpoint.IBMDb2Settings.Port != nil {
 			portCopy := int64(*resp.Endpoint.IBMDb2Settings.Port)
@@ -4355,9 +4304,6 @@ func (rm *resourceManager) sdkUpdate(
 		if resp.Endpoint.MicrosoftSQLServerSettings.ForceLobLookup != nil {
 			f21.ForceLobLookup = resp.Endpoint.MicrosoftSQLServerSettings.ForceLobLookup
 		}
-		if resp.Endpoint.MicrosoftSQLServerSettings.Password != nil {
-			f21.Password = resp.Endpoint.MicrosoftSQLServerSettings.Password
-		}
 		if resp.Endpoint.MicrosoftSQLServerSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.MicrosoftSQLServerSettings.Port)
 			f21.Port = &portCopy
@@ -4425,9 +4371,6 @@ func (rm *resourceManager) sdkUpdate(
 		if resp.Endpoint.MongoDbSettings.NestingLevel != "" {
 			f22.NestingLevel = aws.String(string(resp.Endpoint.MongoDbSettings.NestingLevel))
 		}
-		if resp.Endpoint.MongoDbSettings.Password != nil {
-			f22.Password = resp.Endpoint.MongoDbSettings.Password
-		}
 		if resp.Endpoint.MongoDbSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.MongoDbSettings.Port)
 			f22.Port = &portCopy
@@ -4483,9 +4426,6 @@ func (rm *resourceManager) sdkUpdate(
 		if resp.Endpoint.MySQLSettings.ParallelLoadThreads != nil {
 			parallelLoadThreadsCopy := int64(*resp.Endpoint.MySQLSettings.ParallelLoadThreads)
 			f23.ParallelLoadThreads = &parallelLoadThreadsCopy
-		}
-		if resp.Endpoint.MySQLSettings.Password != nil {
-			f23.Password = resp.Endpoint.MySQLSettings.Password
 		}
 		if resp.Endpoint.MySQLSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.MySQLSettings.Port)
@@ -4568,9 +4508,6 @@ func (rm *resourceManager) sdkUpdate(
 		if resp.Endpoint.OracleSettings.ArchivedLogsOnly != nil {
 			f25.ArchivedLogsOnly = resp.Endpoint.OracleSettings.ArchivedLogsOnly
 		}
-		if resp.Endpoint.OracleSettings.AsmPassword != nil {
-			f25.AsmPassword = resp.Endpoint.OracleSettings.AsmPassword
-		}
 		if resp.Endpoint.OracleSettings.AsmServer != nil {
 			f25.AsmServer = resp.Endpoint.OracleSettings.AsmServer
 		}
@@ -4625,9 +4562,6 @@ func (rm *resourceManager) sdkUpdate(
 		if resp.Endpoint.OracleSettings.ParallelAsmReadThreads != nil {
 			parallelAsmReadThreadsCopy := int64(*resp.Endpoint.OracleSettings.ParallelAsmReadThreads)
 			f25.ParallelAsmReadThreads = &parallelAsmReadThreadsCopy
-		}
-		if resp.Endpoint.OracleSettings.Password != nil {
-			f25.Password = resp.Endpoint.OracleSettings.Password
 		}
 		if resp.Endpoint.OracleSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.OracleSettings.Port)
@@ -4762,9 +4696,6 @@ func (rm *resourceManager) sdkUpdate(
 			maxFileSizeCopy := int64(*resp.Endpoint.PostgreSQLSettings.MaxFileSize)
 			f27.MaxFileSize = &maxFileSizeCopy
 		}
-		if resp.Endpoint.PostgreSQLSettings.Password != nil {
-			f27.Password = resp.Endpoint.PostgreSQLSettings.Password
-		}
 		if resp.Endpoint.PostgreSQLSettings.PluginName != "" {
 			f27.PluginName = aws.String(string(resp.Endpoint.PostgreSQLSettings.PluginName))
 		}
@@ -4799,9 +4730,6 @@ func (rm *resourceManager) sdkUpdate(
 	}
 	if resp.Endpoint.RedisSettings != nil {
 		f28 := &svcapitypes.RedisSettings{}
-		if resp.Endpoint.RedisSettings.AuthPassword != nil {
-			f28.AuthPassword = resp.Endpoint.RedisSettings.AuthPassword
-		}
 		if resp.Endpoint.RedisSettings.AuthType != "" {
 			f28.AuthType = aws.String(string(resp.Endpoint.RedisSettings.AuthType))
 		}
@@ -5088,9 +5016,6 @@ func (rm *resourceManager) sdkUpdate(
 		f35 := &svcapitypes.SybaseSettings{}
 		if resp.Endpoint.SybaseSettings.DatabaseName != nil {
 			f35.DatabaseName = resp.Endpoint.SybaseSettings.DatabaseName
-		}
-		if resp.Endpoint.SybaseSettings.Password != nil {
-			f35.Password = resp.Endpoint.SybaseSettings.Password
 		}
 		if resp.Endpoint.SybaseSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.SybaseSettings.Port)
@@ -5470,7 +5395,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f15.SaslMechanism = svcsdktypes.KafkaSaslMechanism(*r.ko.Spec.KafkaSettings.SASLMechanism)
 		}
 		if r.ko.Spec.KafkaSettings.SASLPassword != nil {
-			f15.SaslPassword = r.ko.Spec.KafkaSettings.SASLPassword
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.KafkaSettings.SASLPassword)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f15.SaslPassword = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.KafkaSettings.SASLUsername != nil {
 			f15.SaslUsername = r.ko.Spec.KafkaSettings.SASLUsername
@@ -5488,7 +5419,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f15.SslClientKeyArn = r.ko.Spec.KafkaSettings.SSLClientKeyARN
 		}
 		if r.ko.Spec.KafkaSettings.SSLClientKeyPassword != nil {
-			f15.SslClientKeyPassword = r.ko.Spec.KafkaSettings.SSLClientKeyPassword
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.KafkaSettings.SSLClientKeyPassword)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f15.SslClientKeyPassword = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.KafkaSettings.SSLEndpointIDentificationAlgorithm != nil {
 			f15.SslEndpointIdentificationAlgorithm = svcsdktypes.KafkaSslEndpointIdentificationAlgorithm(*r.ko.Spec.KafkaSettings.SSLEndpointIDentificationAlgorithm)
@@ -5832,7 +5769,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f21.ArchivedLogsOnly = r.ko.Spec.OracleSettings.ArchivedLogsOnly
 		}
 		if r.ko.Spec.OracleSettings.AsmPassword != nil {
-			f21.AsmPassword = r.ko.Spec.OracleSettings.AsmPassword
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.OracleSettings.AsmPassword)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f21.AsmPassword = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.OracleSettings.AsmServer != nil {
 			f21.AsmServer = r.ko.Spec.OracleSettings.AsmServer
@@ -6130,7 +6073,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 	if r.ko.Spec.RedisSettings != nil {
 		f25 := &svcsdktypes.RedisSettings{}
 		if r.ko.Spec.RedisSettings.AuthPassword != nil {
-			f25.AuthPassword = r.ko.Spec.RedisSettings.AuthPassword
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.RedisSettings.AuthPassword)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f25.AuthPassword = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.RedisSettings.AuthType != nil {
 			f25.AuthType = svcsdktypes.RedisAuthTypeValue(*r.ko.Spec.RedisSettings.AuthType)

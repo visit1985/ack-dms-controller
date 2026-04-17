@@ -2208,7 +2208,7 @@ func (in *KafkaSettings) DeepCopyInto(out *KafkaSettings) {
 	}
 	if in.SASLPassword != nil {
 		in, out := &in.SASLPassword, &out.SASLPassword
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.SASLUsername != nil {
@@ -2238,7 +2238,7 @@ func (in *KafkaSettings) DeepCopyInto(out *KafkaSettings) {
 	}
 	if in.SSLClientKeyPassword != nil {
 		in, out := &in.SSLClientKeyPassword, &out.SSLClientKeyPassword
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.SSLEndpointIDentificationAlgorithm != nil {
@@ -3158,7 +3158,7 @@ func (in *OracleSettings) DeepCopyInto(out *OracleSettings) {
 	}
 	if in.AsmPassword != nil {
 		in, out := &in.AsmPassword, &out.AsmPassword
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.AsmServer != nil {
@@ -3958,7 +3958,7 @@ func (in *RedisSettings) DeepCopyInto(out *RedisSettings) {
 	*out = *in
 	if in.AuthPassword != nil {
 		in, out := &in.AuthPassword, &out.AuthPassword
-		*out = new(string)
+		*out = new(corev1alpha1.SecretKeyReference)
 		**out = **in
 	}
 	if in.AuthType != nil {
