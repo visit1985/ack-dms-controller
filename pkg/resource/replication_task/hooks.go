@@ -27,6 +27,8 @@ import (
 
 const (
 	connectionStatusSuccessful = "successful"
+	connectionStatusTesting    = "testing"
+	connectionStatusFailed     = "failed"
 
 	replicationTaskStatusCreating  = "creating"
 	replicationTaskStatusDeleting  = "deleting"
@@ -108,14 +110,16 @@ func alreadyStopped(ko *svcapitypes.ReplicationTask) bool {
 // shouldStartReplicationTask is a custom function to determine if a
 // ReplicationTask should be started.
 func shouldStartReplicationTask(ko *svcapitypes.ReplicationTask) bool {
-	return ko.Spec.StartReplicationTask != nil && *ko.Spec.StartReplicationTask &&
+	return ko.ObjectMeta.GetDeletionTimestamp() == nil &&
+	    ko.Spec.StartReplicationTask != nil && *ko.Spec.StartReplicationTask &&
 		endpointConnectionsTested(ko) && !alreadyStarted(ko)
 }
 
 // shouldStopReplicationTask is a custom function to determine if a
 // ReplicationTask should be stopped.
 func shouldStopReplicationTask(ko *svcapitypes.ReplicationTask) bool {
-	return ko.Spec.StartReplicationTask != nil && !*ko.Spec.StartReplicationTask && !alreadyStopped(ko)
+	return (ko.ObjectMeta.GetDeletionTimestamp() != nil ||
+	        (ko.Spec.StartReplicationTask != nil && !*ko.Spec.StartReplicationTask)) && !alreadyStopped(ko)
 }
 
 // newStartReplicationTaskRequestPayload is a custom function to
