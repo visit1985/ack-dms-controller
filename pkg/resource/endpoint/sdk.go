@@ -392,9 +392,6 @@ func (rm *resourceManager) sdkFind(
 			if elem.KafkaSettings.SaslMechanism != "" {
 				f17.SASLMechanism = aws.String(string(elem.KafkaSettings.SaslMechanism))
 			}
-			if elem.KafkaSettings.SaslPassword != nil {
-				f17.SASLPassword = elem.KafkaSettings.SaslPassword
-			}
 			if elem.KafkaSettings.SaslUsername != nil {
 				f17.SASLUsername = elem.KafkaSettings.SaslUsername
 			}
@@ -409,9 +406,6 @@ func (rm *resourceManager) sdkFind(
 			}
 			if elem.KafkaSettings.SslClientKeyArn != nil {
 				f17.SSLClientKeyARN = elem.KafkaSettings.SslClientKeyArn
-			}
-			if elem.KafkaSettings.SslClientKeyPassword != nil {
-				f17.SSLClientKeyPassword = elem.KafkaSettings.SslClientKeyPassword
 			}
 			if elem.KafkaSettings.SslEndpointIdentificationAlgorithm != "" {
 				f17.SSLEndpointIDentificationAlgorithm = aws.String(string(elem.KafkaSettings.SslEndpointIdentificationAlgorithm))
@@ -1596,9 +1590,6 @@ func (rm *resourceManager) sdkCreate(
 		if resp.Endpoint.KafkaSettings.SaslMechanism != "" {
 			f17.SASLMechanism = aws.String(string(resp.Endpoint.KafkaSettings.SaslMechanism))
 		}
-		if resp.Endpoint.KafkaSettings.SaslPassword != nil {
-			f17.SASLPassword = resp.Endpoint.KafkaSettings.SaslPassword
-		}
 		if resp.Endpoint.KafkaSettings.SaslUsername != nil {
 			f17.SASLUsername = resp.Endpoint.KafkaSettings.SaslUsername
 		}
@@ -1613,9 +1604,6 @@ func (rm *resourceManager) sdkCreate(
 		}
 		if resp.Endpoint.KafkaSettings.SslClientKeyArn != nil {
 			f17.SSLClientKeyARN = resp.Endpoint.KafkaSettings.SslClientKeyArn
-		}
-		if resp.Endpoint.KafkaSettings.SslClientKeyPassword != nil {
-			f17.SSLClientKeyPassword = resp.Endpoint.KafkaSettings.SslClientKeyPassword
 		}
 		if resp.Endpoint.KafkaSettings.SslEndpointIdentificationAlgorithm != "" {
 			f17.SSLEndpointIDentificationAlgorithm = aws.String(string(resp.Endpoint.KafkaSettings.SslEndpointIdentificationAlgorithm))
@@ -4199,9 +4187,6 @@ func (rm *resourceManager) sdkUpdate(
 		if resp.Endpoint.KafkaSettings.SaslMechanism != "" {
 			f17.SASLMechanism = aws.String(string(resp.Endpoint.KafkaSettings.SaslMechanism))
 		}
-		if resp.Endpoint.KafkaSettings.SaslPassword != nil {
-			f17.SASLPassword = resp.Endpoint.KafkaSettings.SaslPassword
-		}
 		if resp.Endpoint.KafkaSettings.SaslUsername != nil {
 			f17.SASLUsername = resp.Endpoint.KafkaSettings.SaslUsername
 		}
@@ -4216,9 +4201,6 @@ func (rm *resourceManager) sdkUpdate(
 		}
 		if resp.Endpoint.KafkaSettings.SslClientKeyArn != nil {
 			f17.SSLClientKeyARN = resp.Endpoint.KafkaSettings.SslClientKeyArn
-		}
-		if resp.Endpoint.KafkaSettings.SslClientKeyPassword != nil {
-			f17.SSLClientKeyPassword = resp.Endpoint.KafkaSettings.SslClientKeyPassword
 		}
 		if resp.Endpoint.KafkaSettings.SslEndpointIdentificationAlgorithm != "" {
 			f17.SSLEndpointIDentificationAlgorithm = aws.String(string(resp.Endpoint.KafkaSettings.SslEndpointIdentificationAlgorithm))

@@ -16,57 +16,43 @@ resources:
     fields:
       DocDBSettings.Password:
         is_secret: true
-        set: [ignore: from]
       EndpointStatus:
         print:
           name: STATUS
       GcpMySQLSettings.Password:
         is_secret: true
-        set: [ignore: from]
       IBMDB2Settings.Password:
         is_secret: true
-        set: [ignore: from]
       KafkaSettings.SASLPassword:
         is_secret: true
-        set: [ignore: from]
       KafkaSettings.SSLClientKeyPassword:
         is_secret: true
-        set: [ignore: from]
       MicrosoftSQLServerSettings.Password:
         is_secret: true
-        set: [ignore: from]
       MongoDBSettings.Password:
         is_secret: true
-        set: [ignore: from]
       MySQLSettings.Password:
         is_secret: true
-        set: [ignore: from]
       Name:
         is_primary_key: true
         is_immutable: true
       OracleSettings.AsmPassword:
         is_secret: true
-        set: [ignore: from]
       OracleSettings.ExtraArchivedLogDestIDs:
         compare:
           is_ignored: true
       OracleSettings.Password:
         is_secret: true
-        set: [ignore: from]
       Password:
         is_secret: true
       PostgreSQLSettings.Password:
         is_secret: true
-        set: [ignore: from]
       RedisSettings.AuthPassword:
         is_secret: true
-        set: [ignore: from]
       RedshiftSettings.AuthPassword:
         is_secret: true
-        set: [ignore: from]
       SybaseSettings.Password:
         is_secret: true
-        set: [ignore: from]
       Tags:
         compare:
           is_ignored: true
