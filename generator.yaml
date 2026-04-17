@@ -120,12 +120,21 @@ resources:
           input_fields:
             ReplicationTaskIdentifier: Name
           output_fields:
+            ReplicationTaskCreationDate: CreationDate
+            ReplicationTaskStartDate: StartDate
+            ReplicationTaskStats: Stats
             Status: TaskStatus
         DescribeReplicationTasks:
           output_fields:
+            ReplicationTaskCreationDate: CreationDate
+            ReplicationTaskStartDate: StartDate
+            ReplicationTaskStats: Stats
             Status: TaskStatus
         ModifyReplicationTask:
           output_fields:
+            ReplicationTaskCreationDate: CreationDate
+            ReplicationTaskStartDate: StartDate
+            ReplicationTaskStats: Stats
             Status: TaskStatus
 sdk_names:
   model_name: database-migration-service

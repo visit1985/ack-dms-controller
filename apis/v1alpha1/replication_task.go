@@ -123,6 +123,9 @@ type ReplicationTaskStatus struct {
 	// resource
 	// +kubebuilder:validation:Optional
 	Conditions []*ackv1alpha1.Condition `json:"conditions"`
+	// The date the replication task was created.
+	// +kubebuilder:validation:Optional
+	CreationDate *metav1.Time `json:"creationDate,omitempty"`
 	// The last error (failure) message generated for the replication task.
 	// +kubebuilder:validation:Optional
 	LastFailureMessage *string `json:"lastFailureMessage,omitempty"`
@@ -131,16 +134,13 @@ type ReplicationTaskStatus struct {
 	// to start a CDC operation that begins at that checkpoint.
 	// +kubebuilder:validation:Optional
 	RecoveryCheckpoint *string `json:"recoveryCheckpoint,omitempty"`
-	// The date the replication task was created.
-	// +kubebuilder:validation:Optional
-	ReplicationTaskCreationDate *metav1.Time `json:"replicationTaskCreationDate,omitempty"`
 	// The date the replication task is scheduled to start.
 	// +kubebuilder:validation:Optional
-	ReplicationTaskStartDate *metav1.Time `json:"replicationTaskStartDate,omitempty"`
+	StartDate *metav1.Time `json:"startDate,omitempty"`
 	// The statistics for the task, including elapsed time, tables loaded, and table
 	// errors.
 	// +kubebuilder:validation:Optional
-	ReplicationTaskStats *ReplicationTaskStats `json:"replicationTaskStats,omitempty"`
+	Stats *ReplicationTaskStats `json:"stats,omitempty"`
 	// The reason the replication task was stopped. This response parameter can
 	// return one of the following values:
 	//

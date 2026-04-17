@@ -155,9 +155,9 @@ func (rm *resourceManager) sdkFind(
 			ko.Status.ACKResourceMetadata.ARN = &tmpARN
 		}
 		if elem.ReplicationTaskCreationDate != nil {
-			ko.Status.ReplicationTaskCreationDate = &metav1.Time{*elem.ReplicationTaskCreationDate}
+			ko.Status.CreationDate = &metav1.Time{*elem.ReplicationTaskCreationDate}
 		} else {
-			ko.Status.ReplicationTaskCreationDate = nil
+			ko.Status.CreationDate = nil
 		}
 		if elem.ReplicationTaskSettings != nil {
 			ko.Spec.ReplicationTaskSettings = elem.ReplicationTaskSettings
@@ -165,9 +165,9 @@ func (rm *resourceManager) sdkFind(
 			ko.Spec.ReplicationTaskSettings = nil
 		}
 		if elem.ReplicationTaskStartDate != nil {
-			ko.Status.ReplicationTaskStartDate = &metav1.Time{*elem.ReplicationTaskStartDate}
+			ko.Status.StartDate = &metav1.Time{*elem.ReplicationTaskStartDate}
 		} else {
-			ko.Status.ReplicationTaskStartDate = nil
+			ko.Status.StartDate = nil
 		}
 		if elem.ReplicationTaskStats != nil {
 			f11 := &svcapitypes.ReplicationTaskStats{}
@@ -197,9 +197,9 @@ func (rm *resourceManager) sdkFind(
 			f11.TablesLoading = &tablesLoadingCopy
 			tablesQueuedCopy := int64(elem.ReplicationTaskStats.TablesQueued)
 			f11.TablesQueued = &tablesQueuedCopy
-			ko.Status.ReplicationTaskStats = f11
+			ko.Status.Stats = f11
 		} else {
-			ko.Status.ReplicationTaskStats = nil
+			ko.Status.Stats = nil
 		}
 		if elem.SourceEndpointArn != nil {
 			ko.Spec.SourceEndpointARN = elem.SourceEndpointArn
@@ -351,9 +351,9 @@ func (rm *resourceManager) sdkCreate(
 		ko.Status.ACKResourceMetadata.ARN = &arn
 	}
 	if resp.ReplicationTask.ReplicationTaskCreationDate != nil {
-		ko.Status.ReplicationTaskCreationDate = &metav1.Time{*resp.ReplicationTask.ReplicationTaskCreationDate}
+		ko.Status.CreationDate = &metav1.Time{*resp.ReplicationTask.ReplicationTaskCreationDate}
 	} else {
-		ko.Status.ReplicationTaskCreationDate = nil
+		ko.Status.CreationDate = nil
 	}
 	if resp.ReplicationTask.ReplicationTaskIdentifier != nil {
 		ko.Spec.Name = resp.ReplicationTask.ReplicationTaskIdentifier
@@ -366,9 +366,9 @@ func (rm *resourceManager) sdkCreate(
 		ko.Spec.ReplicationTaskSettings = nil
 	}
 	if resp.ReplicationTask.ReplicationTaskStartDate != nil {
-		ko.Status.ReplicationTaskStartDate = &metav1.Time{*resp.ReplicationTask.ReplicationTaskStartDate}
+		ko.Status.StartDate = &metav1.Time{*resp.ReplicationTask.ReplicationTaskStartDate}
 	} else {
-		ko.Status.ReplicationTaskStartDate = nil
+		ko.Status.StartDate = nil
 	}
 	if resp.ReplicationTask.ReplicationTaskStats != nil {
 		f11 := &svcapitypes.ReplicationTaskStats{}
@@ -398,9 +398,9 @@ func (rm *resourceManager) sdkCreate(
 		f11.TablesLoading = &tablesLoadingCopy
 		tablesQueuedCopy := int64(resp.ReplicationTask.ReplicationTaskStats.TablesQueued)
 		f11.TablesQueued = &tablesQueuedCopy
-		ko.Status.ReplicationTaskStats = f11
+		ko.Status.Stats = f11
 	} else {
-		ko.Status.ReplicationTaskStats = nil
+		ko.Status.Stats = nil
 	}
 	if resp.ReplicationTask.SourceEndpointArn != nil {
 		ko.Spec.SourceEndpointARN = resp.ReplicationTask.SourceEndpointArn
@@ -594,9 +594,9 @@ func (rm *resourceManager) sdkUpdate(
 		ko.Status.ACKResourceMetadata.ARN = &arn
 	}
 	if resp.ReplicationTask.ReplicationTaskCreationDate != nil {
-		ko.Status.ReplicationTaskCreationDate = &metav1.Time{*resp.ReplicationTask.ReplicationTaskCreationDate}
+		ko.Status.CreationDate = &metav1.Time{*resp.ReplicationTask.ReplicationTaskCreationDate}
 	} else {
-		ko.Status.ReplicationTaskCreationDate = nil
+		ko.Status.CreationDate = nil
 	}
 	if resp.ReplicationTask.ReplicationTaskSettings != nil {
 		ko.Spec.ReplicationTaskSettings = resp.ReplicationTask.ReplicationTaskSettings
@@ -604,9 +604,9 @@ func (rm *resourceManager) sdkUpdate(
 		ko.Spec.ReplicationTaskSettings = nil
 	}
 	if resp.ReplicationTask.ReplicationTaskStartDate != nil {
-		ko.Status.ReplicationTaskStartDate = &metav1.Time{*resp.ReplicationTask.ReplicationTaskStartDate}
+		ko.Status.StartDate = &metav1.Time{*resp.ReplicationTask.ReplicationTaskStartDate}
 	} else {
-		ko.Status.ReplicationTaskStartDate = nil
+		ko.Status.StartDate = nil
 	}
 	if resp.ReplicationTask.ReplicationTaskStats != nil {
 		f11 := &svcapitypes.ReplicationTaskStats{}
@@ -636,9 +636,9 @@ func (rm *resourceManager) sdkUpdate(
 		f11.TablesLoading = &tablesLoadingCopy
 		tablesQueuedCopy := int64(resp.ReplicationTask.ReplicationTaskStats.TablesQueued)
 		f11.TablesQueued = &tablesQueuedCopy
-		ko.Status.ReplicationTaskStats = f11
+		ko.Status.Stats = f11
 	} else {
-		ko.Status.ReplicationTaskStats = nil
+		ko.Status.Stats = nil
 	}
 	if resp.ReplicationTask.SourceEndpointArn != nil {
 		ko.Spec.SourceEndpointARN = resp.ReplicationTask.SourceEndpointArn

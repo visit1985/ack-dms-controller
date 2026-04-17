@@ -5138,6 +5138,10 @@ func (in *ReplicationTaskStatus) DeepCopyInto(out *ReplicationTaskStatus) {
 			}
 		}
 	}
+	if in.CreationDate != nil {
+		in, out := &in.CreationDate, &out.CreationDate
+		*out = (*in).DeepCopy()
+	}
 	if in.LastFailureMessage != nil {
 		in, out := &in.LastFailureMessage, &out.LastFailureMessage
 		*out = new(string)
@@ -5148,16 +5152,12 @@ func (in *ReplicationTaskStatus) DeepCopyInto(out *ReplicationTaskStatus) {
 		*out = new(string)
 		**out = **in
 	}
-	if in.ReplicationTaskCreationDate != nil {
-		in, out := &in.ReplicationTaskCreationDate, &out.ReplicationTaskCreationDate
+	if in.StartDate != nil {
+		in, out := &in.StartDate, &out.StartDate
 		*out = (*in).DeepCopy()
 	}
-	if in.ReplicationTaskStartDate != nil {
-		in, out := &in.ReplicationTaskStartDate, &out.ReplicationTaskStartDate
-		*out = (*in).DeepCopy()
-	}
-	if in.ReplicationTaskStats != nil {
-		in, out := &in.ReplicationTaskStats, &out.ReplicationTaskStats
+	if in.Stats != nil {
+		in, out := &in.Stats, &out.Stats
 		*out = new(ReplicationTaskStats)
 		(*in).DeepCopyInto(*out)
 	}

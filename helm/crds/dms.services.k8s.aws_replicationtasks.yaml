@@ -275,6 +275,10 @@ spec:
                   - type
                   type: object
                 type: array
+              creationDate:
+                description: The date the replication task was created.
+                format: date-time
+                type: string
               lastFailureMessage:
                 description: The last error (failure) message generated for the replication
                   task.
@@ -285,15 +289,11 @@ spec:
                   (CDC) operation. You can provide this value to the CdcStartPosition parameter
                   to start a CDC operation that begins at that checkpoint.
                 type: string
-              replicationTaskCreationDate:
-                description: The date the replication task was created.
-                format: date-time
-                type: string
-              replicationTaskStartDate:
+              startDate:
                 description: The date the replication task is scheduled to start.
                 format: date-time
                 type: string
-              replicationTaskStats:
+              stats:
                 description: |-
                   The statistics for the task, including elapsed time, tables loaded, and table
                   errors.
