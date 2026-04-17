@@ -66,6 +66,8 @@ resources:
     print:
       add_age_column: true
       add_synced_column: true
+    reconcile:
+      requeue_on_success_seconds: 300
     renames:
       operations:
         CreateEndpoint:
@@ -131,7 +133,7 @@ resources:
       add_age_column: true
       add_synced_column: true
     reconcile:
-      requeue_on_success_seconds: 60
+      requeue_on_success_seconds: 300
     renames:
       operations:
         CreateReplicationTask:

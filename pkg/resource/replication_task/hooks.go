@@ -111,7 +111,7 @@ func alreadyStopped(ko *svcapitypes.ReplicationTask) bool {
 // ReplicationTask should be started.
 func shouldStartReplicationTask(ko *svcapitypes.ReplicationTask) bool {
 	return ko.ObjectMeta.GetDeletionTimestamp() == nil &&
-	    ko.Spec.StartReplicationTask != nil && *ko.Spec.StartReplicationTask &&
+		ko.Spec.StartReplicationTask != nil && *ko.Spec.StartReplicationTask &&
 		endpointConnectionsTested(ko) && !alreadyStarted(ko)
 }
 
@@ -119,7 +119,7 @@ func shouldStartReplicationTask(ko *svcapitypes.ReplicationTask) bool {
 // ReplicationTask should be stopped.
 func shouldStopReplicationTask(ko *svcapitypes.ReplicationTask) bool {
 	return (ko.ObjectMeta.GetDeletionTimestamp() != nil ||
-	        (ko.Spec.StartReplicationTask != nil && !*ko.Spec.StartReplicationTask)) && !alreadyStopped(ko)
+		(ko.Spec.StartReplicationTask != nil && !*ko.Spec.StartReplicationTask)) && !alreadyStopped(ko)
 }
 
 // newStartReplicationTaskRequestPayload is a custom function to

@@ -298,9 +298,16 @@ func (rm *resourceManager) sdkFind(
 			if err != nil {
 				return nil, err
 			}
-		} else {
+			// requeue because we are in "starting" state now
 			return &resource{ko}, ackrequeue.NeededAfter(nil, 10*time.Second)
 		}
+	}
+
+	// sdk_read_many_post_set_output hook
+	//
+	// If the replication task is not in a steady state, requeue more frequently.
+	if !hasSteadyState(ko) {
+		return &resource{ko}, ackrequeue.NeededAfter(nil, 10*time.Second)
 	}
 
 	return &resource{ko}, nil
