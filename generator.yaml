@@ -18,7 +18,7 @@ resources:
         is_secret: true
       EndpointStatus:
         print:
-          name: STATUS
+          name: Status
       GcpMySQLSettings.Password:
         is_secret: true
       IBMDB2Settings.Password:
@@ -63,6 +63,9 @@ resources:
         template_path: hooks/endpoint/sdk_read_many_post_build_request.go.tpl
       sdk_read_many_post_request:
         template_path: hooks/endpoint/sdk_read_many_post_request.go.tpl
+    print:
+      add_age_column: true
+      add_synced_column: true
     renames:
       operations:
         CreateEndpoint:
@@ -98,7 +101,7 @@ resources:
             path: Status.ACKResourceMetadata.ARN
       TaskStatus:
         print:
-          name: STATUS
+          name: Status
     hooks:
       delta_pre_compare:
         code: compareTags(delta, a, b)
@@ -112,6 +115,9 @@ resources:
         template_path: hooks/replication_task/sdk_read_many_post_set_output.go.tpl
       sdk_update_pre_build_request:
         template_path: hooks/replication_task/sdk_update_pre_build_request.go.tpl
+    print:
+      add_age_column: true
+      add_synced_column: true
     reconcile:
       requeue_on_success_seconds: 60
     renames:

@@ -237,7 +237,9 @@ type EndpointStatus struct {
 // Endpoint is the Schema for the Endpoints API
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-// +kubebuilder:printcolumn:name="STATUS",type=string,priority=0,JSONPath=`.status.endpointStatus`
+// +kubebuilder:printcolumn:name="Status",type=string,priority=0,JSONPath=`.status.endpointStatus`
+// +kubebuilder:printcolumn:name="Synced",type="string",priority=0,JSONPath=".status.conditions[?(@.type==\"ACK.ResourceSynced\")].status"
+// +kubebuilder:printcolumn:name="Age",type="date",priority=0,JSONPath=".metadata.creationTimestamp"
 type Endpoint struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
