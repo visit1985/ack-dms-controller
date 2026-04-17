@@ -295,6 +295,10 @@ spec:
                   (CDC) operation. You can provide this value to the CdcStartPosition parameter
                   to start a CDC operation that begins at that checkpoint.
                 type: string
+              sourceEndpointConnectionLastFailureMessage:
+                type: string
+              sourceEndpointConnectionStatus:
+                type: string
               startDate:
                 description: The date the replication task is scheduled to start.
                 format: date-time
@@ -378,6 +382,10 @@ spec:
                      * "Stop Reason RECONFIGURATION_RESTART"
 
                      * "Stop Reason RECYCLE_TASK"
+                type: string
+              targetEndpointConnectionLastFailureMessage:
+                type: string
+              targetEndpointConnectionStatus:
                 type: string
               targetReplicationInstanceARN:
                 description: |-

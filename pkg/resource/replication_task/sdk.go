@@ -247,6 +247,46 @@ func (rm *resourceManager) sdkFind(
 
 	// sdk_read_many_post_set_output hook
 	//
+	// Fetch connection Status and LastFailureMessage for Endpoints.
+	// Clear the failure message if the connections are successful,
+	// otherwise set them to the latest failure message.
+	describeConnectionsInput := &svcsdk.DescribeConnectionsInput{
+		Filters: []svcsdktypes.Filter{
+			{
+				Name: aws.String("endpoint-arn"),
+				Values: []string{
+					string(*ko.Spec.SourceEndpointARN),
+					string(*ko.Spec.TargetEndpointARN),
+				},
+			},
+			{
+				Name:   aws.String("replication-instance-arn"),
+				Values: []string{string(*ko.Spec.ReplicationInstanceARN)},
+			},
+		},
+	}
+	respDescribeConnections, err := rm.sdkapi.DescribeConnections(ctx, describeConnectionsInput)
+	rm.metrics.RecordAPICall("READ_MANY", "DescribeConnections", err)
+	if err != nil {
+		return nil, err
+	}
+	for _, elem := range respDescribeConnections.Connections {
+		if *elem.EndpointArn == *ko.Spec.SourceEndpointARN {
+			if elem.Status != nil {
+				ko.Status.SourceEndpointConnectionStatus = elem.Status
+			}
+			ko.Status.SourceEndpointConnectionLastFailureMessage = elem.LastFailureMessage
+		}
+		if *elem.EndpointArn == *ko.Spec.TargetEndpointARN {
+			if elem.Status != nil {
+				ko.Status.TargetEndpointConnectionStatus = elem.Status
+			}
+			ko.Status.TargetEndpointConnectionLastFailureMessage = elem.LastFailureMessage
+		}
+	}
+
+	// sdk_read_many_post_set_output hook
+	//
 	// Start the replication task if the custom StartReplicationTask field in
 	// the Spec is set to true and the task is not already started and is in a
 	// steady state.

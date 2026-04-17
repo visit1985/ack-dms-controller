@@ -90,6 +90,12 @@ resources:
         references:
             resource: Endpoint
             path: Status.ACKResourceMetadata.ARN
+      SourceEndpointConnectionStatus:
+        is_read_only: true
+        type: string
+      SourceEndpointConnectionLastFailureMessage:
+        is_read_only: true
+        type: string
       StartReplicationTask:
         type: bool
       Tags:
@@ -99,6 +105,12 @@ resources:
         references:
             resource: Endpoint
             path: Status.ACKResourceMetadata.ARN
+      TargetEndpointConnectionStatus:
+        is_read_only: true
+        type: string
+      TargetEndpointConnectionLastFailureMessage:
+        is_read_only: true
+        type: string
       TaskStatus:
         print:
           name: Status

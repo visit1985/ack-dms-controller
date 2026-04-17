@@ -5152,6 +5152,16 @@ func (in *ReplicationTaskStatus) DeepCopyInto(out *ReplicationTaskStatus) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.SourceEndpointConnectionLastFailureMessage != nil {
+		in, out := &in.SourceEndpointConnectionLastFailureMessage, &out.SourceEndpointConnectionLastFailureMessage
+		*out = new(string)
+		**out = **in
+	}
+	if in.SourceEndpointConnectionStatus != nil {
+		in, out := &in.SourceEndpointConnectionStatus, &out.SourceEndpointConnectionStatus
+		*out = new(string)
+		**out = **in
+	}
 	if in.StartDate != nil {
 		in, out := &in.StartDate, &out.StartDate
 		*out = (*in).DeepCopy()
@@ -5163,6 +5173,16 @@ func (in *ReplicationTaskStatus) DeepCopyInto(out *ReplicationTaskStatus) {
 	}
 	if in.StopReason != nil {
 		in, out := &in.StopReason, &out.StopReason
+		*out = new(string)
+		**out = **in
+	}
+	if in.TargetEndpointConnectionLastFailureMessage != nil {
+		in, out := &in.TargetEndpointConnectionLastFailureMessage, &out.TargetEndpointConnectionLastFailureMessage
+		*out = new(string)
+		**out = **in
+	}
+	if in.TargetEndpointConnectionStatus != nil {
+		in, out := &in.TargetEndpointConnectionStatus, &out.TargetEndpointConnectionStatus
 		*out = new(string)
 		**out = **in
 	}

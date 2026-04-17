@@ -26,6 +26,8 @@ import (
 )
 
 const (
+	connectionStatusSuccessful = "successful"
+
 	replicationTaskStatusCreating  = "creating"
 	replicationTaskStatusDeleting  = "deleting"
 	replicationTaskStatusFailed    = "failed"
@@ -68,6 +70,16 @@ func hasSteadyState(ko *svcapitypes.ReplicationTask) bool {
 	)
 }
 
+// endpointConnectionsTested is a custom function to determine if a
+// ReplicationTasks source and target endpoints have successful
+// connection tests.
+func endpointConnectionsTested(ko *svcapitypes.ReplicationTask) bool {
+	return ko.Status.SourceEndpointConnectionStatus != nil &&
+		*ko.Status.SourceEndpointConnectionStatus == connectionStatusSuccessful &&
+		ko.Status.TargetEndpointConnectionStatus != nil &&
+		*ko.Status.TargetEndpointConnectionStatus == connectionStatusSuccessful
+}
+
 // alreadyStarted is a custom function to determine if a ReplicationTask
 // is already started.
 func alreadyStarted(ko *svcapitypes.ReplicationTask) bool {
@@ -96,7 +108,8 @@ func alreadyStopped(ko *svcapitypes.ReplicationTask) bool {
 // shouldStartReplicationTask is a custom function to determine if a
 // ReplicationTask should be started.
 func shouldStartReplicationTask(ko *svcapitypes.ReplicationTask) bool {
-	return ko.Spec.StartReplicationTask != nil && *ko.Spec.StartReplicationTask && !alreadyStarted(ko)
+	return ko.Spec.StartReplicationTask != nil && *ko.Spec.StartReplicationTask &&
+		endpointConnectionsTested(ko) && !alreadyStarted(ko)
 }
 
 // shouldStopReplicationTask is a custom function to determine if a

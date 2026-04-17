@@ -10,6 +10,7 @@
         "dms:CreateReplicationTask",
         "dms:DeleteEndpoint",
         "dms:DeleteReplicationTask",
+        "dms:DescribeConnections",
         "dms:DescribeEndpoints",
         "dms:DescribeReplicationTasks",
         "dms:ModifyEndpoint",

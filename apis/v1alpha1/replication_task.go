@@ -134,6 +134,10 @@ type ReplicationTaskStatus struct {
 	// to start a CDC operation that begins at that checkpoint.
 	// +kubebuilder:validation:Optional
 	RecoveryCheckpoint *string `json:"recoveryCheckpoint,omitempty"`
+	// +kubebuilder:validation:Optional
+	SourceEndpointConnectionLastFailureMessage *string `json:"sourceEndpointConnectionLastFailureMessage,omitempty"`
+	// +kubebuilder:validation:Optional
+	SourceEndpointConnectionStatus *string `json:"sourceEndpointConnectionStatus,omitempty"`
 	// The date the replication task is scheduled to start.
 	// +kubebuilder:validation:Optional
 	StartDate *metav1.Time `json:"startDate,omitempty"`
@@ -181,6 +185,10 @@ type ReplicationTaskStatus struct {
 	//    * "Stop Reason RECYCLE_TASK"
 	// +kubebuilder:validation:Optional
 	StopReason *string `json:"stopReason,omitempty"`
+	// +kubebuilder:validation:Optional
+	TargetEndpointConnectionLastFailureMessage *string `json:"targetEndpointConnectionLastFailureMessage,omitempty"`
+	// +kubebuilder:validation:Optional
+	TargetEndpointConnectionStatus *string `json:"targetEndpointConnectionStatus,omitempty"`
 	// The ARN of the replication instance to which this task is moved in response
 	// to running the MoveReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_MoveReplicationTask.html)
 	// operation. Otherwise, this response parameter isn't a member of the ReplicationTask
