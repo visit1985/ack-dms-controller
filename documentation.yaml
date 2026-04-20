@@ -1,0 +1,31 @@
+resources:
+  ReplicationTask:
+    fields:
+      SourceEndpointConnectionStatus:
+        override: |-
+          Indicates the connection status of the source endpoint.
+      SourceEndpointConnectionLastFailureMessage:
+        override: |-
+          If the connection to the source endpoint failed, this field contains the
+          related error message.
+      SourceEndpointRef:
+        prepend: |-
+          Reference to an ACK managed source endpoint resource for this replication task.
+      StartReplicationTask:
+        override: |-
+          Indicates whether the replication task should be started after it is created.
+      TargetEndpointConnectionStatus:
+        override: |-
+          Indicates the connection status of the target endpoint.
+      TargetEndpointConnectionLastFailureMessage:
+        override: |-
+          If the connection to the target endpoint failed, this field contains the
+          related error message.
+      TargetEndpointRef:
+        prepend: |-
+          Reference to an ACK managed target endpoint resource for this replication task.
+      UpdateInProgress:
+        override: |-
+          Indicates whether the replication task is in the process of being updated.
+          This field is used as a guard in the reconcile loop to prevent the
+          replication task from being started while an update is pending.

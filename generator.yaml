@@ -116,6 +116,9 @@ resources:
       TaskStatus:
         print:
           name: Status
+      UpdateInProgress:
+        is_read_only: true
+        type: bool
     hooks:
       delta_pre_compare:
         code: compareTags(delta, a, b)
@@ -129,6 +132,8 @@ resources:
         template_path: hooks/replication_task/sdk_read_many_post_set_output.go.tpl
       sdk_update_pre_build_request:
         template_path: hooks/replication_task/sdk_update_pre_build_request.go.tpl
+      sdk_update_post_set_output:
+        template_path: hooks/replication_task/sdk_update_post_set_output.go.tpl
     print:
       add_age_column: true
       add_synced_column: true

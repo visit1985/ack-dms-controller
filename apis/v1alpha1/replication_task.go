@@ -90,9 +90,11 @@ type ReplicationTaskSpec struct {
 	// identifier value for the end of EndpointArn.
 	ResourceIdentifier *string `json:"resourceIdentifier,omitempty"`
 	// An Amazon Resource Name (ARN) that uniquely identifies the source endpoint.
-	SourceEndpointARN    *string                                  `json:"sourceEndpointARN,omitempty"`
-	SourceEndpointRef    *ackv1alpha1.AWSResourceReferenceWrapper `json:"sourceEndpointRef,omitempty"`
-	StartReplicationTask *bool                                    `json:"startReplicationTask,omitempty"`
+	SourceEndpointARN *string `json:"sourceEndpointARN,omitempty"`
+	// Reference to an ACK managed source endpoint resource for this replication task.
+	SourceEndpointRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"sourceEndpointRef,omitempty"`
+	// Indicates whether the replication task should be started after it is created.
+	StartReplicationTask *bool `json:"startReplicationTask,omitempty"`
 	// The table mappings for the task, in JSON format. For more information, see
 	// Using Table Mapping to Specify Task Settings (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.html)
 	// in the Database Migration Service User Guide.
@@ -101,7 +103,8 @@ type ReplicationTaskSpec struct {
 	// One or more tags to be assigned to the replication task.
 	Tags []*Tag `json:"tags,omitempty"`
 	// An Amazon Resource Name (ARN) that uniquely identifies the target endpoint.
-	TargetEndpointARN *string                                  `json:"targetEndpointARN,omitempty"`
+	TargetEndpointARN *string `json:"targetEndpointARN,omitempty"`
+	// Reference to an ACK managed target endpoint resource for this replication task.
 	TargetEndpointRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"targetEndpointRef,omitempty"`
 	// Supplemental information that the task requires to migrate the data for certain
 	// source and target endpoints. For more information, see Specifying Supplemental
@@ -134,8 +137,11 @@ type ReplicationTaskStatus struct {
 	// to start a CDC operation that begins at that checkpoint.
 	// +kubebuilder:validation:Optional
 	RecoveryCheckpoint *string `json:"recoveryCheckpoint,omitempty"`
+	// If the connection to the source endpoint failed, this field contains the
+	// related error message.
 	// +kubebuilder:validation:Optional
 	SourceEndpointConnectionLastFailureMessage *string `json:"sourceEndpointConnectionLastFailureMessage,omitempty"`
+	// Indicates the connection status of the source endpoint.
 	// +kubebuilder:validation:Optional
 	SourceEndpointConnectionStatus *string `json:"sourceEndpointConnectionStatus,omitempty"`
 	// The date the replication task is scheduled to start.
@@ -185,8 +191,11 @@ type ReplicationTaskStatus struct {
 	//    * "Stop Reason RECYCLE_TASK"
 	// +kubebuilder:validation:Optional
 	StopReason *string `json:"stopReason,omitempty"`
+	// If the connection to the target endpoint failed, this field contains the
+	// related error message.
 	// +kubebuilder:validation:Optional
 	TargetEndpointConnectionLastFailureMessage *string `json:"targetEndpointConnectionLastFailureMessage,omitempty"`
+	// Indicates the connection status of the target endpoint.
 	// +kubebuilder:validation:Optional
 	TargetEndpointConnectionStatus *string `json:"targetEndpointConnectionStatus,omitempty"`
 	// The ARN of the replication instance to which this task is moved in response
@@ -258,6 +267,11 @@ type ReplicationTaskStatus struct {
 	//    among others.
 	// +kubebuilder:validation:Optional
 	TaskStatus *string `json:"taskStatus,omitempty"`
+	// Indicates whether the replication task is in the process of being updated.
+	// This field is used as a guard in the reconcile loop to prevent the
+	// replication task from being started while an update is pending.
+	// +kubebuilder:validation:Optional
+	UpdateInProgress *bool `json:"updateInProgress,omitempty"`
 }
 
 // ReplicationTask is the Schema for the ReplicationTasks API

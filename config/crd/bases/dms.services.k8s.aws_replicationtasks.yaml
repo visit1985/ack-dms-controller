@@ -135,10 +135,8 @@ spec:
                   the source endpoint.
                 type: string
               sourceEndpointRef:
-                description: "AWSResourceReferenceWrapper provides a wrapper around
-                  *AWSResourceReference\ntype to provide more user friendly syntax
-                  for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t
-                  \ name: my-api"
+                description: Reference to an ACK managed source endpoint resource
+                  for this replication task.
                 properties:
                   from:
                     description: |-
@@ -152,6 +150,8 @@ spec:
                     type: object
                 type: object
               startReplicationTask:
+                description: Indicates whether the replication task should be started
+                  after it is created.
                 type: boolean
               tableMappings:
                 description: |-
@@ -185,10 +185,8 @@ spec:
                   the target endpoint.
                 type: string
               targetEndpointRef:
-                description: "AWSResourceReferenceWrapper provides a wrapper around
-                  *AWSResourceReference\ntype to provide more user friendly syntax
-                  for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t
-                  \ name: my-api"
+                description: Reference to an ACK managed target endpoint resource
+                  for this replication task.
                 properties:
                   from:
                     description: |-
@@ -296,8 +294,12 @@ spec:
                   to start a CDC operation that begins at that checkpoint.
                 type: string
               sourceEndpointConnectionLastFailureMessage:
+                description: |-
+                  If the connection to the source endpoint failed, this field contains the
+                  related error message.
                 type: string
               sourceEndpointConnectionStatus:
+                description: Indicates the connection status of the source endpoint.
                 type: string
               startDate:
                 description: The date the replication task is scheduled to start.
@@ -384,8 +386,12 @@ spec:
                      * "Stop Reason RECYCLE_TASK"
                 type: string
               targetEndpointConnectionLastFailureMessage:
+                description: |-
+                  If the connection to the target endpoint failed, this field contains the
+                  related error message.
                 type: string
               targetEndpointConnectionStatus:
+                description: Indicates the connection status of the target endpoint.
                 type: string
               targetReplicationInstanceARN:
                 description: |-
@@ -458,6 +464,12 @@ spec:
                      of primary key definitions and likely issues with database migration performance,
                      among others.
                 type: string
+              updateInProgress:
+                description: |-
+                  Indicates whether the replication task is in the process of being updated.
+                  This field is used as a guard in the reconcile loop to prevent the
+                  replication task from being started while an update is pending.
+                type: boolean
             type: object
         type: object
     served: true

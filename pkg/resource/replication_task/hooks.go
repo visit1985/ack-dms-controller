@@ -27,19 +27,19 @@ import (
 
 const (
 	connectionStatusSuccessful = "successful"
-	connectionStatusTesting    = "testing"
-	connectionStatusFailed     = "failed"
+	//connectionStatusTesting    = "testing"
+	//connectionStatusFailed     = "failed"
 
-	replicationTaskStatusCreating  = "creating"
-	replicationTaskStatusDeleting  = "deleting"
-	replicationTaskStatusFailed    = "failed"
-	replicationTaskStatusModifying = "modifying"
-	replicationTaskStatusMoving    = "moving"
-	replicationTaskStatusReady     = "ready"
-	replicationTaskStatusStopped   = "stopped"
-	replicationTaskStatusStopping  = "stopping"
-	replicationTaskStatusRunning   = "running"
-	replicationTaskStatusStarting  = "starting"
+	//replicationTaskStatusCreating  = "creating"
+	//replicationTaskStatusDeleting  = "deleting"
+	replicationTaskStatusFailed = "failed"
+	//replicationTaskStatusModifying = "modifying"
+	//replicationTaskStatusMoving    = "moving"
+	replicationTaskStatusReady    = "ready"
+	replicationTaskStatusStopped  = "stopped"
+	replicationTaskStatusStopping = "stopping"
+	replicationTaskStatusRunning  = "running"
+	replicationTaskStatusStarting = "starting"
 )
 
 // compareTags is a custom comparison function for comparing lists of Tag
@@ -82,6 +82,30 @@ func endpointConnectionsTested(ko *svcapitypes.ReplicationTask) bool {
 		*ko.Status.TargetEndpointConnectionStatus == connectionStatusSuccessful
 }
 
+// deleteRequested is a custom function to determine if a ReplicationTask is
+// requested to be deleted
+func deleteRequested(ko *svcapitypes.ReplicationTask) bool {
+	return ko.ObjectMeta.GetDeletionTimestamp() != nil
+}
+
+// startRequested is a custom function to determine if a ReplicationTask is
+// requested to be started
+func startRequested(ko *svcapitypes.ReplicationTask) bool {
+	return ko.Spec.StartReplicationTask != nil && *ko.Spec.StartReplicationTask
+}
+
+// updateRequiresStop is a custom function to determine if a ReplicationTask
+// update requires the task to be stopped first.
+func updateRequiresStop(delta *ackcompare.Delta) bool {
+	return delta.DifferentExcept("Spec.StartReplicationTask", "Spec.Tags")
+}
+
+// updateInProgress is a custom function to determine if a ReplicationTask
+// update is in progress by checking UpdateInProgress status attribute.
+func updateInProgress(ko *svcapitypes.ReplicationTask) bool {
+	return ko.Status.UpdateInProgress != nil && *ko.Status.UpdateInProgress
+}
+
 // alreadyStarted is a custom function to determine if a ReplicationTask
 // is already started.
 func alreadyStarted(ko *svcapitypes.ReplicationTask) bool {
@@ -110,16 +134,15 @@ func alreadyStopped(ko *svcapitypes.ReplicationTask) bool {
 // shouldStartReplicationTask is a custom function to determine if a
 // ReplicationTask should be started.
 func shouldStartReplicationTask(ko *svcapitypes.ReplicationTask) bool {
-	return ko.ObjectMeta.GetDeletionTimestamp() == nil &&
-		ko.Spec.StartReplicationTask != nil && *ko.Spec.StartReplicationTask &&
+	return !updateInProgress(ko) && !deleteRequested(ko) && startRequested(ko) &&
 		endpointConnectionsTested(ko) && !alreadyStarted(ko)
 }
 
 // shouldStopReplicationTask is a custom function to determine if a
 // ReplicationTask should be stopped.
-func shouldStopReplicationTask(ko *svcapitypes.ReplicationTask) bool {
-	return (ko.ObjectMeta.GetDeletionTimestamp() != nil ||
-		(ko.Spec.StartReplicationTask != nil && !*ko.Spec.StartReplicationTask)) && !alreadyStopped(ko)
+func shouldStopReplicationTask(ko *svcapitypes.ReplicationTask, delta *ackcompare.Delta) bool {
+	return (deleteRequested(ko) || !startRequested(ko) || updateRequiresStop(delta)) &&
+		!alreadyStopped(ko)
 }
 
 // newStartReplicationTaskRequestPayload is a custom function to

@@ -298,7 +298,7 @@ func (rm *resourceManager) sdkFind(
 			if err != nil {
 				return nil, err
 			}
-			// requeue because we are in "starting" state now
+			// Requeue because we enter "starting" state now
 			return &resource{ko}, ackrequeue.NeededAfter(nil, 10*time.Second)
 		}
 	}
@@ -573,15 +573,17 @@ func (rm *resourceManager) sdkUpdate(
 	// Stop the replication task and make sure it is in a steady state
 	// before updating it.
 	if hasSteadyState(latest.ko) {
-		if shouldStopReplicationTask(latest.ko) {
+		if shouldStopReplicationTask(latest.ko, delta) {
 			stopReplicationTaskInput := newStopReplicationTaskRequestPayload(latest.ko)
 			_, err := rm.sdkapi.StopReplicationTask(ctx, stopReplicationTaskInput)
 			rm.metrics.RecordAPICall("UPDATE", "StopReplicationTask", err)
 			if err != nil {
 				return nil, err
 			}
-			// requeue because we are in "stopping" state now
-			return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
+			// Record that we stopped for an update, not by user request
+			latest.ko.Status.UpdateInProgress = aws.Bool(true)
+			// Requeue because we enter "stopping" state now
+			return latest, ackrequeue.NeededAfter(nil, 10*time.Second)
 		}
 	} else {
 		return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
@@ -724,6 +726,13 @@ func (rm *resourceManager) sdkUpdate(
 	}
 
 	rm.setStatusDefaults(ko)
+
+	// sdk_update_post_set_output hook
+	//
+	// Reset Status.UpdateInProgress so the next sync can start the
+	// task again if needed.
+	ko.Status.UpdateInProgress = nil
+
 	return &resource{ko}, nil
 }
 
@@ -780,14 +789,14 @@ func (rm *resourceManager) sdkDelete(
 	// Stop the replication task and make sure it is in a steady state
 	// before deleting it.
 	if hasSteadyState(r.ko) {
-		if shouldStopReplicationTask(r.ko) {
+		if shouldStopReplicationTask(r.ko, nil) {
 			stopReplicationTaskInput := newStopReplicationTaskRequestPayload(r.ko)
 			_, err := rm.sdkapi.StopReplicationTask(ctx, stopReplicationTaskInput)
 			rm.metrics.RecordAPICall("UPDATE", "StopReplicationTask", err)
 			if err != nil {
 				return nil, err
 			}
-			// requeue because we are in "stopping" state now
+			// Requeue because we enter "stopping" state now
 			return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
 		}
 	} else {

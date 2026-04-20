@@ -52,7 +52,7 @@ if shouldStartReplicationTask(ko) {
         if err != nil {
             return nil, err
         }
-        // requeue because we are in "starting" state now
+        // Requeue because we enter "starting" state now
         return &resource{ko}, ackrequeue.NeededAfter(nil, 10*time.Second)
     }
 }
