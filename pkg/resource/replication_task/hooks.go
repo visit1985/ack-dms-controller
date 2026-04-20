@@ -150,7 +150,7 @@ func shouldStopReplicationTask(ko *svcapitypes.ReplicationTask, delta *ackcompar
 // on the current state of the ReplicationTask.
 func newStartReplicationTaskRequestPayload(ko *svcapitypes.ReplicationTask) *svcsdk.StartReplicationTaskInput {
 	startReplicationTaskType := svcsdktypes.StartReplicationTaskTypeValueStartReplication
-	if ko.Status.TaskStatus != nil && *ko.Status.TaskStatus == replicationTaskStatusReady {
+	if ko.Status.TaskStatus != nil && *ko.Status.TaskStatus != replicationTaskStatusReady {
 		startReplicationTaskType = svcsdktypes.StartReplicationTaskTypeValueResumeProcessing
 	}
 	return &svcsdk.StartReplicationTaskInput{
