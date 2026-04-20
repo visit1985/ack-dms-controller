@@ -13,6 +13,9 @@ ignore:
 #    - ReplicationTask
 resources:
   Endpoint:
+    exceptions:
+      terminal_codes:
+        - InvalidParameterCombinationException
     fields:
       DocDBSettings.Password:
         is_secret: true
@@ -84,6 +87,9 @@ resources:
           output_fields:
             Status: EndpointStatus
   ReplicationTask:
+    exceptions:
+      terminal_codes:
+        - InvalidParameterCombinationException
     fields:
       Name:
         is_primary_key: true
