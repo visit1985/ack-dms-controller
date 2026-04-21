@@ -271,7 +271,7 @@ func (rm *resourceManager) sdkFind(
 		var awsErr smithy.APIError
 		if errors.As(err, &awsErr) && awsErr.ErrorCode() == "ResourceNotFoundFault" {
 			ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-				aws.String("connection status not found"), nil)
+				aws.String("Endpoint connections not found"), nil)
 			return &resource{ko}, nil
 		}
 		return &resource{ko}, err
@@ -306,7 +306,7 @@ func (rm *resourceManager) sdkFind(
 			}
 			ko.Status.TaskStatus = aws.String(replicationTaskStatusStarting)
 			ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-				aws.String("task entered starting state"), nil)
+				aws.String("ReplicationTask entered starting state"), nil)
 			return &resource{ko}, nil
 		}
 	}
@@ -316,7 +316,7 @@ func (rm *resourceManager) sdkFind(
 	// If the replication task is not in a steady state, requeue more frequently.
 	if !hasSteadyState(ko) {
 		ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-			aws.String("task not in steady state"), nil)
+			aws.String("ReplicationTask not in steady state"), nil)
 		return &resource{ko}, nil
 	}
 
@@ -594,12 +594,12 @@ func (rm *resourceManager) sdkUpdate(
 			latest.ko.Status.UpdateInProgress = aws.Bool(true)
 			latest.ko.Status.TaskStatus = aws.String(replicationTaskStatusStopping)
 			ackcondition.SetSynced(latest, corev1.ConditionFalse,
-				aws.String("task entered stopping state"), nil)
+				aws.String("ReplicationTask entered stopping state"), nil)
 			return latest, nil
 		}
 	} else {
 		ackcondition.SetSynced(latest, corev1.ConditionFalse,
-			aws.String("task not in steady state"), nil)
+			aws.String("ReplicationTask not in steady state"), nil)
 		return latest, nil
 	}
 
@@ -811,10 +811,10 @@ func (rm *resourceManager) sdkDelete(
 				return nil, err
 			}
 			r.ko.Status.TaskStatus = aws.String(replicationTaskStatusStopping)
-			return r, ackrequeue.NeededAfter(errors.New("task entered stopping state"), 10*time.Second)
+			return r, ackrequeue.NeededAfter(errors.New("ReplicationTask entered stopping state"), 10*time.Second)
 		}
 	} else {
-		return r, ackrequeue.NeededAfter(errors.New("task not in steady state"), 10*time.Second)
+		return r, ackrequeue.NeededAfter(errors.New("ReplicationTask not in steady state"), 10*time.Second)
 	}
 
 	input, err := rm.newDeleteRequestPayload(r)

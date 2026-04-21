@@ -25,7 +25,7 @@ if err != nil {
     var awsErr smithy.APIError
     if errors.As(err, &awsErr) && awsErr.ErrorCode() == "ResourceNotFoundFault" {
         ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-            aws.String("connection status not found"), nil)
+            aws.String("Endpoint connections not found"), nil)
         return &resource{ko}, nil
     }
     return &resource{ko}, err
@@ -60,7 +60,7 @@ if shouldStartReplicationTask(ko) {
         }
         ko.Status.TaskStatus = aws.String(replicationTaskStatusStarting)
         ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-            aws.String("task entered starting state"), nil)
+            aws.String("ReplicationTask entered starting state"), nil)
         return &resource{ko}, nil
     }
 }
@@ -70,6 +70,6 @@ if shouldStartReplicationTask(ko) {
 // If the replication task is not in a steady state, requeue more frequently.
 if !hasSteadyState(ko) {
     ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-        aws.String("task not in steady state"), nil)
+        aws.String("ReplicationTask not in steady state"), nil)
     return &resource{ko}, nil
 }
