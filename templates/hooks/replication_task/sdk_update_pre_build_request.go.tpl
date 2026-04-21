@@ -13,9 +13,13 @@ if hasSteadyState(latest.ko) {
         }
         // Record that we stopped for an update, not by user request
         latest.ko.Status.UpdateInProgress = aws.Bool(true)
-        // Requeue because we enter "stopping" state now
-        return latest, ackrequeue.NeededAfter(nil, 10*time.Second)
+        latest.ko.Status.TaskStatus = aws.String(replicationTaskStatusStopping)
+        ackcondition.SetSynced(latest, corev1.ConditionFalse,
+            aws.String("task entered stopping state"), nil)
+        return latest, nil
     }
 } else {
-    return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
+    ackcondition.SetSynced(latest, corev1.ConditionFalse,
+        aws.String("task not in steady state"), nil)
+    return latest, nil
 }

@@ -22,7 +22,13 @@ describeConnectionsInput := &svcsdk.DescribeConnectionsInput{
 respDescribeConnections, err := rm.sdkapi.DescribeConnections(ctx, describeConnectionsInput)
 rm.metrics.RecordAPICall("READ_MANY", "DescribeConnections", err)
 if err != nil {
-    return nil, err
+    var awsErr smithy.APIError
+    if errors.As(err, &awsErr) && awsErr.ErrorCode() == "ResourceNotFoundFault" {
+        ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
+            aws.String("connection status not found"), nil)
+        return &resource{ko}, nil
+    }
+    return &resource{ko}, err
 }
 for _, elem := range respDescribeConnections.Connections {
     if *elem.EndpointArn == *ko.Spec.SourceEndpointARN {
@@ -50,10 +56,12 @@ if shouldStartReplicationTask(ko) {
         _, err := rm.sdkapi.StartReplicationTask(ctx, startReplicationTaskInput)
         rm.metrics.RecordAPICall("UPDATE", "StartReplicationTask", err)
         if err != nil {
-            return nil, err
+            return &resource{ko}, err
         }
-        // Requeue because we enter "starting" state now
-        return &resource{ko}, ackrequeue.NeededAfter(nil, 10*time.Second)
+        ko.Status.TaskStatus = aws.String(replicationTaskStatusStarting)
+        ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
+            aws.String("task entered starting state"), nil)
+        return &resource{ko}, nil
     }
 }
 
@@ -61,5 +69,7 @@ if shouldStartReplicationTask(ko) {
 //
 // If the replication task is not in a steady state, requeue more frequently.
 if !hasSteadyState(ko) {
-    return &resource{ko}, ackrequeue.NeededAfter(nil, 10*time.Second)
+    ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
+        aws.String("task not in steady state"), nil)
+    return &resource{ko}, nil
 }

@@ -11,9 +11,9 @@ if hasSteadyState(r.ko) {
         if err != nil {
             return nil, err
         }
-        // Requeue because we enter "stopping" state now
-        return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
+		r.ko.Status.TaskStatus = aws.String(replicationTaskStatusStopping)
+        return r, ackrequeue.NeededAfter(errors.New("task entered stopping state"), 10*time.Second)
     }
 } else {
-    return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
+    return r, ackrequeue.NeededAfter(errors.New("task not in steady state"), 10*time.Second)
 }

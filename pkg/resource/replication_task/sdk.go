@@ -268,7 +268,13 @@ func (rm *resourceManager) sdkFind(
 	respDescribeConnections, err := rm.sdkapi.DescribeConnections(ctx, describeConnectionsInput)
 	rm.metrics.RecordAPICall("READ_MANY", "DescribeConnections", err)
 	if err != nil {
-		return nil, err
+		var awsErr smithy.APIError
+		if errors.As(err, &awsErr) && awsErr.ErrorCode() == "ResourceNotFoundFault" {
+			ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
+				aws.String("connection status not found"), nil)
+			return &resource{ko}, nil
+		}
+		return &resource{ko}, err
 	}
 	for _, elem := range respDescribeConnections.Connections {
 		if *elem.EndpointArn == *ko.Spec.SourceEndpointARN {
@@ -296,10 +302,12 @@ func (rm *resourceManager) sdkFind(
 			_, err := rm.sdkapi.StartReplicationTask(ctx, startReplicationTaskInput)
 			rm.metrics.RecordAPICall("UPDATE", "StartReplicationTask", err)
 			if err != nil {
-				return nil, err
+				return &resource{ko}, err
 			}
-			// Requeue because we enter "starting" state now
-			return &resource{ko}, ackrequeue.NeededAfter(nil, 10*time.Second)
+			ko.Status.TaskStatus = aws.String(replicationTaskStatusStarting)
+			ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
+				aws.String("task entered starting state"), nil)
+			return &resource{ko}, nil
 		}
 	}
 
@@ -307,7 +315,9 @@ func (rm *resourceManager) sdkFind(
 	//
 	// If the replication task is not in a steady state, requeue more frequently.
 	if !hasSteadyState(ko) {
-		return &resource{ko}, ackrequeue.NeededAfter(nil, 10*time.Second)
+		ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
+			aws.String("task not in steady state"), nil)
+		return &resource{ko}, nil
 	}
 
 	return &resource{ko}, nil
@@ -582,11 +592,15 @@ func (rm *resourceManager) sdkUpdate(
 			}
 			// Record that we stopped for an update, not by user request
 			latest.ko.Status.UpdateInProgress = aws.Bool(true)
-			// Requeue because we enter "stopping" state now
-			return latest, ackrequeue.NeededAfter(nil, 10*time.Second)
+			latest.ko.Status.TaskStatus = aws.String(replicationTaskStatusStopping)
+			ackcondition.SetSynced(latest, corev1.ConditionFalse,
+				aws.String("task entered stopping state"), nil)
+			return latest, nil
 		}
 	} else {
-		return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
+		ackcondition.SetSynced(latest, corev1.ConditionFalse,
+			aws.String("task not in steady state"), nil)
+		return latest, nil
 	}
 
 	input, err := rm.newUpdateRequestPayload(ctx, desired, delta)
@@ -796,11 +810,11 @@ func (rm *resourceManager) sdkDelete(
 			if err != nil {
 				return nil, err
 			}
-			// Requeue because we enter "stopping" state now
-			return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
+			r.ko.Status.TaskStatus = aws.String(replicationTaskStatusStopping)
+			return r, ackrequeue.NeededAfter(errors.New("task entered stopping state"), 10*time.Second)
 		}
 	} else {
-		return nil, ackrequeue.NeededAfter(nil, 10*time.Second)
+		return r, ackrequeue.NeededAfter(errors.New("task not in steady state"), 10*time.Second)
 	}
 
 	input, err := rm.newDeleteRequestPayload(r)
