@@ -6,4 +6,4 @@ if err != nil {
     return nil, err
 }
 r.ko.Status.EndpointStatus = aws.String(endpointStatusDeleting)
-return r, nil
+return r, ackrequeue.NeededAfter(errors.New("Waiting for Endpoint deletion to complete"), 10*time.Second)

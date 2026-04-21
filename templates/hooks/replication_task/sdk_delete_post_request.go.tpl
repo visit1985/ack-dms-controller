@@ -6,4 +6,4 @@ if err != nil {
     return nil, err
 }
 r.ko.Status.TaskStatus = aws.String(replicationTaskStatusDeleting)
-return r, nil
+return r, ackrequeue.NeededAfter(errors.New("Waiting for ReplicationTask deletion to complete"), 10*time.Second)

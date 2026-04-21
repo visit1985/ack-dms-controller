@@ -22,6 +22,7 @@ import (
 	"math"
 	"reflect"
 	"strings"
+	"time"
 
 	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
@@ -6484,7 +6485,7 @@ func (rm *resourceManager) sdkDelete(
 		return nil, err
 	}
 	r.ko.Status.EndpointStatus = aws.String(endpointStatusDeleting)
-	return r, nil
+	return r, ackrequeue.NeededAfter(errors.New("Waiting for Endpoint deletion to complete"), 10*time.Second)
 
 	return nil, err
 }
