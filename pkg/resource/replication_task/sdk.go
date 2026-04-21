@@ -825,6 +825,16 @@ func (rm *resourceManager) sdkDelete(
 	_ = resp
 	resp, err = rm.sdkapi.DeleteReplicationTask(ctx, input)
 	rm.metrics.RecordAPICall("DELETE", "DeleteReplicationTask", err)
+
+	// sdk_delete_post_request hook
+	//
+	// Wait for the replication task to be deleted before setResourceUnmanaged.
+	if err != nil {
+		return nil, err
+	}
+	r.ko.Status.TaskStatus = aws.String(replicationTaskStatusDeleting)
+	return r, nil
+
 	return nil, err
 }
 

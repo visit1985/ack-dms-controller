@@ -6476,6 +6476,16 @@ func (rm *resourceManager) sdkDelete(
 	_ = resp
 	resp, err = rm.sdkapi.DeleteEndpoint(ctx, input)
 	rm.metrics.RecordAPICall("DELETE", "DeleteEndpoint", err)
+
+	// sdk_delete_post_request hook
+	//
+	// Wait for the endpoint to be deleted before setResourceUnmanaged.
+	if err != nil {
+		return nil, err
+	}
+	r.ko.Status.EndpointStatus = aws.String(endpointStatusDeleting)
+	return r, nil
+
 	return nil, err
 }
 

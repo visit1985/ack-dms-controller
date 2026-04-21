@@ -18,6 +18,10 @@ import (
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 )
 
+const (
+	endpointStatusDeleting = "deleting"
+)
+
 // customPreCompare contains logic that help compare two iam Roles. This
 // function is injected in newResourceDelta function.
 func customPreCompare(

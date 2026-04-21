@@ -31,8 +31,8 @@ const (
 	//connectionStatusFailed     = "failed"
 
 	//replicationTaskStatusCreating  = "creating"
-	//replicationTaskStatusDeleting  = "deleting"
-	replicationTaskStatusFailed = "failed"
+	replicationTaskStatusDeleting = "deleting"
+	replicationTaskStatusFailed   = "failed"
 	//replicationTaskStatusModifying = "modifying"
 	//replicationTaskStatusMoving    = "moving"
 	replicationTaskStatusReady    = "ready"
