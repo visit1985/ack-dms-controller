@@ -62,6 +62,22 @@ spec:
               certificateARN:
                 description: The Amazon Resource Name (ARN) for the certificate.
                 type: string
+              certificateRef:
+                description: |-
+                  Reference to an ACK managed ACM certificate resource to associate with this
+                  endpoint.
+                properties:
+                  from:
+                    description: |-
+                      AWSResourceReference provides all the values necessary to reference another
+                      k8s resource for finding the identifier(Id/ARN/Name)
+                    properties:
+                      name:
+                        type: string
+                      namespace:
+                        type: string
+                    type: object
+                type: object
               databaseName:
                 description: |-
                   The name of the endpoint database. For a MySQL source or target endpoint,
@@ -435,6 +451,22 @@ spec:
                   Your Amazon Web Services account has a different default encryption key for
                   each Amazon Web Services Region.
                 type: string
+              kmsKeyRef:
+                description: |-
+                  Reference to an ACK managed KMS key that is used to encrypt the connection
+                  parameters for the endpoint.
+                properties:
+                  from:
+                    description: |-
+                      AWSResourceReference provides all the values necessary to reference another
+                      k8s resource for finding the identifier(Id/ARN/Name)
+                    properties:
+                      name:
+                        type: string
+                      namespace:
+                        type: string
+                    type: object
+                type: object
               microsoftSQLServerSettings:
                 description: |-
                   Settings in JSON format for the source and target Microsoft SQL Server endpoint.
@@ -1140,6 +1172,22 @@ spec:
                   The Amazon Resource Name (ARN) for the service access role that you want
                   to use to create the endpoint. The role must allow the iam:PassRole action.
                 type: string
+              serviceAccessRoleRef:
+                description: |-
+                  Reference to an ACK managed IAM role resource that you want to use as the
+                  service access role to creates the endpoint.
+                properties:
+                  from:
+                    description: |-
+                      AWSResourceReference provides all the values necessary to reference another
+                      k8s resource for finding the identifier(Id/ARN/Name)
+                    properties:
+                      name:
+                        type: string
+                      namespace:
+                        type: string
+                    type: object
+                type: object
               sslMode:
                 description: |-
                   The Secure Sockets Layer (SSL) mode to use for the SSL connection. The default

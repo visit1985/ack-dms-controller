@@ -74,8 +74,10 @@ type ReplicationTaskSpec struct {
 	// +kubebuilder:validation:Required
 	Name *string `json:"name"`
 	// The Amazon Resource Name (ARN) of a replication instance.
-	// +kubebuilder:validation:Required
-	ReplicationInstanceARN *string `json:"replicationInstanceARN"`
+	ReplicationInstanceARN *string `json:"replicationInstanceARN,omitempty"`
+	// Reference to an ACK managed replication instance resource for this replication
+	// task.
+	ReplicationInstanceRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"replicationInstanceRef,omitempty"`
 	// Overall settings for the task, in JSON format. For more information, see
 	// Specifying Task Settings for Database Migration Service Tasks (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TaskSettings.html)
 	// in the Database Migration Service User Guide.

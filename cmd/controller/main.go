@@ -19,12 +19,16 @@ import (
 	"context"
 	"os"
 
+	acmapitypes "github.com/aws-controllers-k8s/acm-controller/apis/v1alpha1"
+	iamapitypes "github.com/aws-controllers-k8s/iam-controller/apis/v1alpha1"
+	kmsapitypes "github.com/aws-controllers-k8s/kms-controller/apis/v1alpha1"
 	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	ackcfg "github.com/aws-controllers-k8s/runtime/pkg/config"
 	ackrt "github.com/aws-controllers-k8s/runtime/pkg/runtime"
 	acktypes "github.com/aws-controllers-k8s/runtime/pkg/types"
 	ackrtutil "github.com/aws-controllers-k8s/runtime/pkg/util"
 	ackrtwebhook "github.com/aws-controllers-k8s/runtime/pkg/webhook"
+	snsapitypes "github.com/aws-controllers-k8s/sns-controller/apis/v1alpha1"
 	flag "github.com/spf13/pflag"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -40,6 +44,9 @@ import (
 	svcresource "github.com/aws-controllers-k8s/dms-controller/pkg/resource"
 
 	_ "github.com/aws-controllers-k8s/dms-controller/pkg/resource/endpoint"
+	_ "github.com/aws-controllers-k8s/dms-controller/pkg/resource/event_subscription"
+	_ "github.com/aws-controllers-k8s/dms-controller/pkg/resource/replication_instance"
+	_ "github.com/aws-controllers-k8s/dms-controller/pkg/resource/replication_subnet_group"
 	_ "github.com/aws-controllers-k8s/dms-controller/pkg/resource/replication_task"
 
 	"github.com/aws-controllers-k8s/dms-controller/pkg/version"
@@ -57,6 +64,10 @@ func init() {
 
 	_ = svctypes.AddToScheme(scheme)
 	_ = ackv1alpha1.AddToScheme(scheme)
+	_ = acmapitypes.AddToScheme(scheme)
+	_ = iamapitypes.AddToScheme(scheme)
+	_ = kmsapitypes.AddToScheme(scheme)
+	_ = snsapitypes.AddToScheme(scheme)
 }
 
 func main() {

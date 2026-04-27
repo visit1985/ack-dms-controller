@@ -85,6 +85,9 @@ func newResourceDelta(
 			delta.Add("Spec.ReplicationInstanceARN", a.ko.Spec.ReplicationInstanceARN, b.ko.Spec.ReplicationInstanceARN)
 		}
 	}
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.ReplicationInstanceRef, b.ko.Spec.ReplicationInstanceRef) {
+		delta.Add("Spec.ReplicationInstanceRef", a.ko.Spec.ReplicationInstanceRef, b.ko.Spec.ReplicationInstanceRef)
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.ReplicationTaskSettings, b.ko.Spec.ReplicationTaskSettings) {
 		delta.Add("Spec.ReplicationTaskSettings", a.ko.Spec.ReplicationTaskSettings, b.ko.Spec.ReplicationTaskSettings)
 	} else if a.ko.Spec.ReplicationTaskSettings != nil && b.ko.Spec.ReplicationTaskSettings != nil {

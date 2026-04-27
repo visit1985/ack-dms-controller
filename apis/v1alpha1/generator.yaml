@@ -3,13 +3,13 @@ ignore:
     - DataMigration
     - DataProvider
 #    - Endpoint
-    - EventSubscription
+#    - EventSubscription
     - FleetAdvisorCollector
     - InstanceProfile
     - MigrationProject
     - ReplicationConfig
-    - ReplicationInstance
-    - ReplicationSubnetGroup
+#    - ReplicationInstance
+#    - ReplicationSubnetGroup
 #    - ReplicationTask
 resources:
   Endpoint:
@@ -17,6 +17,11 @@ resources:
       terminal_codes:
         - InvalidParameterCombinationException
     fields:
+      CertificateARN:
+        references:
+          resource: Certificate
+          service_name: acm
+          path: Status.ACKResourceMetadata.ARN
       DocDBSettings.Password:
         is_secret: true
       EndpointStatus:
@@ -30,6 +35,11 @@ resources:
         is_secret: true
       KafkaSettings.SSLClientKeyPassword:
         is_secret: true
+      KMSKeyID:
+        references:
+          resource: Key
+          service_name: kms
+          path: Status.KeyID
       MicrosoftSQLServerSettings.Password:
         is_secret: true
       MongoDBSettings.Password:
@@ -54,6 +64,11 @@ resources:
         is_secret: true
       RedshiftSettings.AuthPassword:
         is_secret: true
+      ServiceAccessRoleARN:
+        references:
+          resource: Role
+          service_name: iam
+          path: Status.ACKResourceMetadata.ARN
       SybaseSettings.Password:
         is_secret: true
       Tags:
@@ -78,8 +93,6 @@ resources:
         CreateEndpoint:
           input_fields:
             EndpointIdentifier: Name
-#            KafkaSettings.SASLPassword: SaslPassword
-#            KafkaSettings.SSLClientKeyPassword: SslClientKeyPassword
           output_fields:
             Status: EndpointStatus
         DescribeEndpoints:
@@ -88,6 +101,145 @@ resources:
         ModifyEndpoint:
           output_fields:
             Status: EndpointStatus
+  EventSubscription:
+    fields:
+      Name:
+        is_primary_key: true
+        is_immutable: true
+      SNSTopicARN:
+        references:
+          resource: Topic
+          service_name: sns
+          path: Status.ACKResourceMetadata.ARN
+      SubscriptionStatus:
+        print:
+          name: Status
+      Tags:
+        compare:
+          is_ignored: true
+    hooks:
+      delta_pre_compare:
+        code: compareTags(delta, a, b)
+      sdk_delete_post_request:
+        template_path: hooks/event_subscription/sdk_delete_post_request.go.tpl
+      sdk_read_many_post_request:
+        template_path: hooks/event_subscription/sdk_read_many_post_request.go.tpl
+      sdk_read_many_post_set_output:
+        template_path: hooks/event_subscription/sdk_read_many_post_set_output.go.tpl
+    print:
+      add_age_column: true
+      add_synced_column: true
+    renames:
+      operations:
+        CreateEventSubscription:
+          input_fields:
+            SubscriptionName: Name
+          output_fields:
+            EventCategoriesList: EventCategories
+            SourceIdsList: SourceIds
+            Status: SubscriptionStatus
+        DeleteEventSubscription:
+          input_fields:
+            SubscriptionName: Name
+        DescribeEventSubscriptions:
+          input_fields:
+            SubscriptionName: Name
+          output_fields:
+            EventCategoriesList: EventCategories
+            SourceIdsList: SourceIds
+            Status: SubscriptionStatus
+        ModifyEventSubscription:
+          input_fields:
+            SubscriptionName: Name
+          output_fields:
+            EventCategoriesList: EventCategories
+            SourceIdsList: SourceIds
+            Status: SubscriptionStatus
+  ReplicationInstance:
+    fields:
+      KMSKeyID:
+        references:
+          resource: Key
+          service_name: kms
+          path: Status.KeyID
+      Name:
+        is_primary_key: true
+        is_immutable: true
+      ReplicationSubnetGroupId:
+        references:
+          resource: ReplicationSubnetGroup
+          path: Spec.Name
+      Tags:
+        compare:
+          is_ignored: true
+    hooks:
+      delta_pre_compare:
+        code: compareTags(delta, a, b)
+      sdk_delete_post_request:
+        template_path: hooks/replication_instance/sdk_delete_post_request.go.tpl
+      sdk_read_many_post_build_request:
+        template_path: hooks/replication_instance/sdk_read_many_post_build_request.go.tpl
+      sdk_read_many_post_request:
+        template_path: hooks/replication_instance/sdk_read_many_post_request.go.tpl
+    print:
+      add_age_column: true
+      add_synced_column: true
+    reconcile:
+      requeue_on_success_seconds: 300
+    renames:
+      operations:
+        CreateReplicationInstance:
+          input_fields:
+            ReplicationInstanceIdentifier: Name
+            ReplicationSubnetGroupIdentifier: ReplicationSubnetGroupId
+        DescribeReplicationInstances:
+          input_fields:
+            ReplicationInstanceIdentifier: Name
+        ModifyReplicationInstance:
+          input_fields:
+            ReplicationInstanceIdentifier: Name
+  ReplicationSubnetGroup:
+    fields:
+      Name:
+        is_primary_key: true
+        is_immutable: true
+      SubnetGroupStatus:
+        print:
+          name: Status
+      Tags:
+        compare:
+          is_ignored: true
+    hooks:
+      delta_pre_compare:
+        code: compareTags(delta, a, b)
+      sdk_delete_post_request:
+        template_path: hooks/replication_subnet_group/sdk_delete_post_request.go.tpl
+      sdk_read_many_post_build_request:
+        template_path: hooks/replication_subnet_group/sdk_read_many_post_build_request.go.tpl
+      sdk_read_many_post_request:
+        template_path: hooks/replication_subnet_group/sdk_read_many_post_request.go.tpl
+      sdk_read_many_post_set_output:
+        template_path: hooks/replication_subnet_group/sdk_read_many_post_set_output.go.tpl
+    print:
+      add_age_column: true
+      add_synced_column: true
+    renames:
+      operations:
+        CreateReplicationSubnetGroup:
+          input_fields:
+            ReplicationSubnetGroupDescription: Description
+            ReplicationSubnetGroupIdentifier: Name
+        DeleteReplicationSubnetGroup:
+          input_fields:
+            ReplicationSubnetGroupIdentifier: Name
+        DescribeReplicationSubnetGroups:
+          input_fields:
+            ReplicationSubnetGroupDescription: Description
+            ReplicationSubnetGroupIdentifier: Name
+        ModifyReplicationSubnetGroup:
+          input_fields:
+            ReplicationSubnetGroupDescription: Description
+            ReplicationSubnetGroupIdentifier: Name
   ReplicationTask:
     exceptions:
       terminal_codes:
@@ -96,10 +248,14 @@ resources:
       Name:
         is_primary_key: true
         is_immutable: true
+      ReplicationInstanceARN:
+        references:
+          resource: ReplicationInstance
+          path: Status.ACKResourceMetadata.ARN
       SourceEndpointARN:
         references:
-            resource: Endpoint
-            path: Status.ACKResourceMetadata.ARN
+          resource: Endpoint
+          path: Status.ACKResourceMetadata.ARN
       SourceEndpointConnectionStatus:
         is_read_only: true
         type: string
@@ -113,8 +269,8 @@ resources:
           is_ignored: true
       TargetEndpointARN:
         references:
-            resource: Endpoint
-            path: Status.ACKResourceMetadata.ARN
+          resource: Endpoint
+          path: Status.ACKResourceMetadata.ARN
       TargetEndpointConnectionStatus:
         is_read_only: true
         type: string

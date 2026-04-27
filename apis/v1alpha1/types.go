@@ -97,14 +97,15 @@ type CollectorShortInfoResponse struct {
 
 // Configuration parameters for provisioning an DMS Serverless replication.
 type ComputeConfig struct {
-	AvailabilityZone           *string `json:"availabilityZone,omitempty"`
-	DNSNameServers             *string `json:"dnsNameServers,omitempty"`
-	KMSKeyID                   *string `json:"kmsKeyID,omitempty"`
-	MaxCapacityUnits           *int64  `json:"maxCapacityUnits,omitempty"`
-	MinCapacityUnits           *int64  `json:"minCapacityUnits,omitempty"`
-	MultiAZ                    *bool   `json:"multiAZ,omitempty"`
-	PreferredMaintenanceWindow *string `json:"preferredMaintenanceWindow,omitempty"`
-	ReplicationSubnetGroupID   *string `json:"replicationSubnetGroupID,omitempty"`
+	AvailabilityZone           *string   `json:"availabilityZone,omitempty"`
+	DNSNameServers             *string   `json:"dnsNameServers,omitempty"`
+	KMSKeyID                   *string   `json:"kmsKeyID,omitempty"`
+	MaxCapacityUnits           *int64    `json:"maxCapacityUnits,omitempty"`
+	MinCapacityUnits           *int64    `json:"minCapacityUnits,omitempty"`
+	MultiAZ                    *bool     `json:"multiAZ,omitempty"`
+	PreferredMaintenanceWindow *string   `json:"preferredMaintenanceWindow,omitempty"`
+	ReplicationSubnetGroupID   *string   `json:"replicationSubnetGroupID,omitempty"`
+	VPCSecurityGroupIDs        []*string `json:"vpcSecurityGroupIDs,omitempty"`
 }
 
 // Status of the connection between an endpoint and a replication instance,
@@ -354,6 +355,7 @@ type EngineVersion struct {
 // categories, the date and source of the event, and the DMS resource type.
 type Event struct {
 	Date             *metav1.Time `json:"date,omitempty"`
+	EventCategories  []*string    `json:"eventCategories,omitempty"`
 	Message          *string      `json:"message,omitempty"`
 	SourceIdentifier *string      `json:"sourceIdentifier,omitempty"`
 }
@@ -363,18 +365,22 @@ type Event struct {
 // (https://docs.aws.amazon.com/dms/latest/APIReference/API_EventCategoryGroup.html)
 // action.
 type EventCategoryGroup struct {
-	SourceType *string `json:"sourceType,omitempty"`
+	EventCategories []*string `json:"eventCategories,omitempty"`
+	SourceType      *string   `json:"sourceType,omitempty"`
 }
 
 // Describes an event notification subscription created by the CreateEventSubscription
 // operation.
-type EventSubscription struct {
-	CustSubscriptionID       *string `json:"custSubscriptionID,omitempty"`
-	CustomerAWSID            *string `json:"customerAWSID,omitempty"`
-	SNSTopicARN              *string `json:"snsTopicARN,omitempty"`
-	SourceType               *string `json:"sourceType,omitempty"`
-	Status                   *string `json:"status,omitempty"`
-	SubscriptionCreationTime *string `json:"subscriptionCreationTime,omitempty"`
+type EventSubscription_SDK struct {
+	CustSubscriptionID       *string   `json:"custSubscriptionID,omitempty"`
+	CustomerAWSID            *string   `json:"customerAWSID,omitempty"`
+	Enabled                  *bool     `json:"enabled,omitempty"`
+	EventCategoriesList      []*string `json:"eventCategoriesList,omitempty"`
+	SNSTopicARN              *string   `json:"snsTopicARN,omitempty"`
+	SourceIDsList            []*string `json:"sourceIDsList,omitempty"`
+	SourceType               *string   `json:"sourceType,omitempty"`
+	Status                   *string   `json:"status,omitempty"`
+	SubscriptionCreationTime *string   `json:"subscriptionCreationTime,omitempty"`
 }
 
 // Provides information about an exported metadata model assessment.
@@ -471,14 +477,15 @@ type IbmDB2ZOsDataProviderSettings struct {
 
 // Provides information that defines an instance profile.
 type InstanceProfile struct {
-	AvailabilityZone      *string `json:"availabilityZone,omitempty"`
-	Description           *string `json:"description,omitempty"`
-	InstanceProfileARN    *string `json:"instanceProfileARN,omitempty"`
-	InstanceProfileName   *string `json:"instanceProfileName,omitempty"`
-	KMSKeyARN             *string `json:"kmsKeyARN,omitempty"`
-	NetworkType           *string `json:"networkType,omitempty"`
-	PubliclyAccessible    *bool   `json:"publiclyAccessible,omitempty"`
-	SubnetGroupIdentifier *string `json:"subnetGroupIdentifier,omitempty"`
+	AvailabilityZone      *string   `json:"availabilityZone,omitempty"`
+	Description           *string   `json:"description,omitempty"`
+	InstanceProfileARN    *string   `json:"instanceProfileARN,omitempty"`
+	InstanceProfileName   *string   `json:"instanceProfileName,omitempty"`
+	KMSKeyARN             *string   `json:"kmsKeyARN,omitempty"`
+	NetworkType           *string   `json:"networkType,omitempty"`
+	PubliclyAccessible    *bool     `json:"publiclyAccessible,omitempty"`
+	SubnetGroupIdentifier *string   `json:"subnetGroupIdentifier,omitempty"`
+	VPCSecurityGroups     []*string `json:"vpcSecurityGroups,omitempty"`
 }
 
 // Describes a Fleet Advisor collector inventory.
@@ -769,6 +776,7 @@ type OrderableReplicationInstance struct {
 	IncludedAllocatedStorage *int64  `json:"includedAllocatedStorage,omitempty"`
 	MaxAllocatedStorage      *int64  `json:"maxAllocatedStorage,omitempty"`
 	MinAllocatedStorage      *int64  `json:"minAllocatedStorage,omitempty"`
+	ReplicationInstanceClass *string `json:"replicationInstanceClass,omitempty"`
 	StorageType              *string `json:"storageType,omitempty"`
 }
 
@@ -829,6 +837,7 @@ type PostgreSQLSettings struct {
 // The results returned in describe-replications to display the results of the
 // premigration assessment from the replication configuration.
 type PremigrationAssessmentStatus struct {
+	FailOnAssessmentFailure               *bool        `json:"failOnAssessmentFailure,omitempty"`
 	LastFailureMessage                    *string      `json:"lastFailureMessage,omitempty"`
 	PremigrationAssessmentRunARN          *string      `json:"premigrationAssessmentRunARN,omitempty"`
 	PremigrationAssessmentRunCreationDate *metav1.Time `json:"premigrationAssessmentRunCreationDate,omitempty"`
@@ -856,6 +865,7 @@ type Progress struct {
 type ProvisionData struct {
 	DateNewProvisioningDataAvailable *metav1.Time `json:"dateNewProvisioningDataAvailable,omitempty"`
 	DateProvisioned                  *metav1.Time `json:"dateProvisioned,omitempty"`
+	IsNewProvisioningAvailable       *bool        `json:"isNewProvisioningAvailable,omitempty"`
 	ProvisionState                   *string      `json:"provisionState,omitempty"`
 	ProvisionedCapacityUnits         *int64       `json:"provisionedCapacityUnits,omitempty"`
 	ReasonForNewProvisioningData     *string      `json:"reasonForNewProvisioningData,omitempty"`
@@ -979,6 +989,7 @@ type Replication struct {
 	CdcStartPosition            *string      `json:"cdcStartPosition,omitempty"`
 	CdcStartTime                *metav1.Time `json:"cdcStartTime,omitempty"`
 	CdcStopPosition             *string      `json:"cdcStopPosition,omitempty"`
+	FailureMessages             []*string    `json:"failureMessages,omitempty"`
 	IsReadOnly                  *bool        `json:"isReadOnly,omitempty"`
 	RecoveryCheckpoint          *string      `json:"recoveryCheckpoint,omitempty"`
 	ReplicationConfigARN        *string      `json:"replicationConfigARN,omitempty"`
@@ -1010,25 +1021,6 @@ type ReplicationConfig struct {
 	TargetEndpointARN           *string      `json:"targetEndpointARN,omitempty"`
 }
 
-// Provides information that defines a replication instance.
-type ReplicationInstance struct {
-	AllocatedStorage                    *int64       `json:"allocatedStorage,omitempty"`
-	AvailabilityZone                    *string      `json:"availabilityZone,omitempty"`
-	DNSNameServers                      *string      `json:"dnsNameServers,omitempty"`
-	EngineVersion                       *string      `json:"engineVersion,omitempty"`
-	FreeUntil                           *metav1.Time `json:"freeUntil,omitempty"`
-	InstanceCreateTime                  *metav1.Time `json:"instanceCreateTime,omitempty"`
-	KMSKeyID                            *string      `json:"kmsKeyID,omitempty"`
-	NetworkType                         *string      `json:"networkType,omitempty"`
-	PreferredMaintenanceWindow          *string      `json:"preferredMaintenanceWindow,omitempty"`
-	ReplicationInstanceARN              *string      `json:"replicationInstanceARN,omitempty"`
-	ReplicationInstanceIdentifier       *string      `json:"replicationInstanceIdentifier,omitempty"`
-	ReplicationInstancePrivateIPAddress *string      `json:"replicationInstancePrivateIPAddress,omitempty"`
-	ReplicationInstancePublicIPAddress  *string      `json:"replicationInstancePublicIPAddress,omitempty"`
-	ReplicationInstanceStatus           *string      `json:"replicationInstanceStatus,omitempty"`
-	SecondaryAvailabilityZone           *string      `json:"secondaryAvailabilityZone,omitempty"`
-}
-
 // Contains metadata for a replication instance task log.
 type ReplicationInstanceTaskLog struct {
 	ReplicationInstanceTaskLogSize *int64  `json:"replicationInstanceTaskLogSize,omitempty"`
@@ -1036,14 +1028,52 @@ type ReplicationInstanceTaskLog struct {
 	ReplicationTaskName            *string `json:"replicationTaskName,omitempty"`
 }
 
+// Provides information that defines a replication instance.
+type ReplicationInstance_SDK struct {
+	AllocatedStorage        *int64       `json:"allocatedStorage,omitempty"`
+	AutoMinorVersionUpgrade *bool        `json:"autoMinorVersionUpgrade,omitempty"`
+	AvailabilityZone        *string      `json:"availabilityZone,omitempty"`
+	DNSNameServers          *string      `json:"dnsNameServers,omitempty"`
+	EngineVersion           *string      `json:"engineVersion,omitempty"`
+	FreeUntil               *metav1.Time `json:"freeUntil,omitempty"`
+	InstanceCreateTime      *metav1.Time `json:"instanceCreateTime,omitempty"`
+	// Specifies the settings required for kerberos authentication when creating
+	// the replication instance.
+	KerberosAuthenticationSettings *KerberosAuthenticationSettings `json:"kerberosAuthenticationSettings,omitempty"`
+	KMSKeyID                       *string                         `json:"kmsKeyID,omitempty"`
+	MultiAZ                        *bool                           `json:"multiAZ,omitempty"`
+	NetworkType                    *string                         `json:"networkType,omitempty"`
+	// Provides information about the values of pending modifications to a replication
+	// instance. This data type is an object of the ReplicationInstance (https://docs.aws.amazon.com/dms/latest/APIReference/API_ReplicationInstance.html)
+	// user-defined data type.
+	PendingModifiedValues                 *ReplicationPendingModifiedValues `json:"pendingModifiedValues,omitempty"`
+	PreferredMaintenanceWindow            *string                           `json:"preferredMaintenanceWindow,omitempty"`
+	PubliclyAccessible                    *bool                             `json:"publiclyAccessible,omitempty"`
+	ReplicationInstanceARN                *string                           `json:"replicationInstanceARN,omitempty"`
+	ReplicationInstanceClass              *string                           `json:"replicationInstanceClass,omitempty"`
+	ReplicationInstanceIdentifier         *string                           `json:"replicationInstanceIdentifier,omitempty"`
+	ReplicationInstanceIPv6Addresses      []*string                         `json:"replicationInstanceIPv6Addresses,omitempty"`
+	ReplicationInstancePrivateIPAddress   *string                           `json:"replicationInstancePrivateIPAddress,omitempty"`
+	ReplicationInstancePrivateIPAddresses []*string                         `json:"replicationInstancePrivateIPAddresses,omitempty"`
+	ReplicationInstancePublicIPAddress    *string                           `json:"replicationInstancePublicIPAddress,omitempty"`
+	ReplicationInstancePublicIPAddresses  []*string                         `json:"replicationInstancePublicIPAddresses,omitempty"`
+	ReplicationInstanceStatus             *string                           `json:"replicationInstanceStatus,omitempty"`
+	// Describes a subnet group in response to a request by the DescribeReplicationSubnetGroups
+	// operation.
+	ReplicationSubnetGroup    *ReplicationSubnetGroup_SDK   `json:"replicationSubnetGroup,omitempty"`
+	SecondaryAvailabilityZone *string                       `json:"secondaryAvailabilityZone,omitempty"`
+	VPCSecurityGroups         []*VPCSecurityGroupMembership `json:"vpcSecurityGroups,omitempty"`
+}
+
 // Provides information about the values of pending modifications to a replication
 // instance. This data type is an object of the ReplicationInstance (https://docs.aws.amazon.com/dms/latest/APIReference/API_ReplicationInstance.html)
 // user-defined data type.
 type ReplicationPendingModifiedValues struct {
-	AllocatedStorage *int64  `json:"allocatedStorage,omitempty"`
-	EngineVersion    *string `json:"engineVersion,omitempty"`
-	MultiAZ          *bool   `json:"multiAZ,omitempty"`
-	NetworkType      *string `json:"networkType,omitempty"`
+	AllocatedStorage         *int64  `json:"allocatedStorage,omitempty"`
+	EngineVersion            *string `json:"engineVersion,omitempty"`
+	MultiAZ                  *bool   `json:"multiAZ,omitempty"`
+	NetworkType              *string `json:"networkType,omitempty"`
+	ReplicationInstanceClass *string `json:"replicationInstanceClass,omitempty"`
 }
 
 // This object provides a collection of statistics about a serverless replication.
@@ -1063,12 +1093,14 @@ type ReplicationStats struct {
 
 // Describes a subnet group in response to a request by the DescribeReplicationSubnetGroups
 // operation.
-type ReplicationSubnetGroup struct {
-	IsReadOnly                        *bool   `json:"isReadOnly,omitempty"`
-	ReplicationSubnetGroupDescription *string `json:"replicationSubnetGroupDescription,omitempty"`
-	ReplicationSubnetGroupIdentifier  *string `json:"replicationSubnetGroupIdentifier,omitempty"`
-	SubnetGroupStatus                 *string `json:"subnetGroupStatus,omitempty"`
-	VPCID                             *string `json:"vpcID,omitempty"`
+type ReplicationSubnetGroup_SDK struct {
+	IsReadOnly                        *bool     `json:"isReadOnly,omitempty"`
+	ReplicationSubnetGroupDescription *string   `json:"replicationSubnetGroupDescription,omitempty"`
+	ReplicationSubnetGroupIdentifier  *string   `json:"replicationSubnetGroupIdentifier,omitempty"`
+	SubnetGroupStatus                 *string   `json:"subnetGroupStatus,omitempty"`
+	Subnets                           []*Subnet `json:"subnets,omitempty"`
+	SupportedNetworkTypes             []*string `json:"supportedNetworkTypes,omitempty"`
+	VPCID                             *string   `json:"vpcID,omitempty"`
 }
 
 // The task assessment report in JSON format.
@@ -1089,6 +1121,7 @@ type ReplicationTaskAssessmentResult struct {
 // the ReplicationTaskAssessmentRun object.
 type ReplicationTaskAssessmentRun struct {
 	AssessmentRunName                        *string      `json:"assessmentRunName,omitempty"`
+	IsLatestTaskAssessmentRun                *bool        `json:"isLatestTaskAssessmentRun,omitempty"`
 	LastFailureMessage                       *string      `json:"lastFailureMessage,omitempty"`
 	ReplicationTaskARN                       *string      `json:"replicationTaskARN,omitempty"`
 	ReplicationTaskAssessmentRunARN          *string      `json:"replicationTaskAssessmentRunARN,omitempty"`
@@ -1276,8 +1309,14 @@ type StatementProperties struct {
 // this object identifies a subnet by its given Availability Zone, subnet identifier,
 // and status.
 type Subnet struct {
-	SubnetIdentifier *string `json:"subnetIdentifier,omitempty"`
-	SubnetStatus     *string `json:"subnetStatus,omitempty"`
+	// The name of an Availability Zone for use during database migration. AvailabilityZone
+	// is an optional parameter to the CreateReplicationInstance (https://docs.aws.amazon.com/dms/latest/APIReference/API_CreateReplicationInstance.html)
+	// operation, and it’s value relates to the Amazon Web Services Region of
+	// an endpoint. For example, the availability zone of an endpoint in the us-east-1
+	// region might be us-east-1a, us-east-1b, us-east-1c, or us-east-1d.
+	SubnetAvailabilityZone *AvailabilityZone `json:"subnetAvailabilityZone,omitempty"`
+	SubnetIdentifier       *string           `json:"subnetIdentifier,omitempty"`
+	SubnetStatus           *string           `json:"subnetStatus,omitempty"`
 }
 
 // Provides information about types of supported endpoints in response to a
@@ -1289,6 +1328,7 @@ type SupportedEndpointType struct {
 	EngineDisplayName                       *string `json:"engineDisplayName,omitempty"`
 	EngineName                              *string `json:"engineName,omitempty"`
 	ReplicationInstanceEngineMinimumVersion *string `json:"replicationInstanceEngineMinimumVersion,omitempty"`
+	SupportsCDC                             *bool   `json:"supportsCDC,omitempty"`
 }
 
 // Provides information that defines an SAP ASE data provider.

@@ -70,9 +70,20 @@ rules:
   - list
   - watch
 - apiGroups:
+  - acm.services.k8s.aws
+  resources:
+  - certificates
+  - certificates/status
+  verbs:
+  - get
+  - list
+- apiGroups:
   - dms.services.k8s.aws
   resources:
   - endpoints
+  - eventsubscriptions
+  - replicationinstances
+  - replicationsubnetgroups
   - replicationtasks
   verbs:
   - create
@@ -86,11 +97,30 @@ rules:
   - dms.services.k8s.aws
   resources:
   - endpoints/status
+  - eventsubscriptions/status
+  - replicationinstances/status
+  - replicationsubnetgroups/status
   - replicationtasks/status
   verbs:
   - get
   - patch
   - update
+- apiGroups:
+  - iam.services.k8s.aws
+  resources:
+  - roles
+  - roles/status
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - kms.services.k8s.aws
+  resources:
+  - keys
+  - keys/status
+  verbs:
+  - get
+  - list
 - apiGroups:
   - services.k8s.aws
   resources:
@@ -113,6 +143,14 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - sns.services.k8s.aws
+  resources:
+  - topics
+  - topics/status
+  verbs:
+  - get
+  - list
 {{- end }}
 
 {{/* Convert k/v map to string like: "key1=value1,key2=value2,..." */}}

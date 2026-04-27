@@ -3,4 +3,7 @@ kind: Kustomization
 resources:
   - common
   - bases/dms.services.k8s.aws_endpoints.yaml
+  - bases/dms.services.k8s.aws_eventsubscriptions.yaml
+  - bases/dms.services.k8s.aws_replicationinstances.yaml
+  - bases/dms.services.k8s.aws_replicationsubnetgroups.yaml
   - bases/dms.services.k8s.aws_replicationtasks.yaml

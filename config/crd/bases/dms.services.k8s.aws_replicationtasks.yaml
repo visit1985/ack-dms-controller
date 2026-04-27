@@ -113,6 +113,22 @@ spec:
               replicationInstanceARN:
                 description: The Amazon Resource Name (ARN) of a replication instance.
                 type: string
+              replicationInstanceRef:
+                description: |-
+                  Reference to an ACK managed replication instance resource for this replication
+                  task.
+                properties:
+                  from:
+                    description: |-
+                      AWSResourceReference provides all the values necessary to reference another
+                      k8s resource for finding the identifier(Id/ARN/Name)
+                    properties:
+                      name:
+                        type: string
+                      namespace:
+                        type: string
+                    type: object
+                type: object
               replicationTaskSettings:
                 description: |-
                   Overall settings for the task, in JSON format. For more information, see
@@ -209,7 +225,6 @@ spec:
             required:
             - migrationType
             - name
-            - replicationInstanceARN
             - tableMappings
             type: object
           status:

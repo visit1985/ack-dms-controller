@@ -37,6 +37,10 @@ import (
 func (rm *resourceManager) ClearResolvedReferences(res acktypes.AWSResource) acktypes.AWSResource {
 	ko := rm.concreteResource(res).ko.DeepCopy()
 
+	if ko.Spec.ReplicationInstanceRef != nil {
+		ko.Spec.ReplicationInstanceARN = nil
+	}
+
 	if ko.Spec.SourceEndpointRef != nil {
 		ko.Spec.SourceEndpointARN = nil
 	}
@@ -64,6 +68,12 @@ func (rm *resourceManager) ResolveReferences(
 
 	resourceHasReferences := false
 	err := validateReferenceFields(ko)
+	if fieldHasReferences, err := rm.resolveReferenceForReplicationInstanceARN(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
 	if fieldHasReferences, err := rm.resolveReferenceForSourceEndpointARN(ctx, apiReader, ko); err != nil {
 		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
 	} else {
@@ -83,6 +93,13 @@ func (rm *resourceManager) ResolveReferences(
 // identifier field.
 func validateReferenceFields(ko *svcapitypes.ReplicationTask) error {
 
+	if ko.Spec.ReplicationInstanceRef != nil && ko.Spec.ReplicationInstanceARN != nil {
+		return ackerr.ResourceReferenceAndIDNotSupportedFor("ReplicationInstanceARN", "ReplicationInstanceRef")
+	}
+	if ko.Spec.ReplicationInstanceRef == nil && ko.Spec.ReplicationInstanceARN == nil {
+		return ackerr.ResourceReferenceOrIDRequiredFor("ReplicationInstanceARN", "ReplicationInstanceRef")
+	}
+
 	if ko.Spec.SourceEndpointRef != nil && ko.Spec.SourceEndpointARN != nil {
 		return ackerr.ResourceReferenceAndIDNotSupportedFor("SourceEndpointARN", "SourceEndpointRef")
 	}
@@ -95,6 +112,89 @@ func validateReferenceFields(ko *svcapitypes.ReplicationTask) error {
 	}
 	if ko.Spec.TargetEndpointRef == nil && ko.Spec.TargetEndpointARN == nil {
 		return ackerr.ResourceReferenceOrIDRequiredFor("TargetEndpointARN", "TargetEndpointRef")
+	}
+	return nil
+}
+
+// resolveReferenceForReplicationInstanceARN reads the resource referenced
+// from ReplicationInstanceRef field and sets the ReplicationInstanceARN
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForReplicationInstanceARN(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.ReplicationTask,
+) (hasReferences bool, err error) {
+	if ko.Spec.ReplicationInstanceRef != nil && ko.Spec.ReplicationInstanceRef.From != nil {
+		hasReferences = true
+		arr := ko.Spec.ReplicationInstanceRef.From
+		if arr.Name == nil || *arr.Name == "" {
+			return hasReferences, fmt.Errorf("provided resource reference is nil or empty: ReplicationInstanceRef")
+		}
+		namespace := ko.ObjectMeta.GetNamespace()
+		if arr.Namespace != nil && *arr.Namespace != "" {
+			namespace = *arr.Namespace
+		}
+		obj := &svcapitypes.ReplicationInstance{}
+		if err := getReferencedResourceState_ReplicationInstance(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+			return hasReferences, err
+		}
+		ko.Spec.ReplicationInstanceARN = (*string)(obj.Status.ACKResourceMetadata.ARN)
+	}
+
+	return hasReferences, nil
+}
+
+// getReferencedResourceState_ReplicationInstance looks up whether a referenced resource
+// exists and is in a ACK.ResourceSynced=True state. If the referenced resource does exist and is
+// in a Synced state, returns nil, otherwise returns `ackerr.ResourceReferenceTerminalFor` or
+// `ResourceReferenceNotSyncedFor` depending on if the resource is in a Terminal state.
+func getReferencedResourceState_ReplicationInstance(
+	ctx context.Context,
+	apiReader client.Reader,
+	obj *svcapitypes.ReplicationInstance,
+	name string, // the Kubernetes name of the referenced resource
+	namespace string, // the Kubernetes namespace of the referenced resource
+) error {
+	namespacedName := types.NamespacedName{
+		Namespace: namespace,
+		Name:      name,
+	}
+	err := apiReader.Get(ctx, namespacedName, obj)
+	if err != nil {
+		return err
+	}
+	var refResourceTerminal bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
+			cond.Status == corev1.ConditionTrue {
+			return ackerr.ResourceReferenceTerminalFor(
+				"ReplicationInstance",
+				namespace, name)
+		}
+	}
+	if refResourceTerminal {
+		return ackerr.ResourceReferenceTerminalFor(
+			"ReplicationInstance",
+			namespace, name)
+	}
+	var refResourceSynced bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
+			cond.Status == corev1.ConditionTrue {
+			refResourceSynced = true
+		}
+	}
+	if !refResourceSynced {
+		return ackerr.ResourceReferenceNotSyncedFor(
+			"ReplicationInstance",
+			namespace, name)
+	}
+	if obj.Status.ACKResourceMetadata == nil || obj.Status.ACKResourceMetadata.ARN == nil {
+		return ackerr.ResourceReferenceMissingTargetFieldFor(
+			"ReplicationInstance",
+			namespace, name,
+			"Status.ACKResourceMetadata.ARN")
 	}
 	return nil
 }

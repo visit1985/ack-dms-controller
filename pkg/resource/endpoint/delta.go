@@ -20,6 +20,7 @@ import (
 
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	acktags "github.com/aws-controllers-k8s/runtime/pkg/tags"
+	"k8s.io/apimachinery/pkg/api/equality"
 )
 
 // Hack to avoid import errors during build...
@@ -48,6 +49,9 @@ func newResourceDelta(
 		if *a.ko.Spec.CertificateARN != *b.ko.Spec.CertificateARN {
 			delta.Add("Spec.CertificateARN", a.ko.Spec.CertificateARN, b.ko.Spec.CertificateARN)
 		}
+	}
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.CertificateRef, b.ko.Spec.CertificateRef) {
+		delta.Add("Spec.CertificateRef", a.ko.Spec.CertificateRef, b.ko.Spec.CertificateRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.DatabaseName, b.ko.Spec.DatabaseName) {
 		delta.Add("Spec.DatabaseName", a.ko.Spec.DatabaseName, b.ko.Spec.DatabaseName)
@@ -689,6 +693,9 @@ func newResourceDelta(
 		if *a.ko.Spec.KMSKeyID != *b.ko.Spec.KMSKeyID {
 			delta.Add("Spec.KMSKeyID", a.ko.Spec.KMSKeyID, b.ko.Spec.KMSKeyID)
 		}
+	}
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.KMSKeyRef, b.ko.Spec.KMSKeyRef) {
+		delta.Add("Spec.KMSKeyRef", a.ko.Spec.KMSKeyRef, b.ko.Spec.KMSKeyRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.MicrosoftSQLServerSettings, b.ko.Spec.MicrosoftSQLServerSettings) {
 		delta.Add("Spec.MicrosoftSQLServerSettings", a.ko.Spec.MicrosoftSQLServerSettings, b.ko.Spec.MicrosoftSQLServerSettings)
@@ -2216,6 +2223,9 @@ func newResourceDelta(
 		if *a.ko.Spec.ServiceAccessRoleARN != *b.ko.Spec.ServiceAccessRoleARN {
 			delta.Add("Spec.ServiceAccessRoleARN", a.ko.Spec.ServiceAccessRoleARN, b.ko.Spec.ServiceAccessRoleARN)
 		}
+	}
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.ServiceAccessRoleRef, b.ko.Spec.ServiceAccessRoleRef) {
+		delta.Add("Spec.ServiceAccessRoleRef", a.ko.Spec.ServiceAccessRoleRef, b.ko.Spec.ServiceAccessRoleRef)
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.SSLMode, b.ko.Spec.SSLMode) {
 		delta.Add("Spec.SSLMode", a.ko.Spec.SSLMode, b.ko.Spec.SSLMode)

@@ -17,6 +17,9 @@ rules:
   - dms.services.k8s.aws
   resources:
   - endpoints
+  - eventsubscriptions
+  - replicationinstances
+  - replicationsubnetgroups
   - replicationtasks
   verbs:
   - create
@@ -30,6 +33,9 @@ rules:
   - dms.services.k8s.aws
   resources:
   - endpoints
+  - eventsubscriptions
+  - replicationinstances
+  - replicationsubnetgroups
   - replicationtasks
   verbs:
   - get

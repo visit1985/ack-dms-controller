@@ -1,6 +1,40 @@
 resources:
+  Endpoint:
+    fields:
+      CertificateRef:
+        prepend: |-
+          Reference to an ACK managed ACM certificate resource to associate with this
+          endpoint.
+      KmsKeyRef:
+        prepend: |-
+          Reference to an ACK managed KMS key that is used to encrypt the connection
+          parameters for the endpoint.
+      ServiceAccessRoleRef:
+        prepend: |-
+          Reference to an ACK managed IAM role resource that you want to use as the
+          service access role to creates the endpoint.
+  EventSubscription:
+    fields:
+      SnsTopicRef:
+        prepend: |-
+          Reference to an ACK managed Amazon SNS topic resource created for event
+          notification.
+  ReplicationInstance:
+    fields:
+      KmsKeyRef:
+        prepend: |-
+          Reference to an ACK managed KMS key that is used to encrypt the data on the
+          replication instance.
+      ReplicationSubnetGroupRef:
+        prepend: |-
+          Reference to an ACK managed replication subnet group to associate with this
+          replication instance.
   ReplicationTask:
     fields:
+      ReplicationInstanceRef:
+        prepend: |-
+          Reference to an ACK managed replication instance resource for this replication
+          task.
       SourceEndpointConnectionStatus:
         override: |-
           Indicates the connection status of the source endpoint.

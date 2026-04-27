@@ -34,6 +34,9 @@ type EndpointSpec struct {
 
 	// The Amazon Resource Name (ARN) for the certificate.
 	CertificateARN *string `json:"certificateARN,omitempty"`
+	// Reference to an ACK managed ACM certificate resource to associate with this
+	// endpoint.
+	CertificateRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"certificateRef,omitempty"`
 	// The name of the endpoint database. For a MySQL source or target endpoint,
 	// do not specify DatabaseName. To migrate to a specific database, use this
 	// setting and targetDbType.
@@ -110,6 +113,9 @@ type EndpointSpec struct {
 	// Your Amazon Web Services account has a different default encryption key for
 	// each Amazon Web Services Region.
 	KMSKeyID *string `json:"kmsKeyID,omitempty"`
+	// Reference to an ACK managed KMS key that is used to encrypt the connection
+	// parameters for the endpoint.
+	KMSKeyRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"kmsKeyRef,omitempty"`
 	// Settings in JSON format for the source and target Microsoft SQL Server endpoint.
 	// For information about other available settings, see Extra connection attributes
 	// when using SQL Server as a source for DMS (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.SQLServer.html#CHAP_Source.SQLServer.ConnectionAttrib)
@@ -179,6 +185,9 @@ type EndpointSpec struct {
 	// The Amazon Resource Name (ARN) for the service access role that you want
 	// to use to create the endpoint. The role must allow the iam:PassRole action.
 	ServiceAccessRoleARN *string `json:"serviceAccessRoleARN,omitempty"`
+	// Reference to an ACK managed IAM role resource that you want to use as the
+	// service access role to creates the endpoint.
+	ServiceAccessRoleRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"serviceAccessRoleRef,omitempty"`
 	// The Secure Sockets Layer (SSL) mode to use for the SSL connection. The default
 	// is none
 	SSLMode *string `json:"sslMode,omitempty"`

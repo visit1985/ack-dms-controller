@@ -4,7 +4,7 @@
 
 image:
   repository: public.ecr.aws/aws-controllers-k8s/dms-controller
-  tag: 0.0.0-non-release-version
+  tag: 0.0.1
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -151,6 +151,9 @@ reconcile:
   # If specified, only the listed resource kinds will be reconciled.
   resources:
     - Endpoint
+    - EventSubscription
+    - ReplicationInstance
+    - ReplicationSubnetGroup
     - ReplicationTask
 
 serviceAccount:
