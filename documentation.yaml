@@ -29,6 +29,12 @@ resources:
         prepend: |-
           Reference to an ACK managed replication subnet group to associate with this
           replication instance.
+  ReplicationSubnetGroup:
+    fields:
+      SubnetRefs:
+        prepend: |-
+          Two or more references to ACK managed EC2 subnet resources to be assigned to
+          the subnet group.
   ReplicationTask:
     fields:
       ReplicationInstanceRef:

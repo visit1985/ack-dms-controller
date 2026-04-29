@@ -42,8 +42,10 @@ type ReplicationSubnetGroupSpec struct {
 	// +kubebuilder:validation:Required
 	Name *string `json:"name"`
 	// Two or more subnet IDs to be assigned to the subnet group.
-	// +kubebuilder:validation:Required
-	SubnetIDs []*string `json:"subnetIDs"`
+	SubnetIDs []*string `json:"subnetIDs,omitempty"`
+	// Two or more references to ACK managed EC2 subnet resources to be assigned to
+	// the subnet group.
+	SubnetRefs []*ackv1alpha1.AWSResourceReferenceWrapper `json:"subnetRefs,omitempty"`
 	// One or more tags to be assigned to the subnet group.
 	Tags []*Tag `json:"tags,omitempty"`
 }

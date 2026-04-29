@@ -203,6 +203,11 @@ resources:
       Name:
         is_primary_key: true
         is_immutable: true
+      SubnetIDs:
+        references:
+          service_name: ec2
+          resource: Subnet
+          path: Status.SubnetID
       Tags:
         compare:
           is_ignored: true

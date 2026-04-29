@@ -106,6 +106,14 @@ rules:
   - patch
   - update
 - apiGroups:
+  - ec2.services.k8s.aws
+  resources:
+  - subnets
+  - subnets/status
+  verbs:
+  - get
+  - list
+- apiGroups:
   - iam.services.k8s.aws
   resources:
   - roles
