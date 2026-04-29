@@ -321,6 +321,19 @@ func (rm *resourceManager) sdkFind(
 	}
 
 	rm.setStatusDefaults(ko)
+
+	// sdk_read_many_post_set_output hook
+	//
+	// Retrieves the latest tags
+	if ko.Status.ACKResourceMetadata != nil && ko.Status.ACKResourceMetadata.ARN != nil {
+		resourceARN := (*string)(ko.Status.ACKResourceMetadata.ARN)
+		tags, err := rm.getTags(ctx, *resourceARN)
+		if err != nil {
+			return nil, err
+		}
+		ko.Spec.Tags = tags
+	}
+
 	return &resource{ko}, nil
 }
 
@@ -691,6 +704,13 @@ func (rm *resourceManager) sdkUpdate(
 	// Merge in the information we read from the API call above to the copy of
 	// the original Kubernetes object we passed to the function
 	ko := desired.ko.DeepCopy()
+
+	// sdk_update_pre_set_output hook
+	if delta.DifferentAt("Spec.Tags") {
+		if err = rm.syncTags(ctx, desired, latest); err != nil {
+			return nil, err
+		}
+	}
 
 	allocatedStorageCopy := int64(resp.ReplicationInstance.AllocatedStorage)
 	ko.Spec.AllocatedStorage = &allocatedStorageCopy

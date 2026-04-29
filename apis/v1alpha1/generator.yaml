@@ -83,6 +83,10 @@ resources:
         template_path: hooks/endpoint/sdk_read_many_post_build_request.go.tpl
       sdk_read_many_post_request:
         template_path: hooks/endpoint/sdk_read_many_post_request.go.tpl
+      sdk_read_many_post_set_output:
+        template_path: hooks/endpoint/sdk_read_many_post_set_output.go.tpl
+      sdk_update_pre_set_output:
+        template_path: hooks/endpoint/sdk_update_pre_set_output.go.tpl
     print:
       add_age_column: true
       add_synced_column: true
@@ -126,6 +130,8 @@ resources:
         template_path: hooks/event_subscription/sdk_read_many_post_request.go.tpl
       sdk_read_many_post_set_output:
         template_path: hooks/event_subscription/sdk_read_many_post_set_output.go.tpl
+      sdk_update_pre_set_output:
+        template_path: hooks/event_subscription/sdk_update_pre_set_output.go.tpl
     print:
       add_age_column: true
       add_synced_column: true
@@ -181,6 +187,10 @@ resources:
         template_path: hooks/replication_instance/sdk_read_many_post_build_request.go.tpl
       sdk_read_many_post_request:
         template_path: hooks/replication_instance/sdk_read_many_post_request.go.tpl
+      sdk_read_many_post_set_output:
+        template_path: hooks/replication_instance/sdk_read_many_post_set_output.go.tpl
+      sdk_update_pre_set_output:
+        template_path: hooks/replication_instance/sdk_update_pre_set_output.go.tpl
     print:
       add_age_column: true
       add_synced_column: true
@@ -302,6 +312,8 @@ resources:
         template_path: hooks/replication_task/sdk_update_pre_build_request.go.tpl
       sdk_update_post_set_output:
         template_path: hooks/replication_task/sdk_update_post_set_output.go.tpl
+      sdk_update_pre_set_output:
+        template_path: hooks/replication_task/sdk_update_pre_set_output.go.tpl
     print:
       add_age_column: true
       add_synced_column: true

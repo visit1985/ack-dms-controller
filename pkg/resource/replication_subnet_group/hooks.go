@@ -24,10 +24,6 @@ import (
 	svcsdktypes "github.com/aws/aws-sdk-go-v2/service/databasemigrationservice/types"
 )
 
-const (
-	replicationSubnetGroupStatusDeleting = "deleting"
-)
-
 // compareTags is a custom comparison function for comparing lists of Tag
 // structs where the order of the structs in the list is not important.
 func compareTags(
