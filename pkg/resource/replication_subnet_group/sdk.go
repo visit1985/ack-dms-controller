@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
-	"time"
 
 	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
@@ -469,16 +468,6 @@ func (rm *resourceManager) sdkDelete(
 	_ = resp
 	resp, err = rm.sdkapi.DeleteReplicationSubnetGroup(ctx, input)
 	rm.metrics.RecordAPICall("DELETE", "DeleteReplicationSubnetGroup", err)
-
-	// sdk_delete_post_request hook
-	//
-	// Wait for the replication subnet group to be deleted before setResourceUnmanaged.
-	if err != nil {
-		return nil, err
-	}
-	r.ko.Status.SubnetGroupStatus = aws.String(replicationSubnetGroupStatusDeleting)
-	return r, ackrequeue.NeededAfter(errors.New("Waiting for ReplicationSubnetGroup deletion to complete"), 10*time.Second)
-
 	return nil, err
 }
 
