@@ -11,7 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-"""Fixtures common to all RDS controller tests"""
+"""Fixtures common to all DMS controller tests"""
 
 import dataclasses
 
@@ -21,8 +21,8 @@ import pytest
 
 
 @pytest.fixture(scope="module")
-def rds_client():
-    return boto3.client('rds')
+def dms_client():
+    return boto3.client('dms')
 
 
 @dataclasses.dataclass

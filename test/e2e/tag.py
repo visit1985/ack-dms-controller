@@ -13,7 +13,7 @@
 
 """Utilities for working with tags
 TODO: use tags.clean from test-infra after updating the bootstrap
-method for rds tests
+method for dms tests
 """
 
 ACK_SYSTEM_TAG_PREFIX = "services.k8s.aws/"

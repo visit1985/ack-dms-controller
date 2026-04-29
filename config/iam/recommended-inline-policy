@@ -22,6 +22,7 @@
         "dms:DescribeReplicationInstances",
         "dms:DescribeReplicationSubnetGroups",
         "dms:DescribeReplicationTasks",
+        "dms:ListTagsForResource",
         "dms:ModifyEndpoint",
         "dms:ModifyEventSubscription",
         "dms:ModifyReplicationInstance",

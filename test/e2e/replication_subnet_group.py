@@ -11,7 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-"""Utilities for working with DB subnet resources"""
+"""Utilities for working with DMS replication subnet resources"""
 
 import datetime
 import time
@@ -23,72 +23,40 @@ DEFAULT_WAIT_UNTIL_DELETED_TIMEOUT_SECONDS = 60*10
 DEFAULT_WAIT_UNTIL_DELETED_INTERVAL_SECONDS = 15
 
 
-def wait_until_deleted(
-        db_subnet_group_name: str,
-        timeout_seconds: int = DEFAULT_WAIT_UNTIL_DELETED_TIMEOUT_SECONDS,
-        interval_seconds: int = DEFAULT_WAIT_UNTIL_DELETED_INTERVAL_SECONDS,
-    ) -> None:
-    """Waits until a DB subnet_group with a supplied ID is no longer returned from
-    the RDS API.
+def get(subnet_group_id):
+    """Returns a dict containing the DMS replication_subnet_group record from the DMS API.
 
-    Usage:
-        from e2e.db_subnet_group import wait_until_deleted
-
-        wait_until_deleted(subnet_group_id)
-
-    Raises:
-        pytest.fail upon timeout or if the DB subnet_group goes to any other status
-        other than 'deleting'
+    If no such DMS replication_subnet_group exists, returns None.
     """
-    now = datetime.datetime.now()
-    timeout = now + datetime.timedelta(seconds=timeout_seconds)
-
-    while True:
-        if datetime.datetime.now() >= timeout:
-            pytest.fail(
-                "Timed out waiting for DB subnet_group to be "
-                "deleted in RDS API"
-            )
-        time.sleep(interval_seconds)
-
-        latest = get(db_subnet_group_name)
-        if latest is None:
-            break
-
-        if latest['DBSubnetGroupStatus'] != "deleting":
-            pytest.fail(
-                "Status is not 'deleting' for DB subnet_group that was "
-                "deleted. Status is " + latest['DBSubnetGroupStatus']
-            )
-
-
-def get(db_subnet_group_name):
-    """Returns a dict containing the DB subnet_group record from the RDS API.
-
-    If no such DB subnet_group exists, returns None.
-    """
-    c = boto3.client('rds')
+    c = boto3.client('dms')
     try:
-        resp = c.describe_db_subnet_groups(
-            DBSubnetGroupName=db_subnet_group_name,
+        resp = c.describe_replication_subnet_groups(
+            Filters=[
+                {
+                    'Name': 'replication-subnet-group-id',
+                    'Values': [
+                        subnet_group_id,
+                    ]
+                },
+            ],
         )
-        assert len(resp['DBSubnetGroups']) == 1
-        return resp['DBSubnetGroups'][0]
-    except c.exceptions.DBSubnetGroupNotFoundFault:
+        assert len(resp['ReplicationSubnetGroups']) == 1
+        return resp['ReplicationSubnetGroups'][0]
+    except c.exceptions.ResourceNotFoundFault:
         return None
 
 
-def get_tags(db_subnet_group_arn):
-    """Returns a dict containing the DB subnet group's tag records from the RDS
+def get_tags(subnet_group_arn):
+    """Returns a dict containing the DMS replication subnet group's tag records from the DMS
     API.
 
-    If no such DB subnet group exists, returns None.
+    If no such DMS replication subnet group exists, returns None.
     """
-    c = boto3.client('rds')
+    c = boto3.client('dms')
     try:
         resp = c.list_tags_for_resource(
-            ResourceName=db_subnet_group_arn,
+            ResourceArn=subnet_group_arn,
         )
         return resp['TagList']
-    except c.exceptions.DBSubnetGroupNotFoundFault:
+    except c.exceptions.ResourceNotFoundFault:
         return None

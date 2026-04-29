@@ -11,7 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-"""Integration tests for the RDS API DBSubnetGroup resource
+"""Integration tests for the DMS API ReplicationSubnetGroup resource
 """
 
 import logging
@@ -19,6 +19,7 @@ import time
 
 import pytest
 
+from acktest.aws import identity
 from acktest.k8s import resource as k8s
 from acktest.resources import random_suffix_name
 from e2e import service_marker, CRD_GROUP, CRD_VERSION, load_dms_resource
@@ -30,9 +31,7 @@ from e2e import tag
 RESOURCE_PLURAL = 'replicationsubnetgroups'
 
 DELETE_WAIT_AFTER_SECONDS = 10
-# NOTE(jaypipes): According to the RDS API documentation, updating tags can
-# take several minutes before the new tag values are available due to caching.
-MODIFY_WAIT_AFTER_SECONDS = 180
+MODIFY_WAIT_AFTER_SECONDS = 10
 
 RESOURCE_DESC = "my-replication-subnet-group description"
 
@@ -64,15 +63,13 @@ def subnet_group():
 
     yield ref, cr, resource_name
 
-    # Try to delete, if it doesn't already exist
+    # Try to delete, if it does exist
     try:
         _, deleted = k8s.delete_custom_resource(ref, 3, 10)
         assert deleted
         time.sleep(DELETE_WAIT_AFTER_SECONDS)
     except:
         pass
-
-    replication_subnet_group.wait_until_deleted(resource_name)
 
 
 @service_marker
@@ -84,10 +81,15 @@ class TestReplicationSubnetGroup:
         # Let's check that the subnet group appears in DMS
         latest = replication_subnet_group.get(resource_name)
         assert latest is not None
-        # TODO: adapt to DMS
-        assert latest['DBSubnetGroupDescription'] == RESOURCE_DESC
+        assert latest['ReplicationSubnetGroupDescription'] == RESOURCE_DESC
 
-        arn = latest['DBSubnetGroupArn']
+        # Build the ARN for this replication subnet group so we can
+        # check its tags.
+        account = identity.get_account_id()
+        region = identity.get_region()
+        arn = f"arn:aws:dms:{region}:{account}:subgrp:{resource_name}"
+
+        # Compare the Tags
         expect_tags = [
             {"Key": "environment", "Value": "dev"}
         ]

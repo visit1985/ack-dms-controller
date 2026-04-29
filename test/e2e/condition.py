@@ -44,7 +44,7 @@ def assert_type_status(
 
         ref = k8s.CustomResourceReference(
             CRD_GROUP, CRD_VERSION, RESOURCE_PLURAL,
-            db_cluster_id, namespace="default",
+            resource_name, namespace="default",
         )
         k8s.create_custom_resource(ref, resource_data)
         k8s.wait_resource_consumed_by_controller(ref)
@@ -84,7 +84,7 @@ def assert_synced_status(
 
         ref = k8s.CustomResourceReference(
             CRD_GROUP, CRD_VERSION, RESOURCE_PLURAL,
-            db_cluster_id, namespace="default",
+            resource_name, namespace="default",
         )
         k8s.create_custom_resource(ref, resource_data)
         k8s.wait_resource_consumed_by_controller(ref)
@@ -108,7 +108,7 @@ def assert_synced(ref: k8s.CustomResourceReference):
 
         ref = k8s.CustomResourceReference(
             CRD_GROUP, CRD_VERSION, RESOURCE_PLURAL,
-            db_cluster_id, namespace="default",
+            resource_name, namespace="default",
         )
         k8s.create_custom_resource(ref, resource_data)
         k8s.wait_resource_consumed_by_controller(ref)
@@ -132,7 +132,7 @@ def assert_not_synced(ref: k8s.CustomResourceReference):
 
         ref = k8s.CustomResourceReference(
             CRD_GROUP, CRD_VERSION, RESOURCE_PLURAL,
-            db_cluster_id, namespace="default",
+            resource_name, namespace="default",
         )
         k8s.create_custom_resource(ref, resource_data)
         k8s.wait_resource_consumed_by_controller(ref)
