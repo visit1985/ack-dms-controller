@@ -28,6 +28,7 @@
         "dms:ModifyReplicationInstance",
         "dms:ModifyReplicationSubnetGroup",
         "dms:ModifyReplicationTask",
+        "dms:RemoveTagsFromResource",
         "dms:StartReplicationTask",
         "dms:StopReplicationTask"
       ],

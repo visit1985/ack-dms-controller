@@ -195,6 +195,32 @@ func (rm *resourceManager) sdkFind(
 		ko.Status.ACKResourceMetadata.ARN = &arn
 	}
 
+	// sdk_read_many_post_set_output hook
+	//
+	// Retrieves the latest tags
+	if ko.Status.ACKResourceMetadata != nil && ko.Status.ACKResourceMetadata.ARN != nil {
+		resourceARN := (*string)(ko.Status.ACKResourceMetadata.ARN)
+		tags, err := rm.getTags(ctx, *resourceARN)
+		if err != nil {
+			return nil, err
+		}
+		ko.Spec.Tags = tags
+	}
+
+	// sdk_read_many_post_set_output hook
+	//
+	// Ensures that only the SubnetIDs returned by the DescribeReplicationSubnetGroups
+	// call are populated in the latest SubnetIDs.
+	if ko.Status.Subnets != nil {
+		f0 := []*string{}
+		for _, subnetIdIter := range ko.Status.Subnets {
+			if subnetIdIter.SubnetIdentifier != nil {
+				f0 = append(f0, subnetIdIter.SubnetIdentifier)
+			}
+		}
+		ko.Spec.SubnetIDs = f0
+	}
+
 	return &resource{ko}, nil
 }
 
@@ -369,6 +395,13 @@ func (rm *resourceManager) sdkUpdate(
 	// Merge in the information we read from the API call above to the copy of
 	// the original Kubernetes object we passed to the function
 	ko := desired.ko.DeepCopy()
+
+	// sdk_update_pre_set_output hook
+	if delta.DifferentAt("Spec.Tags") {
+		if err = rm.syncTags(ctx, desired, latest); err != nil {
+			return nil, err
+		}
+	}
 
 	if resp.ReplicationSubnetGroup.IsReadOnly != nil {
 		ko.Status.IsReadOnly = resp.ReplicationSubnetGroup.IsReadOnly

@@ -21,15 +21,15 @@ import (
 // computeTagsDelta compares two Tag arrays and return two different list
 // containing the addedOrupdated and removed tags. The removed tags array
 // only contains the tags Keys.
-func computeTagsDelta(
+func ComputeTagsDelta(
 	a []*svcapitypes.Tag,
 	b []*svcapitypes.Tag,
-) (addedOrUpdated []*svcapitypes.Tag, removed []*string) {
+) (addedOrUpdated []*svcapitypes.Tag, removed []string) {
 	var visitedIndexes []string
 mainLoop:
-	for _, aElement := range a {
+	for _, aElement := range b {
 		visitedIndexes = append(visitedIndexes, *aElement.Key)
-		for _, bElement := range b {
+		for _, bElement := range a {
 			if equalStrings(aElement.Key, bElement.Key) {
 				if !equalStrings(aElement.Value, bElement.Value) {
 					addedOrUpdated = append(addedOrUpdated, bElement)
@@ -37,9 +37,9 @@ mainLoop:
 				continue mainLoop
 			}
 		}
-		removed = append(removed, aElement.Key)
+		removed = append(removed, *aElement.Key)
 	}
-	for _, bElement := range b {
+	for _, bElement := range a {
 		if !ackutil.InStrings(*bElement.Key, visitedIndexes) {
 			addedOrUpdated = append(addedOrUpdated, bElement)
 		}
@@ -53,7 +53,7 @@ func EqualTags(
 	a []*svcapitypes.Tag,
 	b []*svcapitypes.Tag,
 ) bool {
-	addedOrUpdated, removed := computeTagsDelta(a, b)
+	addedOrUpdated, removed := ComputeTagsDelta(a, b)
 	return len(addedOrUpdated) == 0 && len(removed) == 0
 }
 
