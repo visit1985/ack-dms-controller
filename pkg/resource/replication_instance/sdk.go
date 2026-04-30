@@ -208,9 +208,9 @@ func (rm *resourceManager) sdkFind(
 			ko.Status.ACKResourceMetadata.ARN = &tmpARN
 		}
 		if elem.ReplicationInstanceClass != nil {
-			ko.Spec.ReplicationInstanceClass = elem.ReplicationInstanceClass
+			ko.Spec.InstanceClass = elem.ReplicationInstanceClass
 		} else {
-			ko.Spec.ReplicationInstanceClass = nil
+			ko.Spec.InstanceClass = nil
 		}
 		if elem.ReplicationInstanceIdentifier != nil {
 			ko.Spec.Name = elem.ReplicationInstanceIdentifier
@@ -474,9 +474,9 @@ func (rm *resourceManager) sdkCreate(
 		ko.Status.ACKResourceMetadata.ARN = &arn
 	}
 	if resp.ReplicationInstance.ReplicationInstanceClass != nil {
-		ko.Spec.ReplicationInstanceClass = resp.ReplicationInstance.ReplicationInstanceClass
+		ko.Spec.InstanceClass = resp.ReplicationInstance.ReplicationInstanceClass
 	} else {
-		ko.Spec.ReplicationInstanceClass = nil
+		ko.Spec.InstanceClass = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstanceIdentifier != nil {
 		ko.Spec.Name = resp.ReplicationInstance.ReplicationInstanceIdentifier
@@ -640,14 +640,14 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.PubliclyAccessible != nil {
 		res.PubliclyAccessible = r.ko.Spec.PubliclyAccessible
 	}
-	if r.ko.Spec.ReplicationInstanceClass != nil {
-		res.ReplicationInstanceClass = r.ko.Spec.ReplicationInstanceClass
+	if r.ko.Spec.InstanceClass != nil {
+		res.ReplicationInstanceClass = r.ko.Spec.InstanceClass
 	}
 	if r.ko.Spec.Name != nil {
 		res.ReplicationInstanceIdentifier = r.ko.Spec.Name
 	}
-	if r.ko.Spec.ReplicationSubnetGroupID != nil {
-		res.ReplicationSubnetGroupIdentifier = r.ko.Spec.ReplicationSubnetGroupID
+	if r.ko.Spec.SubnetGroupID != nil {
+		res.ReplicationSubnetGroupIdentifier = r.ko.Spec.SubnetGroupID
 	}
 	if r.ko.Spec.ResourceIdentifier != nil {
 		res.ResourceIdentifier = r.ko.Spec.ResourceIdentifier
@@ -669,8 +669,8 @@ func (rm *resourceManager) newCreateRequestPayload(
 		}
 		res.Tags = f15
 	}
-	if r.ko.Spec.VPCSecurityGroupIDs != nil {
-		res.VpcSecurityGroupIds = aws.ToStringSlice(r.ko.Spec.VPCSecurityGroupIDs)
+	if r.ko.Spec.SecurityGroupIDs != nil {
+		res.VpcSecurityGroupIds = aws.ToStringSlice(r.ko.Spec.SecurityGroupIDs)
 	}
 
 	return res, nil
@@ -802,9 +802,9 @@ func (rm *resourceManager) sdkUpdate(
 		ko.Status.ACKResourceMetadata.ARN = &arn
 	}
 	if resp.ReplicationInstance.ReplicationInstanceClass != nil {
-		ko.Spec.ReplicationInstanceClass = resp.ReplicationInstance.ReplicationInstanceClass
+		ko.Spec.InstanceClass = resp.ReplicationInstance.ReplicationInstanceClass
 	} else {
-		ko.Spec.ReplicationInstanceClass = nil
+		ko.Spec.InstanceClass = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstanceIdentifier != nil {
 		ko.Spec.Name = resp.ReplicationInstance.ReplicationInstanceIdentifier
@@ -960,14 +960,14 @@ func (rm *resourceManager) newUpdateRequestPayload(
 	if r.ko.Status.ACKResourceMetadata != nil && r.ko.Status.ACKResourceMetadata.ARN != nil {
 		res.ReplicationInstanceArn = (*string)(r.ko.Status.ACKResourceMetadata.ARN)
 	}
-	if r.ko.Spec.ReplicationInstanceClass != nil {
-		res.ReplicationInstanceClass = r.ko.Spec.ReplicationInstanceClass
+	if r.ko.Spec.InstanceClass != nil {
+		res.ReplicationInstanceClass = r.ko.Spec.InstanceClass
 	}
 	if r.ko.Spec.Name != nil {
 		res.ReplicationInstanceIdentifier = r.ko.Spec.Name
 	}
-	if r.ko.Spec.VPCSecurityGroupIDs != nil {
-		res.VpcSecurityGroupIds = aws.ToStringSlice(r.ko.Spec.VPCSecurityGroupIDs)
+	if r.ko.Spec.SecurityGroupIDs != nil {
+		res.VpcSecurityGroupIds = aws.ToStringSlice(r.ko.Spec.SecurityGroupIDs)
 	}
 
 	return res, nil

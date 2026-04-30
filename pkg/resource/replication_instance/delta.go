@@ -78,6 +78,13 @@ func newResourceDelta(
 			delta.Add("Spec.EngineVersion", a.ko.Spec.EngineVersion, b.ko.Spec.EngineVersion)
 		}
 	}
+	if ackcompare.HasNilDifference(a.ko.Spec.InstanceClass, b.ko.Spec.InstanceClass) {
+		delta.Add("Spec.InstanceClass", a.ko.Spec.InstanceClass, b.ko.Spec.InstanceClass)
+	} else if a.ko.Spec.InstanceClass != nil && b.ko.Spec.InstanceClass != nil {
+		if *a.ko.Spec.InstanceClass != *b.ko.Spec.InstanceClass {
+			delta.Add("Spec.InstanceClass", a.ko.Spec.InstanceClass, b.ko.Spec.InstanceClass)
+		}
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.KerberosAuthenticationSettings, b.ko.Spec.KerberosAuthenticationSettings) {
 		delta.Add("Spec.KerberosAuthenticationSettings", a.ko.Spec.KerberosAuthenticationSettings, b.ko.Spec.KerberosAuthenticationSettings)
 	} else if a.ko.Spec.KerberosAuthenticationSettings != nil && b.ko.Spec.KerberosAuthenticationSettings != nil {
@@ -148,23 +155,6 @@ func newResourceDelta(
 			delta.Add("Spec.PubliclyAccessible", a.ko.Spec.PubliclyAccessible, b.ko.Spec.PubliclyAccessible)
 		}
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.ReplicationInstanceClass, b.ko.Spec.ReplicationInstanceClass) {
-		delta.Add("Spec.ReplicationInstanceClass", a.ko.Spec.ReplicationInstanceClass, b.ko.Spec.ReplicationInstanceClass)
-	} else if a.ko.Spec.ReplicationInstanceClass != nil && b.ko.Spec.ReplicationInstanceClass != nil {
-		if *a.ko.Spec.ReplicationInstanceClass != *b.ko.Spec.ReplicationInstanceClass {
-			delta.Add("Spec.ReplicationInstanceClass", a.ko.Spec.ReplicationInstanceClass, b.ko.Spec.ReplicationInstanceClass)
-		}
-	}
-	if ackcompare.HasNilDifference(a.ko.Spec.ReplicationSubnetGroupID, b.ko.Spec.ReplicationSubnetGroupID) {
-		delta.Add("Spec.ReplicationSubnetGroupID", a.ko.Spec.ReplicationSubnetGroupID, b.ko.Spec.ReplicationSubnetGroupID)
-	} else if a.ko.Spec.ReplicationSubnetGroupID != nil && b.ko.Spec.ReplicationSubnetGroupID != nil {
-		if *a.ko.Spec.ReplicationSubnetGroupID != *b.ko.Spec.ReplicationSubnetGroupID {
-			delta.Add("Spec.ReplicationSubnetGroupID", a.ko.Spec.ReplicationSubnetGroupID, b.ko.Spec.ReplicationSubnetGroupID)
-		}
-	}
-	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.ReplicationSubnetGroupRef, b.ko.Spec.ReplicationSubnetGroupRef) {
-		delta.Add("Spec.ReplicationSubnetGroupRef", a.ko.Spec.ReplicationSubnetGroupRef, b.ko.Spec.ReplicationSubnetGroupRef)
-	}
 	if ackcompare.HasNilDifference(a.ko.Spec.ResourceIdentifier, b.ko.Spec.ResourceIdentifier) {
 		delta.Add("Spec.ResourceIdentifier", a.ko.Spec.ResourceIdentifier, b.ko.Spec.ResourceIdentifier)
 	} else if a.ko.Spec.ResourceIdentifier != nil && b.ko.Spec.ResourceIdentifier != nil {
@@ -172,12 +162,25 @@ func newResourceDelta(
 			delta.Add("Spec.ResourceIdentifier", a.ko.Spec.ResourceIdentifier, b.ko.Spec.ResourceIdentifier)
 		}
 	}
-	if len(a.ko.Spec.VPCSecurityGroupIDs) != len(b.ko.Spec.VPCSecurityGroupIDs) {
-		delta.Add("Spec.VPCSecurityGroupIDs", a.ko.Spec.VPCSecurityGroupIDs, b.ko.Spec.VPCSecurityGroupIDs)
-	} else if len(a.ko.Spec.VPCSecurityGroupIDs) > 0 {
-		if !ackcompare.SliceStringPEqual(a.ko.Spec.VPCSecurityGroupIDs, b.ko.Spec.VPCSecurityGroupIDs) {
-			delta.Add("Spec.VPCSecurityGroupIDs", a.ko.Spec.VPCSecurityGroupIDs, b.ko.Spec.VPCSecurityGroupIDs)
+	if len(a.ko.Spec.SecurityGroupIDs) != len(b.ko.Spec.SecurityGroupIDs) {
+		delta.Add("Spec.SecurityGroupIDs", a.ko.Spec.SecurityGroupIDs, b.ko.Spec.SecurityGroupIDs)
+	} else if len(a.ko.Spec.SecurityGroupIDs) > 0 {
+		if !ackcompare.SliceStringPEqual(a.ko.Spec.SecurityGroupIDs, b.ko.Spec.SecurityGroupIDs) {
+			delta.Add("Spec.SecurityGroupIDs", a.ko.Spec.SecurityGroupIDs, b.ko.Spec.SecurityGroupIDs)
 		}
+	}
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.SecurityGroupRefs, b.ko.Spec.SecurityGroupRefs) {
+		delta.Add("Spec.SecurityGroupRefs", a.ko.Spec.SecurityGroupRefs, b.ko.Spec.SecurityGroupRefs)
+	}
+	if ackcompare.HasNilDifference(a.ko.Spec.SubnetGroupID, b.ko.Spec.SubnetGroupID) {
+		delta.Add("Spec.SubnetGroupID", a.ko.Spec.SubnetGroupID, b.ko.Spec.SubnetGroupID)
+	} else if a.ko.Spec.SubnetGroupID != nil && b.ko.Spec.SubnetGroupID != nil {
+		if *a.ko.Spec.SubnetGroupID != *b.ko.Spec.SubnetGroupID {
+			delta.Add("Spec.SubnetGroupID", a.ko.Spec.SubnetGroupID, b.ko.Spec.SubnetGroupID)
+		}
+	}
+	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.SubnetGroupRef, b.ko.Spec.SubnetGroupRef) {
+		delta.Add("Spec.SubnetGroupRef", a.ko.Spec.SubnetGroupRef, b.ko.Spec.SubnetGroupRef)
 	}
 
 	return delta

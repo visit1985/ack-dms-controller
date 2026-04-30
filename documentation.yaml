@@ -25,10 +25,16 @@ resources:
         prepend: |-
           Reference to an ACK managed KMS key that is used to encrypt the data on the
           replication instance.
-      ReplicationSubnetGroupRef:
+      SubnetGroupRef:
         prepend: |-
           Reference to an ACK managed replication subnet group to associate with this
           replication instance.
+      SecurityGroupRefs:
+        prepend: |-
+          One or more references to ACK managed EC2 security group resources to be
+          used with the replication instance.
+          The security group must work with the VPC containing the replication
+          instance.
   ReplicationSubnetGroup:
     fields:
       SubnetRefs:

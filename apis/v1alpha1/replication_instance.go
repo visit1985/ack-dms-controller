@@ -49,6 +49,15 @@ type ReplicationInstanceSpec struct {
 	// If an engine version number is not specified when a replication instance
 	// is created, the default is the latest engine version available.
 	EngineVersion *string `json:"engineVersion,omitempty"`
+	// The compute and memory capacity of the replication instance as defined for
+	// the specified replication instance class. For example to specify the instance
+	// class dms.c4.large, set this parameter to "dms.c4.large".
+	//
+	// For more information on the settings and capacities for the available replication
+	// instance classes, see Choosing the right DMS replication instance (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.Types.html);
+	// and, Selecting the best size for a replication instance (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.SizingReplicationInstance.html).
+	// +kubebuilder:validation:Required
+	InstanceClass *string `json:"instanceClass"`
 	// Specifies the settings required for kerberos authentication when creating
 	// the replication instance.
 	KerberosAuthenticationSettings *KerberosAuthenticationSettings `json:"kerberosAuthenticationSettings,omitempty"`
@@ -104,20 +113,6 @@ type ReplicationInstanceSpec struct {
 	// of true represents an instance with a public IP address. A value of false
 	// represents an instance with a private IP address. The default value is true.
 	PubliclyAccessible *bool `json:"publiclyAccessible,omitempty"`
-	// The compute and memory capacity of the replication instance as defined for
-	// the specified replication instance class. For example to specify the instance
-	// class dms.c4.large, set this parameter to "dms.c4.large".
-	//
-	// For more information on the settings and capacities for the available replication
-	// instance classes, see Choosing the right DMS replication instance (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.Types.html);
-	// and, Selecting the best size for a replication instance (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.SizingReplicationInstance.html).
-	// +kubebuilder:validation:Required
-	ReplicationInstanceClass *string `json:"replicationInstanceClass"`
-	// A subnet group to associate with the replication instance.
-	ReplicationSubnetGroupID *string `json:"replicationSubnetGroupID,omitempty"`
-	// Reference to an ACK managed replication subnet group to associate with this
-	// replication instance.
-	ReplicationSubnetGroupRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"replicationSubnetGroupRef,omitempty"`
 	// A friendly name for the resource identifier at the end of the EndpointArn
 	// response parameter that is returned in the created Endpoint object. The value
 	// for this parameter can have up to 31 characters. It can contain only ASCII
@@ -127,12 +122,22 @@ type ReplicationInstanceSpec struct {
 	// If you don't specify a ResourceIdentifier value, DMS generates a default
 	// identifier value for the end of EndpointArn.
 	ResourceIdentifier *string `json:"resourceIdentifier,omitempty"`
-	// One or more tags to be assigned to the replication instance.
-	Tags []*Tag `json:"tags,omitempty"`
 	// Specifies the VPC security group to be used with the replication instance.
 	// The VPC security group must work with the VPC containing the replication
 	// instance.
-	VPCSecurityGroupIDs []*string `json:"vpcSecurityGroupIDs,omitempty"`
+	SecurityGroupIDs []*string `json:"securityGroupIDs,omitempty"`
+	// One or more references to ACK managed EC2 security group resources to be
+	// used with the replication instance.
+	// The security group must work with the VPC containing the replication
+	// instance.
+	SecurityGroupRefs []*ackv1alpha1.AWSResourceReferenceWrapper `json:"securityGroupRefs,omitempty"`
+	// A subnet group to associate with the replication instance.
+	SubnetGroupID *string `json:"subnetGroupID,omitempty"`
+	// Reference to an ACK managed replication subnet group to associate with this
+	// replication instance.
+	SubnetGroupRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"subnetGroupRef,omitempty"`
+	// One or more tags to be assigned to the replication instance.
+	Tags []*Tag `json:"tags,omitempty"`
 }
 
 // ReplicationInstanceStatus defines the observed state of ReplicationInstance

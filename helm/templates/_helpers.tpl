@@ -108,6 +108,8 @@ rules:
 - apiGroups:
   - ec2.services.k8s.aws
   resources:
+  - securitygroups
+  - securitygroups/status
   - subnets
   - subnets/status
   verbs:

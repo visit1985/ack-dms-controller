@@ -4792,6 +4792,11 @@ func (in *ReplicationInstanceSpec) DeepCopyInto(out *ReplicationInstanceSpec) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.InstanceClass != nil {
+		in, out := &in.InstanceClass, &out.InstanceClass
+		*out = new(string)
+		**out = **in
+	}
 	if in.KerberosAuthenticationSettings != nil {
 		in, out := &in.KerberosAuthenticationSettings, &out.KerberosAuthenticationSettings
 		*out = new(KerberosAuthenticationSettings)
@@ -4832,25 +4837,42 @@ func (in *ReplicationInstanceSpec) DeepCopyInto(out *ReplicationInstanceSpec) {
 		*out = new(bool)
 		**out = **in
 	}
-	if in.ReplicationInstanceClass != nil {
-		in, out := &in.ReplicationInstanceClass, &out.ReplicationInstanceClass
-		*out = new(string)
-		**out = **in
-	}
-	if in.ReplicationSubnetGroupID != nil {
-		in, out := &in.ReplicationSubnetGroupID, &out.ReplicationSubnetGroupID
-		*out = new(string)
-		**out = **in
-	}
-	if in.ReplicationSubnetGroupRef != nil {
-		in, out := &in.ReplicationSubnetGroupRef, &out.ReplicationSubnetGroupRef
-		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
-		(*in).DeepCopyInto(*out)
-	}
 	if in.ResourceIdentifier != nil {
 		in, out := &in.ResourceIdentifier, &out.ResourceIdentifier
 		*out = new(string)
 		**out = **in
+	}
+	if in.SecurityGroupIDs != nil {
+		in, out := &in.SecurityGroupIDs, &out.SecurityGroupIDs
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
+	if in.SecurityGroupRefs != nil {
+		in, out := &in.SecurityGroupRefs, &out.SecurityGroupRefs
+		*out = make([]*corev1alpha1.AWSResourceReferenceWrapper, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+				(*in).DeepCopyInto(*out)
+			}
+		}
+	}
+	if in.SubnetGroupID != nil {
+		in, out := &in.SubnetGroupID, &out.SubnetGroupID
+		*out = new(string)
+		**out = **in
+	}
+	if in.SubnetGroupRef != nil {
+		in, out := &in.SubnetGroupRef, &out.SubnetGroupRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Tags != nil {
 		in, out := &in.Tags, &out.Tags
@@ -4860,17 +4882,6 @@ func (in *ReplicationInstanceSpec) DeepCopyInto(out *ReplicationInstanceSpec) {
 				in, out := &(*in)[i], &(*out)[i]
 				*out = new(Tag)
 				(*in).DeepCopyInto(*out)
-			}
-		}
-	}
-	if in.VPCSecurityGroupIDs != nil {
-		in, out := &in.VPCSecurityGroupIDs, &out.VPCSecurityGroupIDs
-		*out = make([]*string, len(*in))
-		for i := range *in {
-			if (*in)[i] != nil {
-				in, out := &(*in)[i], &(*out)[i]
-				*out = new(string)
-				**out = **in
 			}
 		}
 	}

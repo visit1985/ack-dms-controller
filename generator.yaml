@@ -171,10 +171,15 @@ resources:
       Name:
         is_primary_key: true
         is_immutable: true
-      ReplicationSubnetGroupId:
+      SubnetGroupID:
         references:
           resource: ReplicationSubnetGroup
           path: Spec.Name
+      SecurityGroupIDs:
+        references:
+          service_name: ec2
+          resource: SecurityGroup
+          path: Status.ID
       Tags:
         compare:
           is_ignored: true
@@ -200,14 +205,22 @@ resources:
       operations:
         CreateReplicationInstance:
           input_fields:
+            ReplicationInstanceClass: InstanceClass
             ReplicationInstanceIdentifier: Name
-            ReplicationSubnetGroupIdentifier: ReplicationSubnetGroupId
+            ReplicationSubnetGroupIdentifier: SubnetGroupID
+            VpcSecurityGroupIds: SecurityGroupIDs
         DescribeReplicationInstances:
           input_fields:
+            ReplicationInstanceClass: InstanceClass
             ReplicationInstanceIdentifier: Name
+            ReplicationSubnetGroupIdentifier: SubnetGroupID
+            VpcSecurityGroupIds: SecurityGroupIDs
         ModifyReplicationInstance:
           input_fields:
+            ReplicationInstanceClass: InstanceClass
             ReplicationInstanceIdentifier: Name
+            ReplicationSubnetGroupIdentifier: SubnetGroupID
+            VpcSecurityGroupIds: SecurityGroupIDs
   ReplicationSubnetGroup:
     fields:
       Name:
