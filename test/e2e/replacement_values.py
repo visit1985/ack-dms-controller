@@ -17,5 +17,7 @@ from e2e.bootstrap_resources import get_bootstrap_resources
 
 REPLACEMENT_VALUES = {
     "PUBLIC_SUBNET_1": get_bootstrap_resources().TestVPC.public_subnets.subnet_ids[0],
-    "PUBLIC_SUBNET_2": get_bootstrap_resources().TestVPC.public_subnets.subnet_ids[1]
+    "PUBLIC_SUBNET_2": get_bootstrap_resources().TestVPC.public_subnets.subnet_ids[1],
+    # Security group that belongs to the bootstrap VPC; used by ReplicationInstance tests.
+    "SECURITY_GROUP_ID": get_bootstrap_resources().TestVPC.security_group.group_id,
 }
