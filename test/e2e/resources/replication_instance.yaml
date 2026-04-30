@@ -4,7 +4,7 @@ metadata:
   name: $REPLICATION_INSTANCE_NAME
 spec:
   name: $REPLICATION_INSTANCE_NAME
-  instanceClass: dms.t3.micro
+  instanceClass: dms.t3.small
   subnetGroupRef:
     from:
       name: $REPLICATION_SUBNET_GROUP_NAME

@@ -13,13 +13,10 @@
 
 """Integration tests for the DMS API ReplicationInstance resource.
 
-These tests follow the same structural pattern used by the RDS DBInstance e2e
-tests and cover the full CRUD lifecycle plus common mutation scenarios.
-
 Test scenarios
 --------------
 * test_crud
-    Create a dms.t3.micro instance, wait for it to become *available*, verify
+    Create a dms.t3.small instance, wait for it to become *available*, verify
     status in the K8s CR and the AWS API, update a simple field
     (autoMinorVersionUpgrade), verify tags, update tags, and then let the
     fixture handle deletion.
@@ -29,7 +26,7 @@ Test scenarios
     reflects the change once the CR is re-synced.
 
 * test_upgrade_instance_class
-    Change ``instanceClass`` from *dms.t3.micro* to *dms.t3.medium* and verify
+    Change ``instanceClass`` from *dms.t3.small* to *dms.t3.medium* and verify
     that the AWS API either already shows the new class or records it as a
     pending modification.
 """
@@ -52,7 +49,6 @@ from e2e import tag
 # ---------------------------------------------------------------------------
 
 RESOURCE_PLURAL = "replicationinstances"
-SUBNET_GROUP_RESOURCE_PLURAL = "replicationsubnetgroups"
 
 # DMS replication instances typically take 5-10 minutes to become available.
 # We allow 20 minutes total to account for slower regions and retries.
@@ -64,7 +60,8 @@ MODIFY_WAIT_AFTER_SECONDS = 60
 # Time to wait after issuing a delete before checking teardown status.
 DELETE_WAIT_AFTER_SECONDS = 60 * 2
 
-SUBNET_GROUP_DESC = "ack-test-replication-subnet-group"
+SUBNET_GROUP_RESOURCE_PLURAL = "replicationsubnetgroups"
+SUBNET_GROUP_DESC = "my-replication-subnet-group description"
 
 
 # ---------------------------------------------------------------------------
@@ -81,7 +78,7 @@ def replication_instance_fixture():
                 subnet_group_name)
     """
     # -- Subnet group --------------------------------------------------------
-    subnet_group_name = random_suffix_name("ack-test-ri-sng", 33)
+    subnet_group_name = random_suffix_name("my-replication-subnet-group", 33)
 
     sg_replacements = REPLACEMENT_VALUES.copy()
     sg_replacements["REPLICATION_SUBNET_GROUP_NAME"] = subnet_group_name
@@ -106,7 +103,7 @@ def replication_instance_fixture():
     condition.assert_synced(sg_ref)
 
     # -- Replication instance ------------------------------------------------
-    instance_name = random_suffix_name("ack-test-ri", 20)
+    instance_name = random_suffix_name("my-replication-instance", 29)
 
     ri_replacements = REPLACEMENT_VALUES.copy()
     ri_replacements["REPLICATION_INSTANCE_NAME"] = instance_name
@@ -298,7 +295,7 @@ class TestReplicationInstance:
         """Verifies that upgrading the ReplicationInstance class is reflected
         in the AWS API.
 
-        The instance class is changed from *dms.t3.micro* → *dms.t3.medium*.
+        The instance class is changed from *dms.t3.small* → *dms.t3.medium*.
         After the controller reconciles, the API must either already show the
         new class or record it as a PendingModifiedValue.
 
@@ -316,7 +313,7 @@ class TestReplicationInstance:
         # Confirm the current class is as expected.
         latest = replication_instance.get(instance_name)
         assert latest is not None
-        assert latest['ReplicationInstanceClass'] == 'dms.t3.micro'
+        assert latest['ReplicationInstanceClass'] == 'dms.t3.small'
 
         # Patch to the larger class.
         k8s.patch_custom_resource(

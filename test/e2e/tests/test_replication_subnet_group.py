@@ -11,7 +11,15 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-"""Integration tests for the DMS API ReplicationSubnetGroup resource
+"""Integration tests for the DMS API ReplicationSubnetGroup resource.
+
+Test scenarios
+--------------
+* test_crud
+    Create a ReplicationSubnetGroup, verify it appears in the DMS API with the
+    expected description, verify the initial ``environment=dev`` tag, update
+    the tag to ``environment=prod``, and confirm the change is reflected in the
+    DMS API.  The fixture handles deletion on teardown.
 """
 
 import logging
@@ -33,15 +41,28 @@ RESOURCE_PLURAL = 'replicationsubnetgroups'
 DELETE_WAIT_AFTER_SECONDS = 10
 MODIFY_WAIT_AFTER_SECONDS = 10
 
-RESOURCE_DESC = "my-replication-subnet-group description"
+SUBNET_GROUP_DESC = "my-replication-subnet-group description"
 
 @pytest.fixture
 def subnet_group():
-    resource_name = random_suffix_name("my-replication-subnet-group", 33)
+    """Creates a ReplicationSubnetGroup K8s CR and tears it down afterwards.
+
+    The subnet group is created from the ``replication_subnet_group`` resource
+    template using randomly-suffixed names to avoid collisions across parallel
+    test runs.
+
+    Yields:
+        tuple: (ref, cr, subnet_group_name), where *ref* is the
+        ``CustomResourceReference``, *cr* is the initial CR dict returned by
+        the controller, and *subnet_group_name* is the identifier used for both
+        the K8s object name and the DMS resource name.
+    """
+
+    subnet_group_name = random_suffix_name("my-replication-subnet-group", 33)
 
     replacements = REPLACEMENT_VALUES.copy()
-    replacements["REPLICATION_SUBNET_GROUP_NAME"] = resource_name
-    replacements["REPLICATION_SUBNET_GROUP_DESC"] = RESOURCE_DESC
+    replacements["REPLICATION_SUBNET_GROUP_NAME"] = subnet_group_name
+    replacements["REPLICATION_SUBNET_GROUP_DESC"] = SUBNET_GROUP_DESC
 
     resource_data = load_dms_resource(
         "replication_subnet_group",
@@ -52,7 +73,7 @@ def subnet_group():
     # Create the k8s resource
     ref = k8s.CustomResourceReference(
         CRD_GROUP, CRD_VERSION, RESOURCE_PLURAL,
-        resource_name, namespace="default",
+        subnet_group_name, namespace="default",
     )
     k8s.create_custom_resource(ref, resource_data)
     cr = k8s.wait_resource_consumed_by_controller(ref)
@@ -61,7 +82,7 @@ def subnet_group():
     assert k8s.get_resource_exists(ref)
     condition.assert_synced(ref)
 
-    yield ref, cr, resource_name
+    yield ref, cr, subnet_group_name
 
     # Try to delete, if it does exist
     try:
@@ -76,18 +97,30 @@ def subnet_group():
 @pytest.mark.canary
 class TestReplicationSubnetGroup:
     def test_crud(self, subnet_group):
-        ref, cr, resource_name = subnet_group
+        """Verifies the full Create → Read → Update → Delete lifecycle.
+
+        Checks:
+        1.  The subnet group is immediately visible in the DMS API after the
+            K8s CR is consumed by the controller.
+        2.  The ``ReplicationSubnetGroupDescription`` field matches the value
+            set in the CR spec.
+        3.  The initial ``environment=dev`` tag is present on the resource.
+        4.  Tags can be updated to ``environment=prod`` via a CR patch, and
+            the DMS API reflects the new value.
+        """
+
+        ref, cr, subnet_group_name = subnet_group
 
         # Let's check that the subnet group appears in DMS
-        latest = replication_subnet_group.get(resource_name)
+        latest = replication_subnet_group.get(subnet_group_name)
         assert latest is not None
-        assert latest['ReplicationSubnetGroupDescription'] == RESOURCE_DESC
+        assert latest['ReplicationSubnetGroupDescription'] == SUBNET_GROUP_DESC
 
         # Build the ARN for this replication subnet group so we can
         # check its tags.
         account = identity.get_account_id()
         region = identity.get_region()
-        arn = f"arn:aws:dms:{region}:{account}:subgrp:{resource_name}"
+        arn = f"arn:aws:dms:{region}:{account}:subgrp:{subnet_group_name}"
 
         # Compare the Tags
         expect_tags = [
