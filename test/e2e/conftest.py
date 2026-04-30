@@ -48,7 +48,3 @@ def k8s_client():
 @pytest.fixture(scope='module')
 def dms_client():
     return boto3.client('dms')
-
-# @pytest.fixture(scope='module')
-# def sts_client():
-#     return boto3.client('sts')

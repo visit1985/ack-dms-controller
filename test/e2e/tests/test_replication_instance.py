@@ -244,6 +244,7 @@ class TestReplicationInstance:
         latest_tags = tag.clean(replication_instance.get_tags(arn))
         assert latest_tags == [{"Key": "environment", "Value": "prod"}]
 
+    @pytest.mark.dependency(depends_on=test_crud)
     def test_update_multi_az(self, replication_instance_fixture):
         """Verifies that enabling MultiAZ on an existing ReplicationInstance
         is reflected correctly in both the K8s CR and the AWS API.
@@ -291,6 +292,7 @@ class TestReplicationInstance:
         assert latest['ReplicationInstanceStatus'] == 'available'
         assert latest['MultiAZ'] is True
 
+    @pytest.mark.dependency(depends_on=test_update_multi_az)
     def test_upgrade_instance_class(self, replication_instance_fixture):
         """Verifies that upgrading the ReplicationInstance class is reflected
         in the AWS API.
