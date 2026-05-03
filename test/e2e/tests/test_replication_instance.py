@@ -185,7 +185,7 @@ class TestReplicationInstance:
         # Confirm the AWS-side status is 'available'.
         latest = aws_api.get(instance_name)
         assert latest is not None
-        assert latest['instanceStatus'] == 'available'
+        assert latest['ReplicationInstanceStatus'] == 'available'
         assert latest['MultiAZ'] is False
 
         # The K8s CR's status.replicationInstanceStatus should have been
