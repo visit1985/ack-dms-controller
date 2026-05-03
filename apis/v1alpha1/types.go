@@ -1058,11 +1058,7 @@ type ReplicationInstance_SDK struct {
 	ReplicationInstancePublicIPAddress    *string                           `json:"replicationInstancePublicIPAddress,omitempty"`
 	ReplicationInstancePublicIPAddresses  []*string                         `json:"replicationInstancePublicIPAddresses,omitempty"`
 	ReplicationInstanceStatus             *string                           `json:"replicationInstanceStatus,omitempty"`
-	// Describes a subnet group in response to a request by the DescribeReplicationSubnetGroups
-	// operation.
-	ReplicationSubnetGroup    *ReplicationSubnetGroup_SDK   `json:"replicationSubnetGroup,omitempty"`
-	SecondaryAvailabilityZone *string                       `json:"secondaryAvailabilityZone,omitempty"`
-	VPCSecurityGroups         []*VPCSecurityGroupMembership `json:"vpcSecurityGroups,omitempty"`
+	SecondaryAvailabilityZone             *string                           `json:"secondaryAvailabilityZone,omitempty"`
 }
 
 // Provides information about the values of pending modifications to a replication

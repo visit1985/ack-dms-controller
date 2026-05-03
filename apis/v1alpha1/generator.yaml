@@ -1,4 +1,7 @@
 ignore:
+  field_paths:
+    - ReplicationInstance.VpcSecurityGroups
+    - ReplicationInstance.ReplicationSubnetGroup
   resource_names:
     - DataMigration
     - DataProvider
@@ -236,8 +239,6 @@ resources:
             ReplicationInstancePublicIpAddress: PublicIPAddress
             ReplicationInstancePublicIpAddresses: PublicIPAddresses
             ReplicationInstanceStatus: InstanceStatus
-            ReplicationSubnetGroup: SubnetGroup
-            VpcSecurityGroups: SecurityGroups
         DescribeReplicationInstances:
           input_fields:
             ReplicationInstanceClass: InstanceClass
@@ -251,8 +252,6 @@ resources:
             ReplicationInstancePublicIpAddress: PublicIPAddress
             ReplicationInstancePublicIpAddresses: PublicIPAddresses
             ReplicationInstanceStatus: InstanceStatus
-            ReplicationSubnetGroup: SubnetGroup
-            VpcSecurityGroups: SecurityGroups
         ModifyReplicationInstance:
           input_fields:
             ReplicationInstanceClass: InstanceClass
@@ -266,8 +265,6 @@ resources:
             ReplicationInstancePublicIpAddress: PublicIPAddress
             ReplicationInstancePublicIpAddresses: PublicIPAddresses
             ReplicationInstanceStatus: InstanceStatus
-            ReplicationSubnetGroup: SubnetGroup
-            VpcSecurityGroups: SecurityGroups
   ReplicationSubnetGroup:
     fields:
       Name:

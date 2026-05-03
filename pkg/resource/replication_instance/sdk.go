@@ -247,71 +247,10 @@ func (rm *resourceManager) sdkFind(
 		} else {
 			ko.Status.InstanceStatus = nil
 		}
-		if elem.ReplicationSubnetGroup != nil {
-			f23 := &svcapitypes.ReplicationSubnetGroup_SDK{}
-			if elem.ReplicationSubnetGroup.IsReadOnly != nil {
-				f23.IsReadOnly = elem.ReplicationSubnetGroup.IsReadOnly
-			}
-			if elem.ReplicationSubnetGroup.ReplicationSubnetGroupDescription != nil {
-				f23.ReplicationSubnetGroupDescription = elem.ReplicationSubnetGroup.ReplicationSubnetGroupDescription
-			}
-			if elem.ReplicationSubnetGroup.ReplicationSubnetGroupIdentifier != nil {
-				f23.ReplicationSubnetGroupIdentifier = elem.ReplicationSubnetGroup.ReplicationSubnetGroupIdentifier
-			}
-			if elem.ReplicationSubnetGroup.SubnetGroupStatus != nil {
-				f23.SubnetGroupStatus = elem.ReplicationSubnetGroup.SubnetGroupStatus
-			}
-			if elem.ReplicationSubnetGroup.Subnets != nil {
-				f23f4 := []*svcapitypes.Subnet{}
-				for _, f23f4iter := range elem.ReplicationSubnetGroup.Subnets {
-					f23f4elem := &svcapitypes.Subnet{}
-					if f23f4iter.SubnetAvailabilityZone != nil {
-						f23f4elemf0 := &svcapitypes.AvailabilityZone{}
-						if f23f4iter.SubnetAvailabilityZone.Name != nil {
-							f23f4elemf0.Name = f23f4iter.SubnetAvailabilityZone.Name
-						}
-						f23f4elem.SubnetAvailabilityZone = f23f4elemf0
-					}
-					if f23f4iter.SubnetIdentifier != nil {
-						f23f4elem.SubnetIdentifier = f23f4iter.SubnetIdentifier
-					}
-					if f23f4iter.SubnetStatus != nil {
-						f23f4elem.SubnetStatus = f23f4iter.SubnetStatus
-					}
-					f23f4 = append(f23f4, f23f4elem)
-				}
-				f23.Subnets = f23f4
-			}
-			if elem.ReplicationSubnetGroup.SupportedNetworkTypes != nil {
-				f23.SupportedNetworkTypes = aws.StringSlice(elem.ReplicationSubnetGroup.SupportedNetworkTypes)
-			}
-			if elem.ReplicationSubnetGroup.VpcId != nil {
-				f23.VPCID = elem.ReplicationSubnetGroup.VpcId
-			}
-			ko.Status.SubnetGroup = f23
-		} else {
-			ko.Status.SubnetGroup = nil
-		}
 		if elem.SecondaryAvailabilityZone != nil {
 			ko.Status.SecondaryAvailabilityZone = elem.SecondaryAvailabilityZone
 		} else {
 			ko.Status.SecondaryAvailabilityZone = nil
-		}
-		if elem.VpcSecurityGroups != nil {
-			f25 := []*svcapitypes.VPCSecurityGroupMembership{}
-			for _, f25iter := range elem.VpcSecurityGroups {
-				f25elem := &svcapitypes.VPCSecurityGroupMembership{}
-				if f25iter.Status != nil {
-					f25elem.Status = f25iter.Status
-				}
-				if f25iter.VpcSecurityGroupId != nil {
-					f25elem.VPCSecurityGroupID = f25iter.VpcSecurityGroupId
-				}
-				f25 = append(f25, f25elem)
-			}
-			ko.Status.SecurityGroups = f25
-		} else {
-			ko.Status.SecurityGroups = nil
 		}
 		found = true
 		break
@@ -524,71 +463,10 @@ func (rm *resourceManager) sdkCreate(
 	} else {
 		ko.Status.InstanceStatus = nil
 	}
-	if resp.ReplicationInstance.ReplicationSubnetGroup != nil {
-		f23 := &svcapitypes.ReplicationSubnetGroup_SDK{}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.IsReadOnly != nil {
-			f23.IsReadOnly = resp.ReplicationInstance.ReplicationSubnetGroup.IsReadOnly
-		}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.ReplicationSubnetGroupDescription != nil {
-			f23.ReplicationSubnetGroupDescription = resp.ReplicationInstance.ReplicationSubnetGroup.ReplicationSubnetGroupDescription
-		}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.ReplicationSubnetGroupIdentifier != nil {
-			f23.ReplicationSubnetGroupIdentifier = resp.ReplicationInstance.ReplicationSubnetGroup.ReplicationSubnetGroupIdentifier
-		}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.SubnetGroupStatus != nil {
-			f23.SubnetGroupStatus = resp.ReplicationInstance.ReplicationSubnetGroup.SubnetGroupStatus
-		}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.Subnets != nil {
-			f23f4 := []*svcapitypes.Subnet{}
-			for _, f23f4iter := range resp.ReplicationInstance.ReplicationSubnetGroup.Subnets {
-				f23f4elem := &svcapitypes.Subnet{}
-				if f23f4iter.SubnetAvailabilityZone != nil {
-					f23f4elemf0 := &svcapitypes.AvailabilityZone{}
-					if f23f4iter.SubnetAvailabilityZone.Name != nil {
-						f23f4elemf0.Name = f23f4iter.SubnetAvailabilityZone.Name
-					}
-					f23f4elem.SubnetAvailabilityZone = f23f4elemf0
-				}
-				if f23f4iter.SubnetIdentifier != nil {
-					f23f4elem.SubnetIdentifier = f23f4iter.SubnetIdentifier
-				}
-				if f23f4iter.SubnetStatus != nil {
-					f23f4elem.SubnetStatus = f23f4iter.SubnetStatus
-				}
-				f23f4 = append(f23f4, f23f4elem)
-			}
-			f23.Subnets = f23f4
-		}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.SupportedNetworkTypes != nil {
-			f23.SupportedNetworkTypes = aws.StringSlice(resp.ReplicationInstance.ReplicationSubnetGroup.SupportedNetworkTypes)
-		}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.VpcId != nil {
-			f23.VPCID = resp.ReplicationInstance.ReplicationSubnetGroup.VpcId
-		}
-		ko.Status.SubnetGroup = f23
-	} else {
-		ko.Status.SubnetGroup = nil
-	}
 	if resp.ReplicationInstance.SecondaryAvailabilityZone != nil {
 		ko.Status.SecondaryAvailabilityZone = resp.ReplicationInstance.SecondaryAvailabilityZone
 	} else {
 		ko.Status.SecondaryAvailabilityZone = nil
-	}
-	if resp.ReplicationInstance.VpcSecurityGroups != nil {
-		f25 := []*svcapitypes.VPCSecurityGroupMembership{}
-		for _, f25iter := range resp.ReplicationInstance.VpcSecurityGroups {
-			f25elem := &svcapitypes.VPCSecurityGroupMembership{}
-			if f25iter.Status != nil {
-				f25elem.Status = f25iter.Status
-			}
-			if f25iter.VpcSecurityGroupId != nil {
-				f25elem.VPCSecurityGroupID = f25iter.VpcSecurityGroupId
-			}
-			f25 = append(f25, f25elem)
-		}
-		ko.Status.SecurityGroups = f25
-	} else {
-		ko.Status.SecurityGroups = nil
 	}
 
 	rm.setStatusDefaults(ko)
@@ -854,71 +732,10 @@ func (rm *resourceManager) sdkUpdate(
 	} else {
 		ko.Status.InstanceStatus = nil
 	}
-	if resp.ReplicationInstance.ReplicationSubnetGroup != nil {
-		f23 := &svcapitypes.ReplicationSubnetGroup_SDK{}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.IsReadOnly != nil {
-			f23.IsReadOnly = resp.ReplicationInstance.ReplicationSubnetGroup.IsReadOnly
-		}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.ReplicationSubnetGroupDescription != nil {
-			f23.ReplicationSubnetGroupDescription = resp.ReplicationInstance.ReplicationSubnetGroup.ReplicationSubnetGroupDescription
-		}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.ReplicationSubnetGroupIdentifier != nil {
-			f23.ReplicationSubnetGroupIdentifier = resp.ReplicationInstance.ReplicationSubnetGroup.ReplicationSubnetGroupIdentifier
-		}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.SubnetGroupStatus != nil {
-			f23.SubnetGroupStatus = resp.ReplicationInstance.ReplicationSubnetGroup.SubnetGroupStatus
-		}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.Subnets != nil {
-			f23f4 := []*svcapitypes.Subnet{}
-			for _, f23f4iter := range resp.ReplicationInstance.ReplicationSubnetGroup.Subnets {
-				f23f4elem := &svcapitypes.Subnet{}
-				if f23f4iter.SubnetAvailabilityZone != nil {
-					f23f4elemf0 := &svcapitypes.AvailabilityZone{}
-					if f23f4iter.SubnetAvailabilityZone.Name != nil {
-						f23f4elemf0.Name = f23f4iter.SubnetAvailabilityZone.Name
-					}
-					f23f4elem.SubnetAvailabilityZone = f23f4elemf0
-				}
-				if f23f4iter.SubnetIdentifier != nil {
-					f23f4elem.SubnetIdentifier = f23f4iter.SubnetIdentifier
-				}
-				if f23f4iter.SubnetStatus != nil {
-					f23f4elem.SubnetStatus = f23f4iter.SubnetStatus
-				}
-				f23f4 = append(f23f4, f23f4elem)
-			}
-			f23.Subnets = f23f4
-		}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.SupportedNetworkTypes != nil {
-			f23.SupportedNetworkTypes = aws.StringSlice(resp.ReplicationInstance.ReplicationSubnetGroup.SupportedNetworkTypes)
-		}
-		if resp.ReplicationInstance.ReplicationSubnetGroup.VpcId != nil {
-			f23.VPCID = resp.ReplicationInstance.ReplicationSubnetGroup.VpcId
-		}
-		ko.Status.SubnetGroup = f23
-	} else {
-		ko.Status.SubnetGroup = nil
-	}
 	if resp.ReplicationInstance.SecondaryAvailabilityZone != nil {
 		ko.Status.SecondaryAvailabilityZone = resp.ReplicationInstance.SecondaryAvailabilityZone
 	} else {
 		ko.Status.SecondaryAvailabilityZone = nil
-	}
-	if resp.ReplicationInstance.VpcSecurityGroups != nil {
-		f25 := []*svcapitypes.VPCSecurityGroupMembership{}
-		for _, f25iter := range resp.ReplicationInstance.VpcSecurityGroups {
-			f25elem := &svcapitypes.VPCSecurityGroupMembership{}
-			if f25iter.Status != nil {
-				f25elem.Status = f25iter.Status
-			}
-			if f25iter.VpcSecurityGroupId != nil {
-				f25elem.VPCSecurityGroupID = f25iter.VpcSecurityGroupId
-			}
-			f25 = append(f25, f25elem)
-		}
-		ko.Status.SecurityGroups = f25
-	} else {
-		ko.Status.SecurityGroups = nil
 	}
 
 	rm.setStatusDefaults(ko)

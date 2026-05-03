@@ -210,12 +210,6 @@ type ReplicationInstanceStatus struct {
 	// The Availability Zone of the standby replication instance in a Multi-AZ deployment.
 	// +kubebuilder:validation:Optional
 	SecondaryAvailabilityZone *string `json:"secondaryAvailabilityZone,omitempty"`
-	// The VPC security group for the instance.
-	// +kubebuilder:validation:Optional
-	SecurityGroups []*VPCSecurityGroupMembership `json:"securityGroups,omitempty"`
-	// The subnet group for the replication instance.
-	// +kubebuilder:validation:Optional
-	SubnetGroup *ReplicationSubnetGroup_SDK `json:"subnetGroup,omitempty"`
 }
 
 // ReplicationInstance is the Schema for the ReplicationInstances API

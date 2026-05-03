@@ -420,61 +420,6 @@ spec:
                 description: The Availability Zone of the standby replication instance
                   in a Multi-AZ deployment.
                 type: string
-              securityGroups:
-                description: The VPC security group for the instance.
-                items:
-                  description: |-
-                    Describes the status of a security group associated with the virtual private
-                    cloud (VPC) hosting your replication and DB instances.
-                  properties:
-                    status:
-                      type: string
-                    vpcSecurityGroupID:
-                      type: string
-                  type: object
-                type: array
-              subnetGroup:
-                description: The subnet group for the replication instance.
-                properties:
-                  isReadOnly:
-                    type: boolean
-                  replicationSubnetGroupDescription:
-                    type: string
-                  replicationSubnetGroupIdentifier:
-                    type: string
-                  subnetGroupStatus:
-                    type: string
-                  subnets:
-                    items:
-                      description: |-
-                        In response to a request by the DescribeReplicationSubnetGroups operation,
-                        this object identifies a subnet by its given Availability Zone, subnet identifier,
-                        and status.
-                      properties:
-                        subnetAvailabilityZone:
-                          description: |-
-                            The name of an Availability Zone for use during database migration. AvailabilityZone
-                            is an optional parameter to the CreateReplicationInstance (https://docs.aws.amazon.com/dms/latest/APIReference/API_CreateReplicationInstance.html)
-                            operation, and it’s value relates to the Amazon Web Services Region of
-                            an endpoint. For example, the availability zone of an endpoint in the us-east-1
-                            region might be us-east-1a, us-east-1b, us-east-1c, or us-east-1d.
-                          properties:
-                            name:
-                              type: string
-                          type: object
-                        subnetIdentifier:
-                          type: string
-                        subnetStatus:
-                          type: string
-                      type: object
-                    type: array
-                  supportedNetworkTypes:
-                    items:
-                      type: string
-                    type: array
-                  vpcID:
-                    type: string
-                type: object
             type: object
         type: object
     served: true
