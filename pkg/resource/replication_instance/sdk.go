@@ -931,6 +931,8 @@ func (rm *resourceManager) newUpdateRequestPayload(
 		allocatedStorageCopy := int32(allocatedStorageCopy0)
 		res.AllocatedStorage = &allocatedStorageCopy
 	}
+	res.AllowMajorVersionUpgrade = true
+	res.ApplyImmediately = true
 	if r.ko.Spec.AutoMinorVersionUpgrade != nil {
 		res.AutoMinorVersionUpgrade = r.ko.Spec.AutoMinorVersionUpgrade
 	}
