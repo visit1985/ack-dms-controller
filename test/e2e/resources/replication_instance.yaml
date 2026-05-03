@@ -3,13 +3,14 @@ kind: ReplicationInstance
 metadata:
   name: $REPLICATION_INSTANCE_NAME
 spec:
-  name: $REPLICATION_INSTANCE_NAME
+  allocatedStorage: 5
   instanceClass: dms.t3.small
+  name: $REPLICATION_INSTANCE_NAME
+  securityGroupIDs:
+    - $SECURITY_GROUP_ID
   subnetGroupRef:
     from:
       name: $REPLICATION_SUBNET_GROUP_NAME
-  securityGroupIDs:
-    - $SECURITY_GROUP_ID
   tags:
     - key: environment
       value: dev
