@@ -20,12 +20,8 @@ Test scenarios
     status in the K8s CR and the AWS API, update a simple field
     (autoMinorVersionUpgrade), verify tags, update tags, and then let the
     fixture handle deletion.
-
-* test_update_multi_az
     Toggle the ``multiAZ`` flag from False → True and confirm that the AWS API
     reflects the change once the CR is re-synced.
-
-* test_upgrade_instance_class
     Change ``instanceClass`` from *dms.t3.small* to *dms.t3.medium* and verify
     that the AWS API either already shows the new class or records it as a
     pending modification.
@@ -161,17 +157,23 @@ class TestReplicationInstance:
         2.  After waiting for sync the AWS API reports ``available``.
         3.  The K8s CR status field is also updated to ``available`` on the
             next reconciliation pass.
-        4.  ``autoMinorVersionUpgrade`` can be toggled and the change is
-            reflected in the AWS API.
-        5.  The initial ``environment=dev`` tag is present.
+        4.  ``autoMinorVersionUpgrade`` can be toggled off and back on, with
+            each change reflected in the AWS API after re-sync.
+        5.  The initial ``environment=dev`` tag is present in the AWS API.
         6.  Tags can be updated to ``environment=prod``.
+        7.  ``multiAZ`` can be toggled from False → True; the controller
+            transitions through a not-synced state while DMS applies the
+            modification, then returns to ``available`` with MultiAZ enabled.
+        8.  ``instanceClass`` can be upgraded from *dms.t3.small* →
+            *dms.t3.medium*; after re-sync the AWS API and K8s spec both
+            reflect the new class and the instance is ``available``.
         """
         ri_ref, ri_cr, instance_name, _, _ = replication_instance_fixture
 
         # Immediately after creation the instance should be in 'creating'.
         assert 'status' in ri_cr
-        assert 'replicationInstanceStatus' in ri_cr['status']
-        assert ri_cr['status']['replicationInstanceStatus'] == 'creating'
+        assert 'instanceStatus' in ri_cr['status']
+        assert ri_cr['status']['instanceStatus'] == 'creating'
         condition.assert_not_synced(ri_ref)
 
         # Wait for the controller to mark the CR as synced (= available).
@@ -183,14 +185,14 @@ class TestReplicationInstance:
         # Confirm the AWS-side status is 'available'.
         latest = aws_api.get(instance_name)
         assert latest is not None
-        assert latest['ReplicationInstanceStatus'] == 'available'
+        assert latest['instanceStatus'] == 'available'
         assert latest['MultiAZ'] is False
 
         # The K8s CR's status.replicationInstanceStatus should have been
         # updated from 'creating' to reflect the current state.
         ri_cr = k8s.get_resource(ri_ref)
         assert ri_cr is not None
-        assert ri_cr['status']['replicationInstanceStatus'] != 'creating'
+        assert ri_cr['status']['instanceStatus'] != 'creating'
         condition.assert_synced(ri_ref)
 
         # ---- Update: toggle autoMinorVersionUpgrade -------------------------

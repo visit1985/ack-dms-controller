@@ -349,44 +349,7 @@ spec:
                 description: The time the replication instance was created.
                 format: date-time
                 type: string
-              pendingModifiedValues:
-                description: The pending modification values.
-                properties:
-                  allocatedStorage:
-                    format: int64
-                    type: integer
-                  engineVersion:
-                    type: string
-                  multiAZ:
-                    type: boolean
-                  networkType:
-                    type: string
-                  replicationInstanceClass:
-                    type: string
-                type: object
-              replicationInstanceIPv6Addresses:
-                description: One or more IPv6 addresses for the replication instance.
-                items:
-                  type: string
-                type: array
-              replicationInstancePrivateIPAddress:
-                description: The private IP address of the replication instance.
-                type: string
-              replicationInstancePrivateIPAddresses:
-                description: One or more private IP addresses for the replication
-                  instance.
-                items:
-                  type: string
-                type: array
-              replicationInstancePublicIPAddress:
-                description: The public IP address of the replication instance.
-                type: string
-              replicationInstancePublicIPAddresses:
-                description: One or more public IP addresses for the replication instance.
-                items:
-                  type: string
-                type: array
-              replicationInstanceStatus:
+              instanceStatus:
                 description: |-
                   The status of the replication instance. The possible return values include:
 
@@ -416,7 +379,61 @@ spec:
 
                      * "maintenance"
                 type: string
-              replicationSubnetGroup:
+              ipv6Addresses:
+                description: One or more IPv6 addresses for the replication instance.
+                items:
+                  type: string
+                type: array
+              pendingModifiedValues:
+                description: The pending modification values.
+                properties:
+                  allocatedStorage:
+                    format: int64
+                    type: integer
+                  engineVersion:
+                    type: string
+                  multiAZ:
+                    type: boolean
+                  networkType:
+                    type: string
+                  replicationInstanceClass:
+                    type: string
+                type: object
+              privateIPAddress:
+                description: The private IP address of the replication instance.
+                type: string
+              privateIPAddresses:
+                description: One or more private IP addresses for the replication
+                  instance.
+                items:
+                  type: string
+                type: array
+              publicIPAddress:
+                description: The public IP address of the replication instance.
+                type: string
+              publicIPAddresses:
+                description: One or more public IP addresses for the replication instance.
+                items:
+                  type: string
+                type: array
+              secondaryAvailabilityZone:
+                description: The Availability Zone of the standby replication instance
+                  in a Multi-AZ deployment.
+                type: string
+              securityGroups:
+                description: The VPC security group for the instance.
+                items:
+                  description: |-
+                    Describes the status of a security group associated with the virtual private
+                    cloud (VPC) hosting your replication and DB instances.
+                  properties:
+                    status:
+                      type: string
+                    vpcSecurityGroupID:
+                      type: string
+                  type: object
+                type: array
+              subnetGroup:
                 description: The subnet group for the replication instance.
                 properties:
                   isReadOnly:
@@ -458,23 +475,6 @@ spec:
                   vpcID:
                     type: string
                 type: object
-              secondaryAvailabilityZone:
-                description: The Availability Zone of the standby replication instance
-                  in a Multi-AZ deployment.
-                type: string
-              vpcSecurityGroups:
-                description: The VPC security group for the instance.
-                items:
-                  description: |-
-                    Describes the status of a security group associated with the virtual private
-                    cloud (VPC) hosting your replication and DB instances.
-                  properties:
-                    status:
-                      type: string
-                    vpcSecurityGroupID:
-                      type: string
-                  type: object
-                type: array
             type: object
         type: object
     served: true

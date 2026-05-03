@@ -37,10 +37,10 @@ const (
 	//replicationTaskStatusModifying = "modifying"
 	//replicationTaskStatusMoving    = "moving"
 	replicationTaskStatusReady    = "ready"
-	replicationTaskStatusStopped  = "stopped"
-	replicationTaskStatusStopping = "stopping"
 	replicationTaskStatusRunning  = "running"
 	replicationTaskStatusStarting = "starting"
+	replicationTaskStatusStopped  = "stopped"
+	replicationTaskStatusStopping = "stopping"
 )
 
 // compareTags is a custom comparison function for comparing lists of Tag

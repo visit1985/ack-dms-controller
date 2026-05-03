@@ -229,18 +229,45 @@ resources:
             ReplicationInstanceIdentifier: Name
             ReplicationSubnetGroupIdentifier: SubnetGroupID
             VpcSecurityGroupIds: SecurityGroupIDs
+          output_fields:
+            ReplicationInstanceIpv6Addresses: IPv6Addresses
+            ReplicationInstancePrivateIpAddress: PrivateIPAddress
+            ReplicationInstancePrivateIpAddresses: PrivateIPAddresses
+            ReplicationInstancePublicIpAddress: PublicIPAddress
+            ReplicationInstancePublicIpAddresses: PublicIPAddresses
+            ReplicationInstanceStatus: InstanceStatus
+            ReplicationSubnetGroup: SubnetGroup
+            VpcSecurityGroups: SecurityGroups
         DescribeReplicationInstances:
           input_fields:
             ReplicationInstanceClass: InstanceClass
             ReplicationInstanceIdentifier: Name
             ReplicationSubnetGroupIdentifier: SubnetGroupID
             VpcSecurityGroupIds: SecurityGroupIDs
+          output_fields:
+            ReplicationInstanceIpv6Addresses: IPv6Addresses
+            ReplicationInstancePrivateIpAddress: PrivateIPAddress
+            ReplicationInstancePrivateIpAddresses: PrivateIPAddresses
+            ReplicationInstancePublicIpAddress: PublicIPAddress
+            ReplicationInstancePublicIpAddresses: PublicIPAddresses
+            ReplicationInstanceStatus: InstanceStatus
+            ReplicationSubnetGroup: SubnetGroup
+            VpcSecurityGroups: SecurityGroups
         ModifyReplicationInstance:
           input_fields:
             ReplicationInstanceClass: InstanceClass
             ReplicationInstanceIdentifier: Name
             ReplicationSubnetGroupIdentifier: SubnetGroupID
             VpcSecurityGroupIds: SecurityGroupIDs
+          output_fields:
+            ReplicationInstanceIpv6Addresses: IPv6Addresses
+            ReplicationInstancePrivateIpAddress: PrivateIPAddress
+            ReplicationInstancePrivateIpAddresses: PrivateIPAddresses
+            ReplicationInstancePublicIpAddress: PublicIPAddress
+            ReplicationInstancePublicIpAddresses: PublicIPAddresses
+            ReplicationInstanceStatus: InstanceStatus
+            ReplicationSubnetGroup: SubnetGroup
+            VpcSecurityGroups: SecurityGroups
   ReplicationSubnetGroup:
     fields:
       Name:

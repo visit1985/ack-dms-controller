@@ -218,34 +218,34 @@ func (rm *resourceManager) sdkFind(
 			ko.Spec.Name = nil
 		}
 		if elem.ReplicationInstanceIpv6Addresses != nil {
-			ko.Status.ReplicationInstanceIPv6Addresses = aws.StringSlice(elem.ReplicationInstanceIpv6Addresses)
+			ko.Status.IPv6Addresses = aws.StringSlice(elem.ReplicationInstanceIpv6Addresses)
 		} else {
-			ko.Status.ReplicationInstanceIPv6Addresses = nil
+			ko.Status.IPv6Addresses = nil
 		}
 		if elem.ReplicationInstancePrivateIpAddress != nil {
-			ko.Status.ReplicationInstancePrivateIPAddress = elem.ReplicationInstancePrivateIpAddress
+			ko.Status.PrivateIPAddress = elem.ReplicationInstancePrivateIpAddress
 		} else {
-			ko.Status.ReplicationInstancePrivateIPAddress = nil
+			ko.Status.PrivateIPAddress = nil
 		}
 		if elem.ReplicationInstancePrivateIpAddresses != nil {
-			ko.Status.ReplicationInstancePrivateIPAddresses = aws.StringSlice(elem.ReplicationInstancePrivateIpAddresses)
+			ko.Status.PrivateIPAddresses = aws.StringSlice(elem.ReplicationInstancePrivateIpAddresses)
 		} else {
-			ko.Status.ReplicationInstancePrivateIPAddresses = nil
+			ko.Status.PrivateIPAddresses = nil
 		}
 		if elem.ReplicationInstancePublicIpAddress != nil {
-			ko.Status.ReplicationInstancePublicIPAddress = elem.ReplicationInstancePublicIpAddress
+			ko.Status.PublicIPAddress = elem.ReplicationInstancePublicIpAddress
 		} else {
-			ko.Status.ReplicationInstancePublicIPAddress = nil
+			ko.Status.PublicIPAddress = nil
 		}
 		if elem.ReplicationInstancePublicIpAddresses != nil {
-			ko.Status.ReplicationInstancePublicIPAddresses = aws.StringSlice(elem.ReplicationInstancePublicIpAddresses)
+			ko.Status.PublicIPAddresses = aws.StringSlice(elem.ReplicationInstancePublicIpAddresses)
 		} else {
-			ko.Status.ReplicationInstancePublicIPAddresses = nil
+			ko.Status.PublicIPAddresses = nil
 		}
 		if elem.ReplicationInstanceStatus != nil {
-			ko.Status.ReplicationInstanceStatus = elem.ReplicationInstanceStatus
+			ko.Status.InstanceStatus = elem.ReplicationInstanceStatus
 		} else {
-			ko.Status.ReplicationInstanceStatus = nil
+			ko.Status.InstanceStatus = nil
 		}
 		if elem.ReplicationSubnetGroup != nil {
 			f23 := &svcapitypes.ReplicationSubnetGroup_SDK{}
@@ -288,9 +288,9 @@ func (rm *resourceManager) sdkFind(
 			if elem.ReplicationSubnetGroup.VpcId != nil {
 				f23.VPCID = elem.ReplicationSubnetGroup.VpcId
 			}
-			ko.Status.ReplicationSubnetGroup = f23
+			ko.Status.SubnetGroup = f23
 		} else {
-			ko.Status.ReplicationSubnetGroup = nil
+			ko.Status.SubnetGroup = nil
 		}
 		if elem.SecondaryAvailabilityZone != nil {
 			ko.Status.SecondaryAvailabilityZone = elem.SecondaryAvailabilityZone
@@ -309,9 +309,9 @@ func (rm *resourceManager) sdkFind(
 				}
 				f25 = append(f25, f25elem)
 			}
-			ko.Status.VPCSecurityGroups = f25
+			ko.Status.SecurityGroups = f25
 		} else {
-			ko.Status.VPCSecurityGroups = nil
+			ko.Status.SecurityGroups = nil
 		}
 		found = true
 		break
@@ -334,6 +334,15 @@ func (rm *resourceManager) sdkFind(
 			}
 			ko.Spec.Tags = tags
 		}
+	}
+
+	// sdk_read_many_post_set_output hook
+	//
+	// If the replication instance is not in a steady state, requeue more frequently.
+	if !hasSteadyState(ko) {
+		ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
+			aws.String("ReplicationInstance not in steady state"), nil)
+		return &resource{ko}, nil
 	}
 
 	return &resource{ko}, nil
@@ -486,34 +495,34 @@ func (rm *resourceManager) sdkCreate(
 		ko.Spec.Name = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstanceIpv6Addresses != nil {
-		ko.Status.ReplicationInstanceIPv6Addresses = aws.StringSlice(resp.ReplicationInstance.ReplicationInstanceIpv6Addresses)
+		ko.Status.IPv6Addresses = aws.StringSlice(resp.ReplicationInstance.ReplicationInstanceIpv6Addresses)
 	} else {
-		ko.Status.ReplicationInstanceIPv6Addresses = nil
+		ko.Status.IPv6Addresses = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstancePrivateIpAddress != nil {
-		ko.Status.ReplicationInstancePrivateIPAddress = resp.ReplicationInstance.ReplicationInstancePrivateIpAddress
+		ko.Status.PrivateIPAddress = resp.ReplicationInstance.ReplicationInstancePrivateIpAddress
 	} else {
-		ko.Status.ReplicationInstancePrivateIPAddress = nil
+		ko.Status.PrivateIPAddress = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstancePrivateIpAddresses != nil {
-		ko.Status.ReplicationInstancePrivateIPAddresses = aws.StringSlice(resp.ReplicationInstance.ReplicationInstancePrivateIpAddresses)
+		ko.Status.PrivateIPAddresses = aws.StringSlice(resp.ReplicationInstance.ReplicationInstancePrivateIpAddresses)
 	} else {
-		ko.Status.ReplicationInstancePrivateIPAddresses = nil
+		ko.Status.PrivateIPAddresses = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstancePublicIpAddress != nil {
-		ko.Status.ReplicationInstancePublicIPAddress = resp.ReplicationInstance.ReplicationInstancePublicIpAddress
+		ko.Status.PublicIPAddress = resp.ReplicationInstance.ReplicationInstancePublicIpAddress
 	} else {
-		ko.Status.ReplicationInstancePublicIPAddress = nil
+		ko.Status.PublicIPAddress = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstancePublicIpAddresses != nil {
-		ko.Status.ReplicationInstancePublicIPAddresses = aws.StringSlice(resp.ReplicationInstance.ReplicationInstancePublicIpAddresses)
+		ko.Status.PublicIPAddresses = aws.StringSlice(resp.ReplicationInstance.ReplicationInstancePublicIpAddresses)
 	} else {
-		ko.Status.ReplicationInstancePublicIPAddresses = nil
+		ko.Status.PublicIPAddresses = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstanceStatus != nil {
-		ko.Status.ReplicationInstanceStatus = resp.ReplicationInstance.ReplicationInstanceStatus
+		ko.Status.InstanceStatus = resp.ReplicationInstance.ReplicationInstanceStatus
 	} else {
-		ko.Status.ReplicationInstanceStatus = nil
+		ko.Status.InstanceStatus = nil
 	}
 	if resp.ReplicationInstance.ReplicationSubnetGroup != nil {
 		f23 := &svcapitypes.ReplicationSubnetGroup_SDK{}
@@ -556,9 +565,9 @@ func (rm *resourceManager) sdkCreate(
 		if resp.ReplicationInstance.ReplicationSubnetGroup.VpcId != nil {
 			f23.VPCID = resp.ReplicationInstance.ReplicationSubnetGroup.VpcId
 		}
-		ko.Status.ReplicationSubnetGroup = f23
+		ko.Status.SubnetGroup = f23
 	} else {
-		ko.Status.ReplicationSubnetGroup = nil
+		ko.Status.SubnetGroup = nil
 	}
 	if resp.ReplicationInstance.SecondaryAvailabilityZone != nil {
 		ko.Status.SecondaryAvailabilityZone = resp.ReplicationInstance.SecondaryAvailabilityZone
@@ -577,9 +586,9 @@ func (rm *resourceManager) sdkCreate(
 			}
 			f25 = append(f25, f25elem)
 		}
-		ko.Status.VPCSecurityGroups = f25
+		ko.Status.SecurityGroups = f25
 	} else {
-		ko.Status.VPCSecurityGroups = nil
+		ko.Status.SecurityGroups = nil
 	}
 
 	rm.setStatusDefaults(ko)
@@ -816,34 +825,34 @@ func (rm *resourceManager) sdkUpdate(
 		ko.Spec.Name = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstanceIpv6Addresses != nil {
-		ko.Status.ReplicationInstanceIPv6Addresses = aws.StringSlice(resp.ReplicationInstance.ReplicationInstanceIpv6Addresses)
+		ko.Status.IPv6Addresses = aws.StringSlice(resp.ReplicationInstance.ReplicationInstanceIpv6Addresses)
 	} else {
-		ko.Status.ReplicationInstanceIPv6Addresses = nil
+		ko.Status.IPv6Addresses = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstancePrivateIpAddress != nil {
-		ko.Status.ReplicationInstancePrivateIPAddress = resp.ReplicationInstance.ReplicationInstancePrivateIpAddress
+		ko.Status.PrivateIPAddress = resp.ReplicationInstance.ReplicationInstancePrivateIpAddress
 	} else {
-		ko.Status.ReplicationInstancePrivateIPAddress = nil
+		ko.Status.PrivateIPAddress = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstancePrivateIpAddresses != nil {
-		ko.Status.ReplicationInstancePrivateIPAddresses = aws.StringSlice(resp.ReplicationInstance.ReplicationInstancePrivateIpAddresses)
+		ko.Status.PrivateIPAddresses = aws.StringSlice(resp.ReplicationInstance.ReplicationInstancePrivateIpAddresses)
 	} else {
-		ko.Status.ReplicationInstancePrivateIPAddresses = nil
+		ko.Status.PrivateIPAddresses = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstancePublicIpAddress != nil {
-		ko.Status.ReplicationInstancePublicIPAddress = resp.ReplicationInstance.ReplicationInstancePublicIpAddress
+		ko.Status.PublicIPAddress = resp.ReplicationInstance.ReplicationInstancePublicIpAddress
 	} else {
-		ko.Status.ReplicationInstancePublicIPAddress = nil
+		ko.Status.PublicIPAddress = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstancePublicIpAddresses != nil {
-		ko.Status.ReplicationInstancePublicIPAddresses = aws.StringSlice(resp.ReplicationInstance.ReplicationInstancePublicIpAddresses)
+		ko.Status.PublicIPAddresses = aws.StringSlice(resp.ReplicationInstance.ReplicationInstancePublicIpAddresses)
 	} else {
-		ko.Status.ReplicationInstancePublicIPAddresses = nil
+		ko.Status.PublicIPAddresses = nil
 	}
 	if resp.ReplicationInstance.ReplicationInstanceStatus != nil {
-		ko.Status.ReplicationInstanceStatus = resp.ReplicationInstance.ReplicationInstanceStatus
+		ko.Status.InstanceStatus = resp.ReplicationInstance.ReplicationInstanceStatus
 	} else {
-		ko.Status.ReplicationInstanceStatus = nil
+		ko.Status.InstanceStatus = nil
 	}
 	if resp.ReplicationInstance.ReplicationSubnetGroup != nil {
 		f23 := &svcapitypes.ReplicationSubnetGroup_SDK{}
@@ -886,9 +895,9 @@ func (rm *resourceManager) sdkUpdate(
 		if resp.ReplicationInstance.ReplicationSubnetGroup.VpcId != nil {
 			f23.VPCID = resp.ReplicationInstance.ReplicationSubnetGroup.VpcId
 		}
-		ko.Status.ReplicationSubnetGroup = f23
+		ko.Status.SubnetGroup = f23
 	} else {
-		ko.Status.ReplicationSubnetGroup = nil
+		ko.Status.SubnetGroup = nil
 	}
 	if resp.ReplicationInstance.SecondaryAvailabilityZone != nil {
 		ko.Status.SecondaryAvailabilityZone = resp.ReplicationInstance.SecondaryAvailabilityZone
@@ -907,9 +916,9 @@ func (rm *resourceManager) sdkUpdate(
 			}
 			f25 = append(f25, f25elem)
 		}
-		ko.Status.VPCSecurityGroups = f25
+		ko.Status.SecurityGroups = f25
 	} else {
-		ko.Status.VPCSecurityGroups = nil
+		ko.Status.SecurityGroups = nil
 	}
 
 	rm.setStatusDefaults(ko)
@@ -1004,7 +1013,7 @@ func (rm *resourceManager) sdkDelete(
 	if err != nil {
 		return nil, err
 	}
-	r.ko.Status.ReplicationInstanceStatus = aws.String(replicationInstanceStatusDeleting)
+	r.ko.Status.InstanceStatus = aws.String(replicationInstanceStatusDeleting)
 	return r, ackrequeue.NeededAfter(errors.New("Waiting for ReplicationInstance deletion to complete"), 10*time.Second)
 
 	return nil, err

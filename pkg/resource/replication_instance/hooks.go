@@ -15,6 +15,7 @@ package replication_instance
 
 import (
 	"context"
+	"slices"
 
 	svcapitypes "github.com/aws-controllers-k8s/dms-controller/apis/v1alpha1"
 	"github.com/aws-controllers-k8s/dms-controller/pkg/util"
@@ -25,7 +26,11 @@ import (
 )
 
 const (
+	replicationInstanceStatusAvailable = "available"
+	//replicationInstanceStatusCreating  = "creating"
 	replicationInstanceStatusDeleting = "deleting"
+	//replicationInstanceStatusModifying = "modifying"
+	//replicationInstanceStatusUpgrading = "upgrading"
 )
 
 // compareTags is a custom comparison function for comparing lists of Tag
@@ -130,4 +135,15 @@ func sdkTagsFromResourceTags(
 		}
 	}
 	return tags
+}
+
+// hasSteadyState is a custom function to determine if a ReplicationInstance
+// is in a steady state.
+func hasSteadyState(ko *svcapitypes.ReplicationInstance) bool {
+	return ko.Status.InstanceStatus != nil && slices.Contains(
+		[]string{
+			replicationInstanceStatusAvailable,
+		},
+		*ko.Status.InstanceStatus,
+	)
 }

@@ -157,27 +157,12 @@ type ReplicationInstanceStatus struct {
 	// Free DMS program.
 	// +kubebuilder:validation:Optional
 	FreeUntil *metav1.Time `json:"freeUntil,omitempty"`
+	// One or more IPv6 addresses for the replication instance.
+	// +kubebuilder:validation:Optional
+	IPv6Addresses []*string `json:"ipv6Addresses,omitempty"`
 	// The time the replication instance was created.
 	// +kubebuilder:validation:Optional
 	InstanceCreateTime *metav1.Time `json:"instanceCreateTime,omitempty"`
-	// The pending modification values.
-	// +kubebuilder:validation:Optional
-	PendingModifiedValues *ReplicationPendingModifiedValues `json:"pendingModifiedValues,omitempty"`
-	// One or more IPv6 addresses for the replication instance.
-	// +kubebuilder:validation:Optional
-	ReplicationInstanceIPv6Addresses []*string `json:"replicationInstanceIPv6Addresses,omitempty"`
-	// The private IP address of the replication instance.
-	// +kubebuilder:validation:Optional
-	ReplicationInstancePrivateIPAddress *string `json:"replicationInstancePrivateIPAddress,omitempty"`
-	// One or more private IP addresses for the replication instance.
-	// +kubebuilder:validation:Optional
-	ReplicationInstancePrivateIPAddresses []*string `json:"replicationInstancePrivateIPAddresses,omitempty"`
-	// The public IP address of the replication instance.
-	// +kubebuilder:validation:Optional
-	ReplicationInstancePublicIPAddress *string `json:"replicationInstancePublicIPAddress,omitempty"`
-	// One or more public IP addresses for the replication instance.
-	// +kubebuilder:validation:Optional
-	ReplicationInstancePublicIPAddresses []*string `json:"replicationInstancePublicIPAddresses,omitempty"`
 	// The status of the replication instance. The possible return values include:
 	//
 	//    * "available"
@@ -206,16 +191,31 @@ type ReplicationInstanceStatus struct {
 	//
 	//    * "maintenance"
 	// +kubebuilder:validation:Optional
-	ReplicationInstanceStatus *string `json:"replicationInstanceStatus,omitempty"`
-	// The subnet group for the replication instance.
+	InstanceStatus *string `json:"instanceStatus,omitempty"`
+	// The pending modification values.
 	// +kubebuilder:validation:Optional
-	ReplicationSubnetGroup *ReplicationSubnetGroup_SDK `json:"replicationSubnetGroup,omitempty"`
+	PendingModifiedValues *ReplicationPendingModifiedValues `json:"pendingModifiedValues,omitempty"`
+	// The private IP address of the replication instance.
+	// +kubebuilder:validation:Optional
+	PrivateIPAddress *string `json:"privateIPAddress,omitempty"`
+	// One or more private IP addresses for the replication instance.
+	// +kubebuilder:validation:Optional
+	PrivateIPAddresses []*string `json:"privateIPAddresses,omitempty"`
+	// The public IP address of the replication instance.
+	// +kubebuilder:validation:Optional
+	PublicIPAddress *string `json:"publicIPAddress,omitempty"`
+	// One or more public IP addresses for the replication instance.
+	// +kubebuilder:validation:Optional
+	PublicIPAddresses []*string `json:"publicIPAddresses,omitempty"`
 	// The Availability Zone of the standby replication instance in a Multi-AZ deployment.
 	// +kubebuilder:validation:Optional
 	SecondaryAvailabilityZone *string `json:"secondaryAvailabilityZone,omitempty"`
 	// The VPC security group for the instance.
 	// +kubebuilder:validation:Optional
-	VPCSecurityGroups []*VPCSecurityGroupMembership `json:"vpcSecurityGroups,omitempty"`
+	SecurityGroups []*VPCSecurityGroupMembership `json:"securityGroups,omitempty"`
+	// The subnet group for the replication instance.
+	// +kubebuilder:validation:Optional
+	SubnetGroup *ReplicationSubnetGroup_SDK `json:"subnetGroup,omitempty"`
 }
 
 // ReplicationInstance is the Schema for the ReplicationInstances API

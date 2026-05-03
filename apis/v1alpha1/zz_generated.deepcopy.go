@@ -4920,17 +4920,38 @@ func (in *ReplicationInstanceStatus) DeepCopyInto(out *ReplicationInstanceStatus
 		in, out := &in.FreeUntil, &out.FreeUntil
 		*out = (*in).DeepCopy()
 	}
+	if in.IPv6Addresses != nil {
+		in, out := &in.IPv6Addresses, &out.IPv6Addresses
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
 	if in.InstanceCreateTime != nil {
 		in, out := &in.InstanceCreateTime, &out.InstanceCreateTime
 		*out = (*in).DeepCopy()
+	}
+	if in.InstanceStatus != nil {
+		in, out := &in.InstanceStatus, &out.InstanceStatus
+		*out = new(string)
+		**out = **in
 	}
 	if in.PendingModifiedValues != nil {
 		in, out := &in.PendingModifiedValues, &out.PendingModifiedValues
 		*out = new(ReplicationPendingModifiedValues)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.ReplicationInstanceIPv6Addresses != nil {
-		in, out := &in.ReplicationInstanceIPv6Addresses, &out.ReplicationInstanceIPv6Addresses
+	if in.PrivateIPAddress != nil {
+		in, out := &in.PrivateIPAddress, &out.PrivateIPAddress
+		*out = new(string)
+		**out = **in
+	}
+	if in.PrivateIPAddresses != nil {
+		in, out := &in.PrivateIPAddresses, &out.PrivateIPAddresses
 		*out = make([]*string, len(*in))
 		for i := range *in {
 			if (*in)[i] != nil {
@@ -4940,13 +4961,13 @@ func (in *ReplicationInstanceStatus) DeepCopyInto(out *ReplicationInstanceStatus
 			}
 		}
 	}
-	if in.ReplicationInstancePrivateIPAddress != nil {
-		in, out := &in.ReplicationInstancePrivateIPAddress, &out.ReplicationInstancePrivateIPAddress
+	if in.PublicIPAddress != nil {
+		in, out := &in.PublicIPAddress, &out.PublicIPAddress
 		*out = new(string)
 		**out = **in
 	}
-	if in.ReplicationInstancePrivateIPAddresses != nil {
-		in, out := &in.ReplicationInstancePrivateIPAddresses, &out.ReplicationInstancePrivateIPAddresses
+	if in.PublicIPAddresses != nil {
+		in, out := &in.PublicIPAddresses, &out.PublicIPAddresses
 		*out = make([]*string, len(*in))
 		for i := range *in {
 			if (*in)[i] != nil {
@@ -4955,40 +4976,14 @@ func (in *ReplicationInstanceStatus) DeepCopyInto(out *ReplicationInstanceStatus
 				**out = **in
 			}
 		}
-	}
-	if in.ReplicationInstancePublicIPAddress != nil {
-		in, out := &in.ReplicationInstancePublicIPAddress, &out.ReplicationInstancePublicIPAddress
-		*out = new(string)
-		**out = **in
-	}
-	if in.ReplicationInstancePublicIPAddresses != nil {
-		in, out := &in.ReplicationInstancePublicIPAddresses, &out.ReplicationInstancePublicIPAddresses
-		*out = make([]*string, len(*in))
-		for i := range *in {
-			if (*in)[i] != nil {
-				in, out := &(*in)[i], &(*out)[i]
-				*out = new(string)
-				**out = **in
-			}
-		}
-	}
-	if in.ReplicationInstanceStatus != nil {
-		in, out := &in.ReplicationInstanceStatus, &out.ReplicationInstanceStatus
-		*out = new(string)
-		**out = **in
-	}
-	if in.ReplicationSubnetGroup != nil {
-		in, out := &in.ReplicationSubnetGroup, &out.ReplicationSubnetGroup
-		*out = new(ReplicationSubnetGroup_SDK)
-		(*in).DeepCopyInto(*out)
 	}
 	if in.SecondaryAvailabilityZone != nil {
 		in, out := &in.SecondaryAvailabilityZone, &out.SecondaryAvailabilityZone
 		*out = new(string)
 		**out = **in
 	}
-	if in.VPCSecurityGroups != nil {
-		in, out := &in.VPCSecurityGroups, &out.VPCSecurityGroups
+	if in.SecurityGroups != nil {
+		in, out := &in.SecurityGroups, &out.SecurityGroups
 		*out = make([]*VPCSecurityGroupMembership, len(*in))
 		for i := range *in {
 			if (*in)[i] != nil {
@@ -4997,6 +4992,11 @@ func (in *ReplicationInstanceStatus) DeepCopyInto(out *ReplicationInstanceStatus
 				(*in).DeepCopyInto(*out)
 			}
 		}
+	}
+	if in.SubnetGroup != nil {
+		in, out := &in.SubnetGroup, &out.SubnetGroup
+		*out = new(ReplicationSubnetGroup_SDK)
+		(*in).DeepCopyInto(*out)
 	}
 }
 
