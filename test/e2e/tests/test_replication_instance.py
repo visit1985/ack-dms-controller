@@ -41,7 +41,7 @@ from acktest.resources import random_suffix_name
 from e2e import service_marker, CRD_GROUP, CRD_VERSION, load_dms_resource
 from e2e.replacement_values import REPLACEMENT_VALUES
 from e2e import condition
-from e2e import replication_instance
+from e2e import replication_instance as aws_api
 from e2e import tag
 
 # ---------------------------------------------------------------------------
@@ -134,7 +134,7 @@ def replication_instance_fixture():
     except Exception:
         pass
 
-    replication_instance.wait_until_deleted(instance_name)
+    aws_api.wait_until_deleted(instance_name)
 
     try:
         _, deleted = k8s.delete_custom_resource(sg_ref, 3, 10)
@@ -181,7 +181,7 @@ class TestReplicationInstance:
         )
 
         # Confirm the AWS-side status is 'available'.
-        latest = replication_instance.get(instance_name)
+        latest = aws_api.get(instance_name)
         assert latest is not None
         assert latest['ReplicationInstanceStatus'] == 'available'
         assert latest['MultiAZ'] is False
@@ -208,7 +208,7 @@ class TestReplicationInstance:
             wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES,
         )
 
-        latest = replication_instance.get(instance_name)
+        latest = aws_api.get(instance_name)
         assert latest is not None
         assert latest['AutoMinorVersionUpgrade'] == new_amvu
 
@@ -224,14 +224,14 @@ class TestReplicationInstance:
             wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES,
         )
 
-        latest = replication_instance.get(instance_name)
+        latest = aws_api.get(instance_name)
         assert latest is not None
         assert latest['AutoMinorVersionUpgrade'] == original_amvu
 
         # ---- Verify initial tags -------------------------------------------
         arn = latest['ReplicationInstanceArn']
         expect_tags = [{"Key": "environment", "Value": "dev"}]
-        latest_tags = tag.clean(replication_instance.get_tags(arn))
+        latest_tags = tag.clean(aws_api.get_tags(arn))
         assert expect_tags == latest_tags
 
         # ---- Update tags ---------------------------------------------------
@@ -241,32 +241,10 @@ class TestReplicationInstance:
         )
         time.sleep(MODIFY_WAIT_AFTER_SECONDS)
 
-        latest_tags = tag.clean(replication_instance.get_tags(arn))
+        latest_tags = tag.clean(aws_api.get_tags(arn))
         assert latest_tags == [{"Key": "environment", "Value": "prod"}]
 
-    @pytest.mark.dependency(depends_on=test_crud)
-    def test_update_multi_az(self, replication_instance_fixture):
-        """Verifies that enabling MultiAZ on an existing ReplicationInstance
-        is reflected correctly in both the K8s CR and the AWS API.
-
-        Flow:
-        1. Wait for the instance to become available.
-        2. Confirm ``MultiAZ`` is currently False.
-        3. Patch the CR to set ``multiAZ: true``.
-        4. The controller should mark the CR as not-synced while DMS applies
-           the change.
-        5. Once the CR is synced again, the AWS API must report ``MultiAZ``
-           as True.
-        """
-        ri_ref, ri_cr, instance_name, _, _ = replication_instance_fixture
-
-        # Ensure the instance is available before attempting a modification.
-        replication_instance.wait_until(
-            instance_name,
-            replication_instance.status_matches("available"),
-        )
-
-        latest = replication_instance.get(instance_name)
+        latest = aws_api.get(instance_name)
         assert latest is not None
         assert latest['MultiAZ'] is False
 
@@ -287,34 +265,12 @@ class TestReplicationInstance:
             wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES,
         )
 
-        latest = replication_instance.get(instance_name)
+        latest = aws_api.get(instance_name)
         assert latest is not None
         assert latest['ReplicationInstanceStatus'] == 'available'
         assert latest['MultiAZ'] is True
 
-    @pytest.mark.dependency(depends_on=test_update_multi_az)
-    def test_upgrade_instance_class(self, replication_instance_fixture):
-        """Verifies that upgrading the ReplicationInstance class is reflected
-        in the AWS API.
-
-        The instance class is changed from *dms.t3.small* → *dms.t3.medium*.
-        After the controller reconciles, the API must either already show the
-        new class or record it as a PendingModifiedValue.
-
-        Note: DMS may apply the class change immediately or defer it to the
-        next maintenance window.  Both outcomes are considered valid here.
-        """
-        ri_ref, ri_cr, instance_name, _, _ = replication_instance_fixture
-
-        # Ensure the instance is available before attempting a modification.
-        replication_instance.wait_until(
-            instance_name,
-            replication_instance.status_matches("available"),
-        )
-
         # Confirm the current class is as expected.
-        latest = replication_instance.get(instance_name)
-        assert latest is not None
         assert latest['ReplicationInstanceClass'] == 'dms.t3.small'
 
         # Patch to the larger class.
@@ -334,15 +290,7 @@ class TestReplicationInstance:
         assert ri_cr is not None
         assert ri_cr['spec']['instanceClass'] == 'dms.t3.medium'
 
-        # DMS may apply the change immediately or defer it to a maintenance
-        # window; both forms of confirmation are accepted.
-        latest = replication_instance.get(instance_name)
+        latest = aws_api.get(instance_name)
         assert latest is not None
-        if latest['ReplicationInstanceClass'] != 'dms.t3.medium':
-            # Change is deferred — it must appear in PendingModifiedValues.
-            pending = latest.get('PendingModifiedValues', {})
-            assert pending.get('ReplicationInstanceClass') == 'dms.t3.medium', (
-                "Expected class upgrade to be either applied immediately or "
-                "recorded as a pending modification, but found neither."
-            )
-
+        assert latest['ReplicationInstanceStatus'] == 'available'
+        assert latest['ReplicationInstanceClass'] == 'dms.t3.medium'

@@ -33,7 +33,7 @@ from acktest.resources import random_suffix_name
 from e2e import service_marker, CRD_GROUP, CRD_VERSION, load_dms_resource
 from e2e.replacement_values import REPLACEMENT_VALUES
 from e2e import condition
-from e2e import replication_subnet_group
+from e2e import replication_subnet_group as aws_api
 from e2e import tag
 
 RESOURCE_PLURAL = 'replicationsubnetgroups'
@@ -112,7 +112,7 @@ class TestReplicationSubnetGroup:
         ref, cr, subnet_group_name = subnet_group
 
         # Let's check that the subnet group appears in DMS
-        latest = replication_subnet_group.get(subnet_group_name)
+        latest = aws_api.get(subnet_group_name)
         assert latest is not None
         assert latest['ReplicationSubnetGroupDescription'] == SUBNET_GROUP_DESC
 
@@ -126,7 +126,7 @@ class TestReplicationSubnetGroup:
         expect_tags = [
             {"Key": "environment", "Value": "dev"}
         ]
-        latest_tags = tag.clean(replication_subnet_group.get_tags(arn))
+        latest_tags = tag.clean(aws_api.get_tags(arn))
         assert expect_tags == latest_tags
 
         # OK, now let's update the tag set and check that the tags are
@@ -143,7 +143,7 @@ class TestReplicationSubnetGroup:
         k8s.patch_custom_resource(ref, updates)
         time.sleep(MODIFY_WAIT_AFTER_SECONDS)
 
-        latest_tags = tag.clean(replication_subnet_group.get_tags(arn))
+        latest_tags = tag.clean(aws_api.get_tags(arn))
         after_update_expected_tags = [
             {
                 "Key": "environment",
