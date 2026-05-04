@@ -799,6 +799,17 @@ func (rm *resourceManager) sdkUpdate(
 		}
 	}
 
+	// sdk_update_post_set_output hook
+	//
+	// Requeue if there are pending modified values. Even though we pass
+	// ApplyImmediately the resource may stay in status `available` for a short
+	// period of time before switching to `modifying`.
+	if hasPendingModifiedValues(ko) {
+		ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
+			aws.String("ReplicationInstance has pending modified values"), nil)
+		return &resource{ko}, nil
+	}
+
 	return &resource{ko}, nil
 }
 
