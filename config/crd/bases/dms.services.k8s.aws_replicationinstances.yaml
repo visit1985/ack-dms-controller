@@ -70,9 +70,6 @@ spec:
                   default value is a random, system-chosen Availability Zone in the endpoint's
                   Amazon Web Services Region, for example: us-east-1d.
                 type: string
-                x-kubernetes-validations:
-                - message: Value is immutable once set
-                  rule: self == oldSelf
               dnsNameServers:
                 description: |-
                   A list of custom DNS name servers supported for the replication instance
@@ -81,6 +78,9 @@ spec:
                   a comma-separated list of internet addresses for up to four on-premise DNS
                   name servers. For example: "1.1.1.1,2.2.2.2,3.3.3.3,4.4.4.4"
                 type: string
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
               engineVersion:
                 description: |-
                   The engine version number of the replication instance.
@@ -122,6 +122,9 @@ spec:
                   Your Amazon Web Services account has a different default encryption key for
                   each Amazon Web Services Region.
                 type: string
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
               kmsKeyRef:
                 description: |-
                   Reference to an ACK managed KMS key that is used to encrypt the data on the
@@ -188,6 +191,9 @@ spec:
                   of true represents an instance with a public IP address. A value of false
                   represents an instance with a private IP address. The default value is true.
                 type: boolean
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
               resourceIdentifier:
                 description: |-
                   A friendly name for the resource identifier at the end of the EndpointArn
@@ -199,6 +205,9 @@ spec:
                   If you don't specify a ResourceIdentifier value, DMS generates a default
                   identifier value for the end of EndpointArn.
                 type: string
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
               securityGroupIDs:
                 description: |-
                   Specifies the VPC security group to be used with the replication instance.
@@ -234,6 +243,9 @@ spec:
               subnetGroupID:
                 description: A subnet group to associate with the replication instance.
                 type: string
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
               subnetGroupRef:
                 description: |-
                   Reference to an ACK managed replication subnet group to associate with this

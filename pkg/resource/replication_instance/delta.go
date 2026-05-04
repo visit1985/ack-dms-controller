@@ -57,13 +57,6 @@ func newResourceDelta(
 			delta.Add("Spec.AutoMinorVersionUpgrade", a.ko.Spec.AutoMinorVersionUpgrade, b.ko.Spec.AutoMinorVersionUpgrade)
 		}
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.AvailabilityZone, b.ko.Spec.AvailabilityZone) {
-		delta.Add("Spec.AvailabilityZone", a.ko.Spec.AvailabilityZone, b.ko.Spec.AvailabilityZone)
-	} else if a.ko.Spec.AvailabilityZone != nil && b.ko.Spec.AvailabilityZone != nil {
-		if *a.ko.Spec.AvailabilityZone != *b.ko.Spec.AvailabilityZone {
-			delta.Add("Spec.AvailabilityZone", a.ko.Spec.AvailabilityZone, b.ko.Spec.AvailabilityZone)
-		}
-	}
 	if ackcompare.HasNilDifference(a.ko.Spec.DNSNameServers, b.ko.Spec.DNSNameServers) {
 		delta.Add("Spec.DNSNameServers", a.ko.Spec.DNSNameServers, b.ko.Spec.DNSNameServers)
 	} else if a.ko.Spec.DNSNameServers != nil && b.ko.Spec.DNSNameServers != nil {
@@ -118,13 +111,6 @@ func newResourceDelta(
 	} else if a.ko.Spec.MultiAZ != nil && b.ko.Spec.MultiAZ != nil {
 		if *a.ko.Spec.MultiAZ != *b.ko.Spec.MultiAZ {
 			delta.Add("Spec.MultiAZ", a.ko.Spec.MultiAZ, b.ko.Spec.MultiAZ)
-		}
-	}
-	if ackcompare.HasNilDifference(a.ko.Spec.Name, b.ko.Spec.Name) {
-		delta.Add("Spec.Name", a.ko.Spec.Name, b.ko.Spec.Name)
-	} else if a.ko.Spec.Name != nil && b.ko.Spec.Name != nil {
-		if *a.ko.Spec.Name != *b.ko.Spec.Name {
-			delta.Add("Spec.Name", a.ko.Spec.Name, b.ko.Spec.Name)
 		}
 	}
 	if ackcompare.HasNilDifference(a.ko.Spec.NetworkType, b.ko.Spec.NetworkType) {

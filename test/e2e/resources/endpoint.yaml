@@ -4,7 +4,7 @@ metadata:
   name: $ENDPOINT_NAME
 spec:
   name: $ENDPOINT_NAME
-  endpointType: target
+  endpointType: TARGET
   engineName: s3
   s3Settings:
     bucketName: $S3_BUCKET_NAME

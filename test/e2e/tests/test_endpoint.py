@@ -136,7 +136,7 @@ class TestEndpoint:
         latest = aws_api.get(endpoint_name)
         assert latest is not None
         assert latest['EndpointIdentifier'] == endpoint_name
-        assert latest['EndpointType'] == 'target'
+        assert latest['EndpointType'] == 'TARGET'
         assert latest['EngineName'] == 's3'
         assert latest['Status'] == 'active'
         assert latest.get('S3Settings', {}).get('BucketFolder') == INITIAL_BUCKET_FOLDER

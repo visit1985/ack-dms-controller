@@ -198,41 +198,33 @@ resources:
             Status: SubscriptionStatus
   ReplicationInstance:
     fields:
-      AllocatedStorage:
-        late_initialize:
-          skip_incomplete_check: {}
       AvailabilityZone:
-        late_initialize:
-          skip_incomplete_check: {}
+        # Can only be set at creation time, but may change when MultiAZ is
+        # enabled and failover occurs.
+        compare:
+          is_ignored: true
+      DNSNameServers:
         is_immutable: true
-      AutoMinorVersionUpgrade:
-        late_initialize:
-          skip_incomplete_check: {}
       EngineVersion:
-        late_initialize:
-          skip_incomplete_check: {}
         compare:
           is_ignored: true
       KMSKeyID:
-        late_initialize:
-          skip_incomplete_check: {}
+        is_immutable: true
         references:
           resource: Key
           service_name: kms
           path: Status.KeyID
-      MultiAZ:
-        late_initialize:
-          skip_incomplete_check: {}
       Name:
+        compare:
+          is_ignored: true
         is_primary_key: true
         is_immutable: true
-      NetworkType:
-        late_initialize:
-          skip_incomplete_check: {}
-      PreferredMaintenanceWindow:
-        late_initialize:
-          skip_incomplete_check: {}
+      PubliclyAccessible:
+        is_immutable: true
+      ResourceIdentifier:
+        is_immutable: true
       SubnetGroupID:
+        is_immutable: true
         references:
           resource: ReplicationSubnetGroup
           path: Spec.Name

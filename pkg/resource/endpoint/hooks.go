@@ -28,7 +28,7 @@ const (
 	endpointStatusDeleting = "deleting"
 )
 
-// customPreCompare contains logic that help compare two iam Roles. This
+// customPreCompare contains logic that help compare two endpoints. This
 // function is injected in newResourceDelta function.
 func customPreCompare(
 	delta *ackcompare.Delta,

@@ -37,13 +37,13 @@ type ReplicationInstanceSpec struct {
 	// The Availability Zone where the replication instance will be created. The
 	// default value is a random, system-chosen Availability Zone in the endpoint's
 	// Amazon Web Services Region, for example: us-east-1d.
-	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	AvailabilityZone *string `json:"availabilityZone,omitempty"`
 	// A list of custom DNS name servers supported for the replication instance
 	// to access your on-premise source or target database. This list overrides
 	// the default name servers supported by the replication instance. You can specify
 	// a comma-separated list of internet addresses for up to four on-premise DNS
 	// name servers. For example: "1.1.1.1,2.2.2.2,3.3.3.3,4.4.4.4"
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	DNSNameServers *string `json:"dnsNameServers,omitempty"`
 	// The engine version number of the replication instance.
 	//
@@ -71,6 +71,7 @@ type ReplicationInstanceSpec struct {
 	// KMS creates the default encryption key for your Amazon Web Services account.
 	// Your Amazon Web Services account has a different default encryption key for
 	// each Amazon Web Services Region.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	KMSKeyID *string `json:"kmsKeyID,omitempty"`
 	// Reference to an ACK managed KMS key that is used to encrypt the data on the
 	// replication instance.
@@ -113,6 +114,7 @@ type ReplicationInstanceSpec struct {
 	// Specifies the accessibility options for the replication instance. A value
 	// of true represents an instance with a public IP address. A value of false
 	// represents an instance with a private IP address. The default value is true.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	PubliclyAccessible *bool `json:"publiclyAccessible,omitempty"`
 	// A friendly name for the resource identifier at the end of the EndpointArn
 	// response parameter that is returned in the created Endpoint object. The value
@@ -122,6 +124,7 @@ type ReplicationInstanceSpec struct {
 	// For example, this value might result in the EndpointArn value arn:aws:dms:eu-west-1:012345678901:rep:Example-App-ARN1.
 	// If you don't specify a ResourceIdentifier value, DMS generates a default
 	// identifier value for the end of EndpointArn.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	ResourceIdentifier *string `json:"resourceIdentifier,omitempty"`
 	// Specifies the VPC security group to be used with the replication instance.
 	// The VPC security group must work with the VPC containing the replication
@@ -133,6 +136,7 @@ type ReplicationInstanceSpec struct {
 	// instance.
 	SecurityGroupRefs []*ackv1alpha1.AWSResourceReferenceWrapper `json:"securityGroupRefs,omitempty"`
 	// A subnet group to associate with the replication instance.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	SubnetGroupID *string `json:"subnetGroupID,omitempty"`
 	// Reference to an ACK managed replication subnet group to associate with this
 	// replication instance.
