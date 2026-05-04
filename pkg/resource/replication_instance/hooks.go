@@ -137,6 +137,20 @@ func sdkTagsFromResourceTags(
 	return tags
 }
 
+// hasPendingModifiedValues returns true if the ReplicationInstance has any
+// pending modifications that have not yet been applied.
+func hasPendingModifiedValues(ko *svcapitypes.ReplicationInstance) bool {
+	pmv := ko.Status.PendingModifiedValues
+	if pmv == nil {
+		return false
+	}
+	return pmv.AllocatedStorage != nil ||
+		pmv.EngineVersion != nil ||
+		pmv.MultiAZ != nil ||
+		pmv.NetworkType != nil ||
+		pmv.ReplicationInstanceClass != nil
+}
+
 // hasSteadyState is a custom function to determine if a ReplicationInstance
 // is in a steady state.
 func hasSteadyState(ko *svcapitypes.ReplicationInstance) bool {

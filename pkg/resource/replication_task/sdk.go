@@ -328,7 +328,7 @@ func (rm *resourceManager) sdkFind(
 	// If the replication task is not in a steady state, requeue more frequently.
 	if !hasSteadyState(ko) {
 		ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-			aws.String("ReplicationTask not in steady state"), nil)
+			aws.String("ReplicationTask not in a steady state"), nil)
 		return &resource{ko}, nil
 	}
 
@@ -611,7 +611,7 @@ func (rm *resourceManager) sdkUpdate(
 		}
 	} else {
 		ackcondition.SetSynced(latest, corev1.ConditionFalse,
-			aws.String("ReplicationTask not in steady state"), nil)
+			aws.String("ReplicationTask not in a steady state"), nil)
 		return latest, nil
 	}
 
@@ -833,7 +833,10 @@ func (rm *resourceManager) sdkDelete(
 			return r, ackrequeue.NeededAfter(errors.New("ReplicationTask entered stopping state"), 10*time.Second)
 		}
 	} else {
-		return r, ackrequeue.NeededAfter(errors.New("ReplicationTask not in steady state"), 10*time.Second)
+		if r.ko.Status.TaskStatus == aws.String(replicationTaskStatusDeleting) {
+			return r, ackrequeue.NeededAfter(errors.New("Waiting for ReplicationTask deletion to complete"), 10*time.Second)
+		}
+		return r, ackrequeue.NeededAfter(errors.New("ReplicationTask not in a steady state"), 10*time.Second)
 	}
 
 	input, err := rm.newDeleteRequestPayload(r)

@@ -15,5 +15,8 @@ if hasSteadyState(r.ko) {
         return r, ackrequeue.NeededAfter(errors.New("ReplicationTask entered stopping state"), 10*time.Second)
     }
 } else {
-    return r, ackrequeue.NeededAfter(errors.New("ReplicationTask not in steady state"), 10*time.Second)
+	if r.ko.Status.TaskStatus == aws.String(replicationTaskStatusDeleting) {
+        return r, ackrequeue.NeededAfter(errors.New("Waiting for ReplicationTask deletion to complete"), 10*time.Second)
+    }
+    return r, ackrequeue.NeededAfter(errors.New("ReplicationTask not in a steady state"), 10*time.Second)
 }

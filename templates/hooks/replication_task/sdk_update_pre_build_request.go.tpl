@@ -20,6 +20,6 @@ if hasSteadyState(latest.ko) {
     }
 } else {
     ackcondition.SetSynced(latest, corev1.ConditionFalse,
-        aws.String("ReplicationTask not in steady state"), nil)
+        aws.String("ReplicationTask not in a steady state"), nil)
     return latest, nil
 }

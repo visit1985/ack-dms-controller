@@ -82,6 +82,6 @@ if shouldStartReplicationTask(ko) {
 // If the replication task is not in a steady state, requeue more frequently.
 if !hasSteadyState(ko) {
     ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-        aws.String("ReplicationTask not in steady state"), nil)
+        aws.String("ReplicationTask not in a steady state"), nil)
     return &resource{ko}, nil
 }
