@@ -72,7 +72,7 @@ if shouldStartReplicationTask(ko) {
         }
         ko.Status.TaskStatus = aws.String(replicationTaskStatusStarting)
         ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-            aws.String(fmt.Sprintf("ReplicationTask is in %v state", ko.Status.TaskStatus)), nil)
+            aws.String(fmt.Sprintf("ReplicationTask is in %v state", *ko.Status.TaskStatus)), nil)
         return &resource{ko}, nil
     }
 }
@@ -82,6 +82,6 @@ if shouldStartReplicationTask(ko) {
 // If the replication task is not in a steady state, requeue more frequently.
 if !hasSteadyState(ko) {
     ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-        aws.String(fmt.Sprintf("ReplicationTask is in %v state", ko.Status.TaskStatus)), nil)
+        aws.String(fmt.Sprintf("ReplicationTask is in %v state", *ko.Status.TaskStatus)), nil)
     return &resource{ko}, nil
 }

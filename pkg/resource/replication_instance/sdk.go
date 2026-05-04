@@ -267,7 +267,7 @@ func (rm *resourceManager) sdkFind(
 	// redundant ModifyReplicationInstance call while the change is still being
 	// applied.
 	pmv := ko.Status.PendingModifiedValues
-	if pmv == nil {
+	if pmv != nil {
 		if pmv.MultiAZ != nil {
 			ko.Spec.MultiAZ = pmv.MultiAZ
 		}
@@ -304,7 +304,7 @@ func (rm *resourceManager) sdkFind(
 	// If the replication instance is not in a steady state, requeue more frequently.
 	if !hasSteadyState(ko) {
 		ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-			aws.String(fmt.Sprintf("ReplicationInstance is in %v state", ko.Status.InstanceStatus)), nil)
+			aws.String(fmt.Sprintf("ReplicationInstance is in %v state", *ko.Status.InstanceStatus)), nil)
 		return &resource{ko}, nil
 	}
 
@@ -781,7 +781,7 @@ func (rm *resourceManager) sdkUpdate(
 	// redundant ModifyReplicationInstance call while the change is still being
 	// applied.
 	pmv := ko.Status.PendingModifiedValues
-	if pmv == nil {
+	if pmv != nil {
 		if pmv.MultiAZ != nil {
 			ko.Spec.MultiAZ = pmv.MultiAZ
 		}
@@ -881,7 +881,7 @@ func (rm *resourceManager) sdkDelete(
 	// Make sure replication instance is in a steady state before deleting it.
 	if !hasSteadyState(r.ko) {
 		return r, ackrequeue.NeededAfter(
-			errors.New(fmt.Sprintf("ReplicationInstance is in %v state", r.ko.Status.InstanceStatus)), 10*time.Second)
+			errors.New(fmt.Sprintf("ReplicationInstance is in %v state", *r.ko.Status.InstanceStatus)), 10*time.Second)
 	}
 
 	input, err := rm.newDeleteRequestPayload(r)

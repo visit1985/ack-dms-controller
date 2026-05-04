@@ -318,7 +318,7 @@ func (rm *resourceManager) sdkFind(
 			}
 			ko.Status.TaskStatus = aws.String(replicationTaskStatusStarting)
 			ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-				aws.String(fmt.Sprintf("ReplicationTask is in %v state", ko.Status.TaskStatus)), nil)
+				aws.String(fmt.Sprintf("ReplicationTask is in %v state", *ko.Status.TaskStatus)), nil)
 			return &resource{ko}, nil
 		}
 	}
@@ -328,7 +328,7 @@ func (rm *resourceManager) sdkFind(
 	// If the replication task is not in a steady state, requeue more frequently.
 	if !hasSteadyState(ko) {
 		ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-			aws.String(fmt.Sprintf("ReplicationTask is in %v state", ko.Status.TaskStatus)), nil)
+			aws.String(fmt.Sprintf("ReplicationTask is in %v state", *ko.Status.TaskStatus)), nil)
 		return &resource{ko}, nil
 	}
 
@@ -606,12 +606,12 @@ func (rm *resourceManager) sdkUpdate(
 			latest.ko.Status.UpdateInProgress = aws.Bool(true)
 			latest.ko.Status.TaskStatus = aws.String(replicationTaskStatusStopping)
 			ackcondition.SetSynced(latest, corev1.ConditionFalse,
-				aws.String(fmt.Sprintf("ReplicationTask is in %v state", latest.ko.Status.TaskStatus)), nil)
+				aws.String(fmt.Sprintf("ReplicationTask is in %v state", *latest.ko.Status.TaskStatus)), nil)
 			return latest, nil
 		}
 	} else {
 		ackcondition.SetSynced(latest, corev1.ConditionFalse,
-			aws.String(fmt.Sprintf("ReplicationTask is in %v state", latest.ko.Status.TaskStatus)), nil)
+			aws.String(fmt.Sprintf("ReplicationTask is in %v state", *latest.ko.Status.TaskStatus)), nil)
 		return latest, nil
 	}
 
@@ -831,11 +831,11 @@ func (rm *resourceManager) sdkDelete(
 			}
 			r.ko.Status.TaskStatus = aws.String(replicationTaskStatusStopping)
 			return r, ackrequeue.NeededAfter(
-				errors.New(fmt.Sprintf("ReplicationTask is in %v state", r.ko.Status.TaskStatus)), 10*time.Second)
+				errors.New(fmt.Sprintf("ReplicationTask is in %v state", *r.ko.Status.TaskStatus)), 10*time.Second)
 		}
 	} else {
 		return r, ackrequeue.NeededAfter(
-			errors.New(fmt.Sprintf("ReplicationTask is in %v state", r.ko.Status.TaskStatus)), 10*time.Second)
+			errors.New(fmt.Sprintf("ReplicationTask is in %v state", *r.ko.Status.TaskStatus)), 10*time.Second)
 	}
 
 	input, err := rm.newDeleteRequestPayload(r)

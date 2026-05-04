@@ -5,7 +5,7 @@
 // redundant ModifyReplicationInstance call while the change is still being
 // applied.
 pmv := ko.Status.PendingModifiedValues
-if pmv == nil {
+if pmv != nil {
     if pmv.MultiAZ != nil {
         ko.Spec.MultiAZ = pmv.MultiAZ
     }
