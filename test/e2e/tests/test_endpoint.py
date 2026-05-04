@@ -1,0 +1,186 @@
+# Copyright Amazon.com Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You may
+# not use this file except in compliance with the License. A copy of the
+# License is located at
+#
+#	http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+"""Integration tests for the DMS API Endpoint resource.
+
+Test scenarios
+--------------
+* test_crud
+    Create an S3 target Endpoint against a bootstrapped S3 bucket and IAM
+    role, wait for it to become *active*, verify the K8s CR status and the
+    AWS API, verify the initial ``environment=dev`` tag, update the
+    ``s3Settings.bucketFolder`` field, verify the change is reflected in the
+    AWS API, update tags to ``environment=prod``, and let the fixture handle
+    deletion.
+"""
+
+import logging
+import time
+
+import pytest
+
+from acktest.k8s import resource as k8s
+from acktest.resources import random_suffix_name
+from e2e import service_marker, CRD_GROUP, CRD_VERSION, load_dms_resource
+from e2e import condition
+from e2e import endpoint as aws_api
+from e2e import tag
+from e2e.replacement_values import REPLACEMENT_VALUES
+
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+
+RESOURCE_PLURAL = "endpoints"
+
+# DMS S3 target endpoints become active within seconds.
+MAX_WAIT_FOR_SYNCED_PERIODS = 30
+
+# Pause between patching and re-checking so the controller can reconcile.
+MODIFY_WAIT_AFTER_SECONDS = 15
+
+DELETE_WAIT_AFTER_SECONDS = 10
+
+INITIAL_BUCKET_FOLDER = "ack-initial"
+UPDATED_BUCKET_FOLDER = "ack-updated"
+
+
+# ---------------------------------------------------------------------------
+# Fixture
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def endpoint():
+    """Creates an S3 target Endpoint CR and tears it down after the test.
+
+    Yields:
+        tuple: (ref, cr, endpoint_name, initial_bucket_folder)
+    """
+    endpoint_name = random_suffix_name("my-dms-endpoint", 21)
+
+    replacements = REPLACEMENT_VALUES.copy()
+    replacements["ENDPOINT_NAME"] = endpoint_name
+    replacements["ENDPOINT_BUCKET_FOLDER"] = INITIAL_BUCKET_FOLDER
+
+    resource_data = load_dms_resource(
+        "endpoint",
+        additional_replacements=replacements,
+    )
+    logging.debug(resource_data)
+
+    ref = k8s.CustomResourceReference(
+        CRD_GROUP, CRD_VERSION, RESOURCE_PLURAL,
+        endpoint_name, namespace="default",
+    )
+    k8s.create_custom_resource(ref, resource_data)
+    cr = k8s.wait_resource_consumed_by_controller(ref)
+
+    assert cr is not None
+    assert k8s.get_resource_exists(ref)
+
+    # S3 target endpoints reach active status synchronously — wait for sync.
+    assert k8s.wait_on_condition(
+        ref, "ACK.ResourceSynced", "True",
+        wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+    )
+
+    yield ref, cr, endpoint_name
+
+    try:
+        _, deleted = k8s.delete_custom_resource(ref, 3, 10)
+        assert deleted
+        aws_api.wait_until_deleted(endpoint_name)
+        time.sleep(DELETE_WAIT_AFTER_SECONDS)
+    except Exception:
+        pass
+
+
+# ---------------------------------------------------------------------------
+# Test class
+# ---------------------------------------------------------------------------
+
+@service_marker
+@pytest.mark.canary
+class TestEndpoint:
+
+    def test_crud(self, endpoint):
+        """Verifies the full Create → Read → Update → Delete lifecycle.
+
+        Checks:
+        1.  After creation the K8s CR has ``ACK.ResourceSynced=True`` and the
+            DMS API reports the endpoint as ``active``.
+        2.  The AWS API matches the spec fields: identifier, endpoint type,
+            engine name, and initial bucket folder.
+        3.  The CR ``status.ackResourceMetadata.arn`` is populated.
+        4.  The initial ``environment=dev`` tag is present in the AWS API.
+        5.  ``s3Settings.bucketFolder`` can be updated; the AWS API reflects
+            the new value after re-sync.
+        6.  Tags can be updated from ``environment=dev`` to
+            ``environment=prod``; the AWS API reflects the new value.
+        """
+        ref, cr, endpoint_name = endpoint
+
+        # ---- Verify create / read ------------------------------------------
+        condition.assert_synced(ref)
+
+        latest = aws_api.get(endpoint_name)
+        assert latest is not None
+        assert latest['EndpointIdentifier'] == endpoint_name
+        assert latest['EndpointType'] == 'target'
+        assert latest['EngineName'] == 's3'
+        assert latest['Status'] == 'active'
+        assert latest.get('S3Settings', {}).get('BucketFolder') == INITIAL_BUCKET_FOLDER
+
+        # ARN is written into the CR status by the controller.
+        cr = k8s.get_resource(ref)
+        assert cr is not None
+        assert 'status' in cr
+        assert 'ackResourceMetadata' in cr['status']
+        endpoint_arn = cr['status']['ackResourceMetadata']['arn']
+        assert endpoint_arn is not None
+
+        # ---- Verify initial tags -------------------------------------------
+        expect_tags = [{"Key": "environment", "Value": "dev"}]
+        latest_tags = tag.clean(aws_api.get_tags(endpoint_arn))
+        assert expect_tags == latest_tags
+
+        # ---- Update: s3Settings.bucketFolder --------------------------------
+        k8s.patch_custom_resource(
+            ref,
+            {"spec": {"s3Settings": {"bucketFolder": UPDATED_BUCKET_FOLDER}}},
+        )
+        time.sleep(MODIFY_WAIT_AFTER_SECONDS)
+
+        assert k8s.wait_on_condition(
+            ref, "ACK.ResourceSynced", "True",
+            wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+        )
+
+        latest = aws_api.get(endpoint_name)
+        assert latest is not None
+        assert latest.get('S3Settings', {}).get('BucketFolder') == UPDATED_BUCKET_FOLDER
+
+        # ---- Update: tags ---------------------------------------------------
+        k8s.patch_custom_resource(
+            ref,
+            {"spec": {"tags": [{"key": "environment", "value": "prod"}]}},
+        )
+        time.sleep(MODIFY_WAIT_AFTER_SECONDS)
+
+        assert k8s.wait_on_condition(
+            ref, "ACK.ResourceSynced", "True",
+            wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+        )
+
+        latest_tags = tag.clean(aws_api.get_tags(endpoint_arn))
+        assert latest_tags == [{"Key": "environment", "Value": "prod"}]

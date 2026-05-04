@@ -24,4 +24,7 @@ REPLACEMENT_VALUES = {
     "SECURITY_GROUP_ID": BOOTSTRAP_RESOURCES.TestVPC.security_group.group_id,
     # Shared SNS topic used by EventSubscription tests.
     "SNS_TOPIC_ARN": BOOTSTRAP_RESOURCES.TestTopic.arn,
+    # S3 bucket and IAM role used by Endpoint (S3 target) tests.
+    "S3_BUCKET_NAME": BOOTSTRAP_RESOURCES.TestBucket.name,
+    "DMS_S3_ROLE_ARN": BOOTSTRAP_RESOURCES.TestEndpointRole.arn,
 }

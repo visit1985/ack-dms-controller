@@ -6,6 +6,7 @@ spec:
   allocatedStorage: 5
   instanceClass: dms.t3.small
   name: $REPLICATION_INSTANCE_NAME
+  publiclyAccessible: false
   securityGroupIDs:
     - $SECURITY_GROUP_ID
   subnetGroupRef:

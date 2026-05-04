@@ -45,7 +45,7 @@ DELETE_WAIT_AFTER_SECONDS = 10
 @pytest.fixture
 def event_subscription():
     """Creates an EventSubscription CR and tears it down after the test."""
-    subscription_name = random_suffix_name("my-event-subscription", 40)
+    subscription_name = random_suffix_name("my-event-subscription", 27)
 
     replacements = REPLACEMENT_VALUES.copy()
     replacements["EVENT_SUBSCRIPTION_NAME"] = subscription_name

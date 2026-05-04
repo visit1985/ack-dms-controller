@@ -13,12 +13,16 @@
 """Bootstraps the resources required to run the DMS integration tests.
 """
 
+import json
 import logging
 
 from e2e import bootstrap_directory
 from acktest.bootstrapping import Resources, BootstrapFailureException
 from acktest.bootstrapping.sns import Topic
 from acktest.bootstrapping.vpc import VPC
+from acktest.bootstrapping.s3 import Bucket
+from acktest.bootstrapping.iam import UserPolicies
+from e2e.local_bootstrapping import RoleWithPermissionsBoundary, get_permissions_boundary
 from e2e.bootstrap_resources import BootstrapResources
 
 
@@ -43,9 +47,56 @@ EVENT_SUBSCRIPTION_TOPIC_POLICY = """
 def service_bootstrap() -> Resources:
     logging.getLogger().setLevel(logging.INFO)
 
+    # S3 bucket for DMS S3 target endpoint tests.
+    # Bucket.__post_init__() computes the random name before bootstrap() runs,
+    # so we can reference bucket.name when building the IAM policy below.
+    test_bucket = Bucket(name_prefix="ack-test-dms-endpoint")
+
+    s3_access_policy = json.dumps({
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:ListBucket",
+                    "s3:GetBucketLocation",
+                    "s3:GetBucketAcl",
+                ],
+                "Resource": f"arn:aws:s3:::{test_bucket.name}",
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:GetObject",
+                    "s3:PutObject",
+                    "s3:DeleteObject",
+                    "s3:AbortMultipartUpload",
+                    "s3:PutObjectTagging",
+                ],
+                "Resource": f"arn:aws:s3:::{test_bucket.name}/*",
+            },
+        ],
+    })
+
+    # UserPolicies is a Bootstrappable subresource; it will be bootstrapped
+    # automatically when test_endpoint_role.bootstrap() is called.
+    s3_policies = UserPolicies(
+        name_prefix="ack-test-dms-s3-policy",
+        policy_documents=[s3_access_policy],
+    )
+
+    test_endpoint_role = RoleWithPermissionsBoundary(
+        name_prefix="ack-test-dms-s3-role",
+        principal_service="dms.amazonaws.com",
+        permissions_boundary=get_permissions_boundary(),
+        user_policies=s3_policies,
+    )
+
     resources = BootstrapResources(
         TestTopic=Topic(name_prefix="ack-test-topic", policy=EVENT_SUBSCRIPTION_TOPIC_POLICY),
         TestVPC=VPC(name_prefix="ack-test-vpc", num_public_subnet=2, num_private_subnet=2),
+        TestBucket=test_bucket,
+        TestEndpointRole=test_endpoint_role,
     )
 
     try:
