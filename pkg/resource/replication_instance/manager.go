@@ -50,7 +50,7 @@ var (
 // +kubebuilder:rbac:groups=dms.services.k8s.aws,resources=replicationinstances,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=dms.services.k8s.aws,resources=replicationinstances/status,verbs=get;update;patch
 
-var lateInitializeFieldNames = []string{}
+var lateInitializeFieldNames = []string{"AllocatedStorage", "AutoMinorVersionUpgrade", "AvailabilityZone", "EngineVersion", "KMSKeyID", "MultiAZ", "NetworkType", "PreferredMaintenanceWindow"}
 
 // resourceManager is responsible for providing a consistent way to perform
 // CRUD operations in a backend AWS service API for Book custom resources.
@@ -257,7 +257,33 @@ func (rm *resourceManager) lateInitializeFromReadOneOutput(
 	observed acktypes.AWSResource,
 	latest acktypes.AWSResource,
 ) acktypes.AWSResource {
-	return latest
+	observedKo := rm.concreteResource(observed).ko.DeepCopy()
+	latestKo := rm.concreteResource(latest).ko.DeepCopy()
+	if observedKo.Spec.AllocatedStorage != nil && latestKo.Spec.AllocatedStorage == nil {
+		latestKo.Spec.AllocatedStorage = observedKo.Spec.AllocatedStorage
+	}
+	if observedKo.Spec.AutoMinorVersionUpgrade != nil && latestKo.Spec.AutoMinorVersionUpgrade == nil {
+		latestKo.Spec.AutoMinorVersionUpgrade = observedKo.Spec.AutoMinorVersionUpgrade
+	}
+	if observedKo.Spec.AvailabilityZone != nil && latestKo.Spec.AvailabilityZone == nil {
+		latestKo.Spec.AvailabilityZone = observedKo.Spec.AvailabilityZone
+	}
+	if observedKo.Spec.EngineVersion != nil && latestKo.Spec.EngineVersion == nil {
+		latestKo.Spec.EngineVersion = observedKo.Spec.EngineVersion
+	}
+	if observedKo.Spec.KMSKeyID != nil && latestKo.Spec.KMSKeyID == nil {
+		latestKo.Spec.KMSKeyID = observedKo.Spec.KMSKeyID
+	}
+	if observedKo.Spec.MultiAZ != nil && latestKo.Spec.MultiAZ == nil {
+		latestKo.Spec.MultiAZ = observedKo.Spec.MultiAZ
+	}
+	if observedKo.Spec.NetworkType != nil && latestKo.Spec.NetworkType == nil {
+		latestKo.Spec.NetworkType = observedKo.Spec.NetworkType
+	}
+	if observedKo.Spec.PreferredMaintenanceWindow != nil && latestKo.Spec.PreferredMaintenanceWindow == nil {
+		latestKo.Spec.PreferredMaintenanceWindow = observedKo.Spec.PreferredMaintenanceWindow
+	}
+	return &resource{latestKo}
 }
 
 // IsSynced returns true if the resource is synced.

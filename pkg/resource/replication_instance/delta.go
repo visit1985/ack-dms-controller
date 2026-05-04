@@ -71,13 +71,6 @@ func newResourceDelta(
 			delta.Add("Spec.DNSNameServers", a.ko.Spec.DNSNameServers, b.ko.Spec.DNSNameServers)
 		}
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.EngineVersion, b.ko.Spec.EngineVersion) {
-		delta.Add("Spec.EngineVersion", a.ko.Spec.EngineVersion, b.ko.Spec.EngineVersion)
-	} else if a.ko.Spec.EngineVersion != nil && b.ko.Spec.EngineVersion != nil {
-		if *a.ko.Spec.EngineVersion != *b.ko.Spec.EngineVersion {
-			delta.Add("Spec.EngineVersion", a.ko.Spec.EngineVersion, b.ko.Spec.EngineVersion)
-		}
-	}
 	if ackcompare.HasNilDifference(a.ko.Spec.InstanceClass, b.ko.Spec.InstanceClass) {
 		delta.Add("Spec.InstanceClass", a.ko.Spec.InstanceClass, b.ko.Spec.InstanceClass)
 	} else if a.ko.Spec.InstanceClass != nil && b.ko.Spec.InstanceClass != nil {

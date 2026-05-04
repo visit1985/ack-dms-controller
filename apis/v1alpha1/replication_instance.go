@@ -37,6 +37,7 @@ type ReplicationInstanceSpec struct {
 	// The Availability Zone where the replication instance will be created. The
 	// default value is a random, system-chosen Availability Zone in the endpoint's
 	// Amazon Web Services Region, for example: us-east-1d.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	AvailabilityZone *string `json:"availabilityZone,omitempty"`
 	// A list of custom DNS name servers supported for the replication instance
 	// to access your on-premise source or target database. This list overrides

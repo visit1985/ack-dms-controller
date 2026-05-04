@@ -822,55 +822,75 @@ func (rm *resourceManager) newUpdateRequestPayload(
 ) (*svcsdk.ModifyReplicationInstanceInput, error) {
 	res := &svcsdk.ModifyReplicationInstanceInput{}
 
-	if r.ko.Spec.AllocatedStorage != nil {
-		allocatedStorageCopy0 := *r.ko.Spec.AllocatedStorage
-		if allocatedStorageCopy0 > math.MaxInt32 || allocatedStorageCopy0 < math.MinInt32 {
-			return nil, fmt.Errorf("error: field AllocatedStorage is of type int32")
+	if delta.DifferentAt("Spec.AllocatedStorage") {
+		if r.ko.Spec.AllocatedStorage != nil {
+			allocatedStorageCopy0 := *r.ko.Spec.AllocatedStorage
+			if allocatedStorageCopy0 > math.MaxInt32 || allocatedStorageCopy0 < math.MinInt32 {
+				return nil, fmt.Errorf("error: field AllocatedStorage is of type int32")
+			}
+			allocatedStorageCopy := int32(allocatedStorageCopy0)
+			res.AllocatedStorage = &allocatedStorageCopy
 		}
-		allocatedStorageCopy := int32(allocatedStorageCopy0)
-		res.AllocatedStorage = &allocatedStorageCopy
 	}
 	res.AllowMajorVersionUpgrade = true
 	res.ApplyImmediately = true
-	if r.ko.Spec.AutoMinorVersionUpgrade != nil {
-		res.AutoMinorVersionUpgrade = r.ko.Spec.AutoMinorVersionUpgrade
-	}
-	if r.ko.Spec.EngineVersion != nil {
-		res.EngineVersion = r.ko.Spec.EngineVersion
-	}
-	if r.ko.Spec.KerberosAuthenticationSettings != nil {
-		f5 := &svcsdktypes.KerberosAuthenticationSettings{}
-		if r.ko.Spec.KerberosAuthenticationSettings.KeyCacheSecretIAMARN != nil {
-			f5.KeyCacheSecretIamArn = r.ko.Spec.KerberosAuthenticationSettings.KeyCacheSecretIAMARN
+	if delta.DifferentAt("Spec.AutoMinorVersionUpgrade") {
+		if r.ko.Spec.AutoMinorVersionUpgrade != nil {
+			res.AutoMinorVersionUpgrade = r.ko.Spec.AutoMinorVersionUpgrade
 		}
-		if r.ko.Spec.KerberosAuthenticationSettings.KeyCacheSecretID != nil {
-			f5.KeyCacheSecretId = r.ko.Spec.KerberosAuthenticationSettings.KeyCacheSecretID
+	}
+	if delta.DifferentAt("Spec.EngineVersion") {
+		if r.ko.Spec.EngineVersion != nil {
+			res.EngineVersion = r.ko.Spec.EngineVersion
 		}
-		if r.ko.Spec.KerberosAuthenticationSettings.Krb5FileContents != nil {
-			f5.Krb5FileContents = r.ko.Spec.KerberosAuthenticationSettings.Krb5FileContents
+	}
+	if delta.DifferentAt("Spec.KerberosAuthenticationSettings") {
+		if r.ko.Spec.KerberosAuthenticationSettings != nil {
+			f5 := &svcsdktypes.KerberosAuthenticationSettings{}
+			if r.ko.Spec.KerberosAuthenticationSettings.KeyCacheSecretIAMARN != nil {
+				f5.KeyCacheSecretIamArn = r.ko.Spec.KerberosAuthenticationSettings.KeyCacheSecretIAMARN
+			}
+			if r.ko.Spec.KerberosAuthenticationSettings.KeyCacheSecretID != nil {
+				f5.KeyCacheSecretId = r.ko.Spec.KerberosAuthenticationSettings.KeyCacheSecretID
+			}
+			if r.ko.Spec.KerberosAuthenticationSettings.Krb5FileContents != nil {
+				f5.Krb5FileContents = r.ko.Spec.KerberosAuthenticationSettings.Krb5FileContents
+			}
+			res.KerberosAuthenticationSettings = f5
 		}
-		res.KerberosAuthenticationSettings = f5
 	}
-	if r.ko.Spec.MultiAZ != nil {
-		res.MultiAZ = r.ko.Spec.MultiAZ
+	if delta.DifferentAt("Spec.MultiAZ") {
+		if r.ko.Spec.MultiAZ != nil {
+			res.MultiAZ = r.ko.Spec.MultiAZ
+		}
 	}
-	if r.ko.Spec.NetworkType != nil {
-		res.NetworkType = r.ko.Spec.NetworkType
+	if delta.DifferentAt("Spec.NetworkType") {
+		if r.ko.Spec.NetworkType != nil {
+			res.NetworkType = r.ko.Spec.NetworkType
+		}
 	}
-	if r.ko.Spec.PreferredMaintenanceWindow != nil {
-		res.PreferredMaintenanceWindow = r.ko.Spec.PreferredMaintenanceWindow
+	if delta.DifferentAt("Spec.PreferredMaintenanceWindow") {
+		if r.ko.Spec.PreferredMaintenanceWindow != nil {
+			res.PreferredMaintenanceWindow = r.ko.Spec.PreferredMaintenanceWindow
+		}
 	}
 	if r.ko.Status.ACKResourceMetadata != nil && r.ko.Status.ACKResourceMetadata.ARN != nil {
 		res.ReplicationInstanceArn = (*string)(r.ko.Status.ACKResourceMetadata.ARN)
 	}
-	if r.ko.Spec.InstanceClass != nil {
-		res.ReplicationInstanceClass = r.ko.Spec.InstanceClass
+	if delta.DifferentAt("Spec.InstanceClass") {
+		if r.ko.Spec.InstanceClass != nil {
+			res.ReplicationInstanceClass = r.ko.Spec.InstanceClass
+		}
 	}
-	if r.ko.Spec.Name != nil {
-		res.ReplicationInstanceIdentifier = r.ko.Spec.Name
+	if delta.DifferentAt("Spec.Name") {
+		if r.ko.Spec.Name != nil {
+			res.ReplicationInstanceIdentifier = r.ko.Spec.Name
+		}
 	}
-	if r.ko.Spec.SecurityGroupIDs != nil {
-		res.VpcSecurityGroupIds = aws.ToStringSlice(r.ko.Spec.SecurityGroupIDs)
+	if delta.DifferentAt("Spec.SecurityGroupIDs") {
+		if r.ko.Spec.SecurityGroupIDs != nil {
+			res.VpcSecurityGroupIds = aws.ToStringSlice(r.ko.Spec.SecurityGroupIDs)
+		}
 	}
 
 	return res, nil

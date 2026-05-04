@@ -70,6 +70,9 @@ spec:
                   default value is a random, system-chosen Availability Zone in the endpoint's
                   Amazon Web Services Region, for example: us-east-1d.
                 type: string
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
               dnsNameServers:
                 description: |-
                   A list of custom DNS name servers supported for the replication instance
