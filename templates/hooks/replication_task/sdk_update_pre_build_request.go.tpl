@@ -15,11 +15,11 @@ if hasSteadyState(latest.ko) {
         latest.ko.Status.UpdateInProgress = aws.Bool(true)
         latest.ko.Status.TaskStatus = aws.String(replicationTaskStatusStopping)
         ackcondition.SetSynced(latest, corev1.ConditionFalse,
-            aws.String("ReplicationTask entered stopping state"), nil)
+            aws.String(fmt.Sprintf("ReplicationTask is in %v state", latest.ko.Status.TaskStatus)), nil)
         return latest, nil
     }
 } else {
     ackcondition.SetSynced(latest, corev1.ConditionFalse,
-        aws.String("ReplicationTask not in a steady state"), nil)
+        aws.String(fmt.Sprintf("ReplicationTask is in %v state", latest.ko.Status.TaskStatus)), nil)
     return latest, nil
 }

@@ -42,7 +42,7 @@ if ko.ObjectMeta.GetDeletionTimestamp() == nil {
 // If the replication instance is not in a steady state, requeue more frequently.
 if !hasSteadyState(ko) {
     ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-        aws.String("ReplicationInstance not in a steady state"), nil)
+        aws.String(fmt.Sprintf("ReplicationInstance is in %v state", ko.Status.InstanceStatus)), nil)
     return &resource{ko}, nil
 }
 

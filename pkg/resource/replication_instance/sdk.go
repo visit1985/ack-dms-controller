@@ -304,7 +304,7 @@ func (rm *resourceManager) sdkFind(
 	// If the replication instance is not in a steady state, requeue more frequently.
 	if !hasSteadyState(ko) {
 		ackcondition.SetSynced(&resource{ko}, corev1.ConditionFalse,
-			aws.String("ReplicationInstance not in a steady state"), nil)
+			aws.String(fmt.Sprintf("ReplicationInstance is in %v state", ko.Status.InstanceStatus)), nil)
 		return &resource{ko}, nil
 	}
 
@@ -774,6 +774,31 @@ func (rm *resourceManager) sdkUpdate(
 	}
 
 	rm.setStatusDefaults(ko)
+
+	// sdk_update_post_set_output hook
+	//
+	// Merge PendingModifiedValues back into Spec so the delta does not trigger a
+	// redundant ModifyReplicationInstance call while the change is still being
+	// applied.
+	pmv := ko.Status.PendingModifiedValues
+	if pmv == nil {
+		if pmv.MultiAZ != nil {
+			ko.Spec.MultiAZ = pmv.MultiAZ
+		}
+		if pmv.ReplicationInstanceClass != nil {
+			ko.Spec.InstanceClass = pmv.ReplicationInstanceClass
+		}
+		if pmv.AllocatedStorage != nil {
+			ko.Spec.AllocatedStorage = pmv.AllocatedStorage
+		}
+		if pmv.EngineVersion != nil {
+			ko.Spec.EngineVersion = pmv.EngineVersion
+		}
+		if pmv.NetworkType != nil {
+			ko.Spec.NetworkType = pmv.NetworkType
+		}
+	}
+
 	return &resource{ko}, nil
 }
 
@@ -855,10 +880,8 @@ func (rm *resourceManager) sdkDelete(
 	//
 	// Make sure replication instance is in a steady state before deleting it.
 	if !hasSteadyState(r.ko) {
-		if r.ko.Status.InstanceStatus == aws.String(replicationInstanceStatusDeleting) {
-			return r, ackrequeue.NeededAfter(errors.New("Waiting for ReplicationInstance deletion to complete"), 10*time.Second)
-		}
-		return r, ackrequeue.NeededAfter(errors.New("ReplicationInstance not in a steady state"), 10*time.Second)
+		return r, ackrequeue.NeededAfter(
+			errors.New(fmt.Sprintf("ReplicationInstance is in %v state", r.ko.Status.InstanceStatus)), 10*time.Second)
 	}
 
 	input, err := rm.newDeleteRequestPayload(r)
