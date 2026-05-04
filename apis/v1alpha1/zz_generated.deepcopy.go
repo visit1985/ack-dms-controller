@@ -1821,13 +1821,8 @@ func (in *EventSubscriptionStatus) DeepCopyInto(out *EventSubscriptionStatus) {
 			}
 		}
 	}
-	if in.CustSubscriptionID != nil {
-		in, out := &in.CustSubscriptionID, &out.CustSubscriptionID
-		*out = new(string)
-		**out = **in
-	}
-	if in.CustomerAWSID != nil {
-		in, out := &in.CustomerAWSID, &out.CustomerAWSID
+	if in.CustomerAccountID != nil {
+		in, out := &in.CustomerAccountID, &out.CustomerAccountID
 		*out = new(string)
 		**out = **in
 	}

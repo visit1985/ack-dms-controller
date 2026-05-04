@@ -77,13 +77,10 @@ type EventSubscriptionStatus struct {
 	// resource
 	// +kubebuilder:validation:Optional
 	Conditions []*ackv1alpha1.Condition `json:"conditions"`
-	// The DMS event notification subscription Id.
-	// +kubebuilder:validation:Optional
-	CustSubscriptionID *string `json:"custSubscriptionID,omitempty"`
 	// The Amazon Web Services customer account associated with the DMS event notification
 	// subscription.
 	// +kubebuilder:validation:Optional
-	CustomerAWSID *string `json:"customerAWSID,omitempty"`
+	CustomerAccountID *string `json:"customerAccountID,omitempty"`
 	// The time the DMS event notification subscription was created.
 	// +kubebuilder:validation:Optional
 	SubscriptionCreationTime *string `json:"subscriptionCreationTime,omitempty"`

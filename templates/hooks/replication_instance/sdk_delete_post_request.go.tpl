@@ -6,4 +6,6 @@ if err != nil {
     return nil, err
 }
 r.ko.Status.InstanceStatus = aws.String(replicationInstanceStatusDeleting)
-return r, ackrequeue.NeededAfter(errors.New("Waiting for ReplicationInstance deletion to complete"), 10*time.Second)
+return r, ackrequeue.NeededAfter(
+    errors.New(fmt.Sprintf("ReplicationInstance is in %v state", *r.ko.Status.InstanceStatus)),
+    10*time.Second)

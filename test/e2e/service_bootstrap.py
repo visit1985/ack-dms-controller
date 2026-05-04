@@ -17,16 +17,35 @@ import logging
 
 from e2e import bootstrap_directory
 from acktest.bootstrapping import Resources, BootstrapFailureException
+from acktest.bootstrapping.sns import Topic
 from acktest.bootstrapping.vpc import VPC
-from acktest.bootstrapping.iam import Role
 from e2e.bootstrap_resources import BootstrapResources
+
+
+EVENT_SUBSCRIPTION_TOPIC_POLICY = """
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowDMSPublish",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "dms.amazonaws.com"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:$REGION:$ACCOUNT_ID:$NAME"
+    }
+  ]
+}
+"""
 
 
 def service_bootstrap() -> Resources:
     logging.getLogger().setLevel(logging.INFO)
 
     resources = BootstrapResources(
-        TestVPC=VPC(name_prefix="ack-test-vpc", num_public_subnet=2, num_private_subnet=2)
+        TestTopic=Topic(name_prefix="ack-test-topic", policy=EVENT_SUBSCRIPTION_TOPIC_POLICY),
+        TestVPC=VPC(name_prefix="ack-test-vpc", num_public_subnet=2, num_private_subnet=2),
     )
 
     try:

@@ -106,14 +106,9 @@ func (rm *resourceManager) sdkFind(
 	found := false
 	for _, elem := range resp.EventSubscriptionsList {
 		if elem.CustSubscriptionId != nil {
-			ko.Status.CustSubscriptionID = elem.CustSubscriptionId
+			ko.Spec.Name = elem.CustSubscriptionId
 		} else {
-			ko.Status.CustSubscriptionID = nil
-		}
-		if elem.CustomerAwsId != nil {
-			ko.Status.CustomerAWSID = elem.CustomerAwsId
-		} else {
-			ko.Status.CustomerAWSID = nil
+			ko.Spec.Name = nil
 		}
 		ko.Spec.Enabled = &elem.Enabled
 		if elem.EventCategoriesList != nil {
@@ -240,14 +235,14 @@ func (rm *resourceManager) sdkCreate(
 	ko := desired.ko.DeepCopy()
 
 	if resp.EventSubscription.CustSubscriptionId != nil {
-		ko.Status.CustSubscriptionID = resp.EventSubscription.CustSubscriptionId
+		ko.Spec.Name = resp.EventSubscription.CustSubscriptionId
 	} else {
-		ko.Status.CustSubscriptionID = nil
+		ko.Spec.Name = nil
 	}
 	if resp.EventSubscription.CustomerAwsId != nil {
-		ko.Status.CustomerAWSID = resp.EventSubscription.CustomerAwsId
+		ko.Status.CustomerAccountID = resp.EventSubscription.CustomerAwsId
 	} else {
-		ko.Status.CustomerAWSID = nil
+		ko.Status.CustomerAccountID = nil
 	}
 	ko.Spec.Enabled = &resp.EventSubscription.Enabled
 	if resp.EventSubscription.EventCategoriesList != nil {
@@ -369,14 +364,14 @@ func (rm *resourceManager) sdkUpdate(
 	}
 
 	if resp.EventSubscription.CustSubscriptionId != nil {
-		ko.Status.CustSubscriptionID = resp.EventSubscription.CustSubscriptionId
+		ko.Spec.Name = resp.EventSubscription.CustSubscriptionId
 	} else {
-		ko.Status.CustSubscriptionID = nil
+		ko.Spec.Name = nil
 	}
 	if resp.EventSubscription.CustomerAwsId != nil {
-		ko.Status.CustomerAWSID = resp.EventSubscription.CustomerAwsId
+		ko.Status.CustomerAccountID = resp.EventSubscription.CustomerAwsId
 	} else {
-		ko.Status.CustomerAWSID = nil
+		ko.Status.CustomerAccountID = nil
 	}
 	ko.Spec.Enabled = &resp.EventSubscription.Enabled
 	if resp.EventSubscription.EventCategoriesList != nil {
@@ -468,7 +463,9 @@ func (rm *resourceManager) sdkDelete(
 		return nil, err
 	}
 	r.ko.Status.SubscriptionStatus = aws.String(eventSubscriptionStatusDeleting)
-	return r, ackrequeue.NeededAfter(errors.New("Waiting for EventSubscription deletion to complete"), 10*time.Second)
+	return r, ackrequeue.NeededAfter(
+		errors.New(fmt.Sprintf("EventSubscription is in %v state", *r.ko.Status.SubscriptionStatus)),
+		10*time.Second)
 
 	return nil, err
 }

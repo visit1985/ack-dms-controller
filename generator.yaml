@@ -167,6 +167,8 @@ resources:
           input_fields:
             SubscriptionName: Name
           output_fields:
+            CustomerAwsId: CustomerAccountID
+            CustSubscriptionId: Name
             EventCategoriesList: EventCategories
             SourceIdsList: SourceIds
             Status: SubscriptionStatus
@@ -177,6 +179,8 @@ resources:
           input_fields:
             SubscriptionName: Name
           output_fields:
+            CustomerAwsID: CustomerAccountID
+            CustSubscriptionId: Name
             EventCategoriesList: EventCategories
             SourceIdsList: SourceIds
             Status: SubscriptionStatus
@@ -184,6 +188,8 @@ resources:
           input_fields:
             SubscriptionName: Name
           output_fields:
+            CustomerAwsId: CustomerAccountID
+            CustSubscriptionId: Name
             EventCategoriesList: EventCategories
             SourceIdsList: SourceIds
             Status: SubscriptionStatus

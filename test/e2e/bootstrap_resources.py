@@ -16,14 +16,16 @@ for them.
 """
 
 from dataclasses import dataclass
-from acktest.bootstrapping.vpc import VPC
 from acktest.bootstrapping import Resources
+from acktest.bootstrapping.sns import Topic
+from acktest.bootstrapping.vpc import VPC
 from e2e import bootstrap_directory
 
 
 @dataclass
 class BootstrapResources(Resources):
     TestVPC: VPC
+    TestTopic: Topic
 
 _bootstrap_resources = None
 

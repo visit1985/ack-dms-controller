@@ -831,11 +831,13 @@ func (rm *resourceManager) sdkDelete(
 			}
 			r.ko.Status.TaskStatus = aws.String(replicationTaskStatusStopping)
 			return r, ackrequeue.NeededAfter(
-				errors.New(fmt.Sprintf("ReplicationTask is in %v state", *r.ko.Status.TaskStatus)), 10*time.Second)
+				errors.New(fmt.Sprintf("ReplicationTask is in %v state", *r.ko.Status.TaskStatus)),
+				10*time.Second)
 		}
 	} else {
 		return r, ackrequeue.NeededAfter(
-			errors.New(fmt.Sprintf("ReplicationTask is in %v state", *r.ko.Status.TaskStatus)), 10*time.Second)
+			errors.New(fmt.Sprintf("ReplicationTask is in %v state", *r.ko.Status.TaskStatus)),
+			10*time.Second)
 	}
 
 	input, err := rm.newDeleteRequestPayload(r)
@@ -854,7 +856,9 @@ func (rm *resourceManager) sdkDelete(
 		return nil, err
 	}
 	r.ko.Status.TaskStatus = aws.String(replicationTaskStatusDeleting)
-	return r, ackrequeue.NeededAfter(errors.New("Waiting for ReplicationTask deletion to complete"), 10*time.Second)
+	return r, ackrequeue.NeededAfter(
+		errors.New(fmt.Sprintf("ReplicationTask is in %v state", *r.ko.Status.TaskStatus)),
+		10*time.Second)
 
 	return nil, err
 }

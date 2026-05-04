@@ -208,10 +208,7 @@ spec:
                   - type
                   type: object
                 type: array
-              custSubscriptionID:
-                description: The DMS event notification subscription Id.
-                type: string
-              customerAWSID:
+              customerAccountID:
                 description: |-
                   The Amazon Web Services customer account associated with the DMS event notification
                   subscription.

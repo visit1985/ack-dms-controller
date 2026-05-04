@@ -6,4 +6,6 @@ if err != nil {
     return nil, err
 }
 r.ko.Status.SubscriptionStatus = aws.String(eventSubscriptionStatusDeleting)
-return r, ackrequeue.NeededAfter(errors.New("Waiting for EventSubscription deletion to complete"), 10*time.Second)
+return r, ackrequeue.NeededAfter(
+    errors.New(fmt.Sprintf("EventSubscription is in %v state", *r.ko.Status.SubscriptionStatus)),
+    10*time.Second)
