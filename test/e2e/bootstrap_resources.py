@@ -17,10 +17,10 @@ for them.
 
 from dataclasses import dataclass
 from acktest.bootstrapping import Resources
+from acktest.bootstrapping.iam import Role
 from acktest.bootstrapping.sns import Topic
 from acktest.bootstrapping.vpc import VPC
 from acktest.bootstrapping.s3 import Bucket
-from e2e.local_bootstrapping import RoleWithPermissionsBoundary
 from e2e import bootstrap_directory
 
 
@@ -29,7 +29,7 @@ class BootstrapResources(Resources):
     TestVPC: VPC
     TestTopic: Topic
     TestBucket: Bucket
-    TestEndpointRole: RoleWithPermissionsBoundary
+    TestEndpointRole: Role
 
 _bootstrap_resources = None
 

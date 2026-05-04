@@ -18,11 +18,11 @@ import logging
 
 from e2e import bootstrap_directory
 from acktest.bootstrapping import Resources, BootstrapFailureException
+from acktest.bootstrapping.iam import Role
 from acktest.bootstrapping.sns import Topic
 from acktest.bootstrapping.vpc import VPC
 from acktest.bootstrapping.s3 import Bucket
 from acktest.bootstrapping.iam import UserPolicies
-from e2e.local_bootstrapping import RoleWithPermissionsBoundary, get_permissions_boundary
 from e2e.bootstrap_resources import BootstrapResources
 
 
@@ -85,10 +85,9 @@ def service_bootstrap() -> Resources:
         policy_documents=[s3_access_policy],
     )
 
-    test_endpoint_role = RoleWithPermissionsBoundary(
+    test_endpoint_role = Role(
         name_prefix="ack-test-dms-s3-role",
         principal_service="dms.amazonaws.com",
-        permissions_boundary=get_permissions_boundary(),
         user_policies=s3_policies,
     )
 
