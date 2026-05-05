@@ -90,23 +90,10 @@ func (rm *resourceManager) sdkFind(
 
 	var resp *svcsdk.DescribeReplicationInstancesOutput
 	resp, err = rm.sdkapi.DescribeReplicationInstances(ctx, input)
-
-	// sdk_read_many_post_request hook
-	//
-	// Map ResourceNotFoundFault to NotFound error so ACK can trigger createResource
-	// correctly.
-	if err != nil {
-		var awsErr smithy.APIError
-		if errors.As(err, &awsErr) && awsErr.ErrorCode() == "ResourceNotFoundFault" {
-			rm.metrics.RecordAPICall("READ_MANY", "DescribeReplicationInstances", err)
-			return nil, ackerr.NotFound
-		}
-	}
-
 	rm.metrics.RecordAPICall("READ_MANY", "DescribeReplicationInstances", err)
 	if err != nil {
 		var awsErr smithy.APIError
-		if errors.As(err, &awsErr) && awsErr.ErrorCode() == "UNKNOWN" {
+		if errors.As(err, &awsErr) && awsErr.ErrorCode() == "ResourceNotFoundFault" {
 			return nil, ackerr.NotFound
 		}
 		return nil, err
