@@ -23,7 +23,6 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	acmapitypes "github.com/aws-controllers-k8s/acm-controller/apis/v1alpha1"
 	iamapitypes "github.com/aws-controllers-k8s/iam-controller/apis/v1alpha1"
 	kinesisapitypes "github.com/aws-controllers-k8s/kinesis-controller/apis/v1alpha1"
 	kmsapitypes "github.com/aws-controllers-k8s/kms-controller/apis/v1alpha1"
@@ -35,9 +34,6 @@ import (
 
 	svcapitypes "github.com/aws-controllers-k8s/dms-controller/apis/v1alpha1"
 )
-
-// +kubebuilder:rbac:groups=acm.services.k8s.aws,resources=certificates,verbs=get;list
-// +kubebuilder:rbac:groups=acm.services.k8s.aws,resources=certificates/status,verbs=get;list
 
 // +kubebuilder:rbac:groups=iam.services.k8s.aws,resources=roles,verbs=get;list
 // +kubebuilder:rbac:groups=iam.services.k8s.aws,resources=roles/status,verbs=get;list
@@ -231,6 +227,24 @@ func (rm *resourceManager) ClearResolvedReferences(res acktypes.AWSResource) ack
 		ko.Spec.KMSKeyID = nil
 	}
 
+	if ko.Spec.KafkaSettings != nil {
+		if ko.Spec.KafkaSettings.SSLCaCertificateRef != nil {
+			ko.Spec.KafkaSettings.SSLCaCertificateARN = nil
+		}
+	}
+
+	if ko.Spec.KafkaSettings != nil {
+		if ko.Spec.KafkaSettings.SSLClientCertificateRef != nil {
+			ko.Spec.KafkaSettings.SSLClientCertificateARN = nil
+		}
+	}
+
+	if ko.Spec.KafkaSettings != nil {
+		if ko.Spec.KafkaSettings.SSLClientKeyRef != nil {
+			ko.Spec.KafkaSettings.SSLClientKeyARN = nil
+		}
+	}
+
 	if ko.Spec.KinesisSettings != nil {
 		if ko.Spec.KinesisSettings.ServiceAccessRoleRef != nil {
 			ko.Spec.KinesisSettings.ServiceAccessRoleARN = nil
@@ -330,6 +344,12 @@ func (rm *resourceManager) ClearResolvedReferences(res acktypes.AWSResource) ack
 	if ko.Spec.PostgreSQLSettings != nil {
 		if ko.Spec.PostgreSQLSettings.ServiceAccessRoleRef != nil {
 			ko.Spec.PostgreSQLSettings.ServiceAccessRoleARN = nil
+		}
+	}
+
+	if ko.Spec.RedisSettings != nil {
+		if ko.Spec.RedisSettings.SSLCaCertificateRef != nil {
+			ko.Spec.RedisSettings.SSLCaCertificateARN = nil
 		}
 	}
 
@@ -488,6 +508,24 @@ func (rm *resourceManager) ResolveReferences(
 		resourceHasReferences = resourceHasReferences || fieldHasReferences
 	}
 
+	if fieldHasReferences, err := rm.resolveReferenceForKafkaSettings_SSLCaCertificateARN(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForKafkaSettings_SSLClientCertificateARN(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForKafkaSettings_SSLClientKeyARN(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
 	if fieldHasReferences, err := rm.resolveReferenceForKinesisSettings_ServiceAccessRoleARN(ctx, apiReader, ko); err != nil {
 		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
 	} else {
@@ -585,6 +623,12 @@ func (rm *resourceManager) ResolveReferences(
 	}
 
 	if fieldHasReferences, err := rm.resolveReferenceForPostgreSQLSettings_ServiceAccessRoleARN(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForRedisSettings_SSLCaCertificateARN(ctx, apiReader, ko); err != nil {
 		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
 	} else {
 		resourceHasReferences = resourceHasReferences || fieldHasReferences
@@ -731,6 +775,24 @@ func validateReferenceFields(ko *svcapitypes.Endpoint) error {
 		return ackerr.ResourceReferenceAndIDNotSupportedFor("KMSKeyID", "KMSKeyRef")
 	}
 
+	if ko.Spec.KafkaSettings != nil {
+		if ko.Spec.KafkaSettings.SSLCaCertificateRef != nil && ko.Spec.KafkaSettings.SSLCaCertificateARN != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("KafkaSettings.SSLCaCertificateARN", "KafkaSettings.SSLCaCertificateRef")
+		}
+	}
+
+	if ko.Spec.KafkaSettings != nil {
+		if ko.Spec.KafkaSettings.SSLClientCertificateRef != nil && ko.Spec.KafkaSettings.SSLClientCertificateARN != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("KafkaSettings.SSLClientCertificateARN", "KafkaSettings.SSLClientCertificateRef")
+		}
+	}
+
+	if ko.Spec.KafkaSettings != nil {
+		if ko.Spec.KafkaSettings.SSLClientKeyRef != nil && ko.Spec.KafkaSettings.SSLClientKeyARN != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("KafkaSettings.SSLClientKeyARN", "KafkaSettings.SSLClientKeyRef")
+		}
+	}
+
 	if ko.Spec.KinesisSettings != nil {
 		if ko.Spec.KinesisSettings.ServiceAccessRoleRef != nil && ko.Spec.KinesisSettings.ServiceAccessRoleARN != nil {
 			return ackerr.ResourceReferenceAndIDNotSupportedFor("KinesisSettings.ServiceAccessRoleARN", "KinesisSettings.ServiceAccessRoleRef")
@@ -833,6 +895,12 @@ func validateReferenceFields(ko *svcapitypes.Endpoint) error {
 		}
 	}
 
+	if ko.Spec.RedisSettings != nil {
+		if ko.Spec.RedisSettings.SSLCaCertificateRef != nil && ko.Spec.RedisSettings.SSLCaCertificateARN != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("RedisSettings.SSLCaCertificateARN", "RedisSettings.SSLCaCertificateRef")
+		}
+	}
+
 	if ko.Spec.RedshiftSettings != nil {
 		if ko.Spec.RedshiftSettings.BucketRef != nil && ko.Spec.RedshiftSettings.BucketName != nil {
 			return ackerr.ResourceReferenceAndIDNotSupportedFor("RedshiftSettings.BucketName", "RedshiftSettings.BucketRef")
@@ -918,7 +986,7 @@ func (rm *resourceManager) resolveReferenceForCertificateARN(
 		if arr.Namespace != nil && *arr.Namespace != "" {
 			namespace = *arr.Namespace
 		}
-		obj := &acmapitypes.Certificate{}
+		obj := &svcapitypes.Certificate{}
 		if err := getReferencedResourceState_Certificate(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
 			return hasReferences, err
 		}
@@ -935,7 +1003,7 @@ func (rm *resourceManager) resolveReferenceForCertificateARN(
 func getReferencedResourceState_Certificate(
 	ctx context.Context,
 	apiReader client.Reader,
-	obj *acmapitypes.Certificate,
+	obj *svcapitypes.Certificate,
 	name string, // the Kubernetes name of the referenced resource
 	namespace string, // the Kubernetes namespace of the referenced resource
 ) error {
@@ -1478,6 +1546,99 @@ func (rm *resourceManager) resolveReferenceForKMSKeyID(
 			return hasReferences, err
 		}
 		ko.Spec.KMSKeyID = (*string)(obj.Status.KeyID)
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForKafkaSettings_SSLCaCertificateARN reads the resource referenced
+// from KafkaSettings.SSLCaCertificateRef field and sets the KafkaSettings.SSLCaCertificateARN
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForKafkaSettings_SSLCaCertificateARN(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.Endpoint,
+) (hasReferences bool, err error) {
+	if ko.Spec.KafkaSettings != nil {
+		if ko.Spec.KafkaSettings.SSLCaCertificateRef != nil && ko.Spec.KafkaSettings.SSLCaCertificateRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.KafkaSettings.SSLCaCertificateRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: KafkaSettings.SSLCaCertificateRef")
+			}
+			namespace := ko.ObjectMeta.GetNamespace()
+			if arr.Namespace != nil && *arr.Namespace != "" {
+				namespace = *arr.Namespace
+			}
+			obj := &svcapitypes.Certificate{}
+			if err := getReferencedResourceState_Certificate(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.KafkaSettings.SSLCaCertificateARN = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForKafkaSettings_SSLClientCertificateARN reads the resource referenced
+// from KafkaSettings.SSLClientCertificateRef field and sets the KafkaSettings.SSLClientCertificateARN
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForKafkaSettings_SSLClientCertificateARN(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.Endpoint,
+) (hasReferences bool, err error) {
+	if ko.Spec.KafkaSettings != nil {
+		if ko.Spec.KafkaSettings.SSLClientCertificateRef != nil && ko.Spec.KafkaSettings.SSLClientCertificateRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.KafkaSettings.SSLClientCertificateRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: KafkaSettings.SSLClientCertificateRef")
+			}
+			namespace := ko.ObjectMeta.GetNamespace()
+			if arr.Namespace != nil && *arr.Namespace != "" {
+				namespace = *arr.Namespace
+			}
+			obj := &svcapitypes.Certificate{}
+			if err := getReferencedResourceState_Certificate(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.KafkaSettings.SSLClientCertificateARN = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForKafkaSettings_SSLClientKeyARN reads the resource referenced
+// from KafkaSettings.SSLClientKeyRef field and sets the KafkaSettings.SSLClientKeyARN
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForKafkaSettings_SSLClientKeyARN(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.Endpoint,
+) (hasReferences bool, err error) {
+	if ko.Spec.KafkaSettings != nil {
+		if ko.Spec.KafkaSettings.SSLClientKeyRef != nil && ko.Spec.KafkaSettings.SSLClientKeyRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.KafkaSettings.SSLClientKeyRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: KafkaSettings.SSLClientKeyRef")
+			}
+			namespace := ko.ObjectMeta.GetNamespace()
+			if arr.Namespace != nil && *arr.Namespace != "" {
+				namespace = *arr.Namespace
+			}
+			obj := &svcapitypes.Certificate{}
+			if err := getReferencedResourceState_Certificate(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.KafkaSettings.SSLClientKeyARN = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
 	}
 
 	return hasReferences, nil
@@ -2112,6 +2273,37 @@ func (rm *resourceManager) resolveReferenceForPostgreSQLSettings_ServiceAccessRo
 				return hasReferences, err
 			}
 			ko.Spec.PostgreSQLSettings.ServiceAccessRoleARN = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForRedisSettings_SSLCaCertificateARN reads the resource referenced
+// from RedisSettings.SSLCaCertificateRef field and sets the RedisSettings.SSLCaCertificateARN
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForRedisSettings_SSLCaCertificateARN(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.Endpoint,
+) (hasReferences bool, err error) {
+	if ko.Spec.RedisSettings != nil {
+		if ko.Spec.RedisSettings.SSLCaCertificateRef != nil && ko.Spec.RedisSettings.SSLCaCertificateRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.RedisSettings.SSLCaCertificateRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: RedisSettings.SSLCaCertificateRef")
+			}
+			namespace := ko.ObjectMeta.GetNamespace()
+			if arr.Namespace != nil && *arr.Namespace != "" {
+				namespace = *arr.Namespace
+			}
+			obj := &svcapitypes.Certificate{}
+			if err := getReferencedResourceState_Certificate(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.RedisSettings.SSLCaCertificateARN = (*string)(obj.Status.ACKResourceMetadata.ARN)
 		}
 	}
 

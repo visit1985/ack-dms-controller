@@ -19,7 +19,6 @@ import (
 	"context"
 	"os"
 
-	acmapitypes "github.com/aws-controllers-k8s/acm-controller/apis/v1alpha1"
 	ec2apitypes "github.com/aws-controllers-k8s/ec2-controller/apis/v1alpha1"
 	iamapitypes "github.com/aws-controllers-k8s/iam-controller/apis/v1alpha1"
 	kinesisapitypes "github.com/aws-controllers-k8s/kinesis-controller/apis/v1alpha1"
@@ -47,6 +46,7 @@ import (
 	svctypes "github.com/aws-controllers-k8s/dms-controller/apis/v1alpha1"
 	svcresource "github.com/aws-controllers-k8s/dms-controller/pkg/resource"
 
+	_ "github.com/aws-controllers-k8s/dms-controller/pkg/resource/certificate"
 	_ "github.com/aws-controllers-k8s/dms-controller/pkg/resource/endpoint"
 	_ "github.com/aws-controllers-k8s/dms-controller/pkg/resource/event_subscription"
 	_ "github.com/aws-controllers-k8s/dms-controller/pkg/resource/replication_instance"
@@ -68,7 +68,6 @@ func init() {
 
 	_ = svctypes.AddToScheme(scheme)
 	_ = ackv1alpha1.AddToScheme(scheme)
-	_ = acmapitypes.AddToScheme(scheme)
 	_ = ec2apitypes.AddToScheme(scheme)
 	_ = iamapitypes.AddToScheme(scheme)
 	_ = kinesisapitypes.AddToScheme(scheme)

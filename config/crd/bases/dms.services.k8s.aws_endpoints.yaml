@@ -518,8 +518,36 @@ spec:
                     type: string
                   sslCaCertificateARN:
                     type: string
+                  sslCaCertificateRef:
+                    description: Reference field for SSLCaCertificateARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   sslClientCertificateARN:
                     type: string
+                  sslClientCertificateRef:
+                    description: Reference field for SSLClientCertificateARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   sslClientKeyARN:
                     type: string
                   sslClientKeyPassword:
@@ -542,6 +570,20 @@ spec:
                     - key
                     type: object
                     x-kubernetes-map-type: atomic
+                  sslClientKeyRef:
+                    description: Reference field for SSLClientKeyARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   sslEndpointIDentificationAlgorithm:
                     type: string
                   topic:
@@ -1358,6 +1400,20 @@ spec:
                     type: string
                   sslCaCertificateARN:
                     type: string
+                  sslCaCertificateRef:
+                    description: Reference field for SSLCaCertificateARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   sslSecurityProtocol:
                     type: string
                 type: object

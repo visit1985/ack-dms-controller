@@ -16,6 +16,7 @@ rules:
 - apiGroups:
   - dms.services.k8s.aws
   resources:
+  - certificates
   - endpoints
   - eventsubscriptions
   - replicationinstances
@@ -32,6 +33,7 @@ rules:
 - apiGroups:
   - dms.services.k8s.aws
   resources:
+  - certificates
   - endpoints
   - eventsubscriptions
   - replicationinstances

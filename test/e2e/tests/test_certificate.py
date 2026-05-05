@@ -1,0 +1,197 @@
+# Copyright Amazon.com Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You may
+# not use this file except in compliance with the License. A copy of the
+# License is located at
+#
+#	http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+"""Integration tests for the DMS API Certificate resource.
+
+Test scenarios
+--------------
+* test_crud
+    Create a Certificate from a PEM certificate stored in a Kubernetes Secret.
+    Wait for it to become synced, verify the K8s CR status and the AWS API,
+    verify the initial tags, update tags and let the fixture handle deletion.
+"""
+
+import datetime
+import logging
+import time
+
+import pytest
+from cryptography import x509
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.x509.oid import NameOID
+
+from acktest.k8s import resource as k8s
+from acktest.resources import random_suffix_name
+from e2e import service_marker, CRD_GROUP, CRD_VERSION, load_dms_resource
+from e2e import condition
+from e2e import certificate as aws_api
+from e2e import tag
+
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+
+RESOURCE_PLURAL = "certificates"
+
+# DMS certificates are created synchronously — wait for sync.
+MAX_WAIT_FOR_SYNCED_PERIODS = 30
+
+# Pause between patching and re-checking so the controller can reconcile.
+MODIFY_WAIT_AFTER_SECONDS = 15
+
+DELETE_WAIT_AFTER_SECONDS = 10
+
+SECRET_KEY = "certificate.pem"
+
+
+def _generate_self_signed_cert_pem() -> str:
+    """Generates a minimal self-signed RSA certificate and returns it as a
+    PEM-encoded string, for use as a test fixture."""
+    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    subject = issuer = x509.Name([
+        x509.NameAttribute(NameOID.COMMON_NAME, "test-cert"),
+    ])
+    now = datetime.datetime.now(datetime.timezone.utc)
+    cert = (
+        x509.CertificateBuilder()
+        .subject_name(subject)
+        .issuer_name(issuer)
+        .public_key(key.public_key())
+        .serial_number(x509.random_serial_number())
+        .not_valid_before(now)
+        .not_valid_after(now + datetime.timedelta(days=3650))
+        .sign(key, hashes.SHA256())
+    )
+    return cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
+
+
+# ---------------------------------------------------------------------------
+# Fixture
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def certificate():
+    """Creates a Certificate CR with a test PEM certificate stored in a
+    Kubernetes Secret and tears it down after the test.
+
+    Yields:
+        tuple: (ref, cr, certificate_name)
+    """
+    certificate_name = random_suffix_name("my-dms-certificate", 24)
+    secret_name = random_suffix_name("dms-cert-secret", 21)
+
+    # Create the Kubernetes Secret containing a freshly generated certificate PEM
+    k8s.create_opaque_secret("default", secret_name, SECRET_KEY, _generate_self_signed_cert_pem())
+
+    replacements = {
+        "CERTIFICATE_NAME": certificate_name,
+        "CERTIFICATE_SECRET_NAME": secret_name,
+        "CERTIFICATE_SECRET_KEY": SECRET_KEY,
+    }
+
+    resource_data = load_dms_resource(
+        "certificate",
+        additional_replacements=replacements,
+    )
+    logging.debug(resource_data)
+
+    ref = k8s.CustomResourceReference(
+        CRD_GROUP, CRD_VERSION, RESOURCE_PLURAL,
+        certificate_name, namespace="default",
+    )
+    k8s.create_custom_resource(ref, resource_data)
+    cr = k8s.wait_resource_consumed_by_controller(ref)
+
+    assert cr is not None
+    assert k8s.get_resource_exists(ref)
+
+    # Certificates are created synchronously in DMS — wait for sync.
+    assert k8s.wait_on_condition(
+        ref, "ACK.ResourceSynced", "True",
+        wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+    )
+
+    yield ref, cr, certificate_name
+
+    try:
+        _, deleted = k8s.delete_custom_resource(ref, 3, 10)
+        assert deleted
+        aws_api.wait_until_deleted(certificate_name)
+        time.sleep(DELETE_WAIT_AFTER_SECONDS)
+    except Exception:
+        pass
+    finally:
+        # Always clean up the Kubernetes Secret
+        try:
+            k8s.delete_secret("default", secret_name)
+        except Exception:
+            pass
+
+
+# ---------------------------------------------------------------------------
+# Test class
+# ---------------------------------------------------------------------------
+
+@service_marker
+@pytest.mark.canary
+class TestCertificate:
+
+    def test_crud(self, certificate):
+        """Verifies the full Create → Read → Update → Delete lifecycle.
+
+        Checks:
+        1.  After creation the K8s CR has ``ACK.ResourceSynced=True`` and the
+            DMS API reports the certificate as existing.
+        2.  The AWS API matches the spec fields: identifier.
+        3.  The CR ``status.ackResourceMetadata.arn`` is populated.
+        4.  The initial ``environment=dev`` tag is present in the AWS API.
+        5.  Tags can be updated from ``environment=dev`` to
+            ``environment=prod``; the AWS API reflects the new value.
+        """
+        ref, cr, certificate_name = certificate
+
+        # ---- Verify create / read ------------------------------------------
+        condition.assert_synced(ref)
+
+        latest = aws_api.get(certificate_name)
+        assert latest is not None
+        assert latest['CertificateIdentifier'] == certificate_name
+
+        # ARN is written into the CR status by the controller.
+        cr = k8s.get_resource(ref)
+        assert cr is not None
+        assert 'status' in cr
+        assert 'ackResourceMetadata' in cr['status']
+        certificate_arn = cr['status']['ackResourceMetadata']['arn']
+        assert certificate_arn is not None
+
+        # ---- Verify initial tags -------------------------------------------
+        expect_tags = [{"Key": "environment", "Value": "dev"}]
+        latest_tags = tag.clean(aws_api.get_tags(certificate_arn))
+        assert expect_tags == latest_tags
+
+        # ---- Update: tags ---------------------------------------------------
+        k8s.patch_custom_resource(
+            ref,
+            {"spec": {"tags": [{"key": "environment", "value": "prod"}]}},
+        )
+        time.sleep(MODIFY_WAIT_AFTER_SECONDS)
+
+        assert k8s.wait_on_condition(
+            ref, "ACK.ResourceSynced", "True",
+            wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+        )
+
+        latest_tags = tag.clean(aws_api.get_tags(certificate_arn))
+        assert latest_tags == [{"Key": "environment", "Value": "prod"}]

@@ -70,16 +70,9 @@ rules:
   - list
   - watch
 - apiGroups:
-  - acm.services.k8s.aws
-  resources:
-  - certificates
-  - certificates/status
-  verbs:
-  - get
-  - list
-- apiGroups:
   - dms.services.k8s.aws
   resources:
+  - certificates
   - endpoints
   - eventsubscriptions
   - replicationinstances
@@ -96,6 +89,7 @@ rules:
 - apiGroups:
   - dms.services.k8s.aws
   resources:
+  - certificates/status
   - endpoints/status
   - eventsubscriptions/status
   - replicationinstances/status

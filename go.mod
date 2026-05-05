@@ -3,7 +3,6 @@ module github.com/aws-controllers-k8s/dms-controller
 go 1.25.8
 
 require (
-	github.com/aws-controllers-k8s/acm-controller v1.3.6
 	github.com/aws-controllers-k8s/ec2-controller v1.11.1
 	github.com/aws-controllers-k8s/iam-controller v1.6.2
 	github.com/aws-controllers-k8s/kinesis-controller v1.2.4
