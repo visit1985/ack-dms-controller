@@ -272,6 +272,9 @@ spec:
               endpointType:
                 description: The type of endpoint. Valid values are source and target.
                 type: string
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
               engineName:
                 description: |-
                   The type of engine for the endpoint. Valid values, depending on the EndpointType
@@ -281,6 +284,9 @@ spec:
                   "babelfish", redshift-serverless, aurora-serverless, aurora-postgresql-serverless,
                   gcp-mysql, azure-sql-managed-instance, redis, dms-transfer.
                 type: string
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
               externalTableDefinition:
                 description: The external table definition.
                 type: string
@@ -1589,6 +1595,9 @@ spec:
                   If you don't specify a ResourceIdentifier value, DMS generates a default
                   identifier value for the end of EndpointArn.
                 type: string
+                x-kubernetes-validations:
+                - message: Value is immutable once set
+                  rule: self == oldSelf
               s3Settings:
                 description: |-
                   Settings in JSON format for the target Amazon S3 endpoint. For more information

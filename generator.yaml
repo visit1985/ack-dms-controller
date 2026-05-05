@@ -137,9 +137,13 @@ resources:
           resource: Role
           service_name: iam
           path: Status.ACKResourceMetadata.ARN
+      EngineName:
+        is_immutable: true
       EndpointStatus:
         print:
           name: Status
+      EndpointType:
+        is_immutable: true
       GcpMySQLSettings.Password:
         is_secret: true
       GcpMySQLSettings.SecretsManagerAccessRoleARN:
@@ -325,6 +329,8 @@ resources:
           resource: Role
           service_name: iam
           path: Status.ACKResourceMetadata.ARN
+      ResourceIdentifier:
+        is_immutable: true
       S3Settings.BucketName:
         references:
           resource: Bucket
@@ -622,10 +628,14 @@ resources:
         is_primary_key: true
         is_immutable: true
       ReplicationInstanceARN:
+        is_immutable: true
         references:
           resource: ReplicationInstance
           path: Status.ACKResourceMetadata.ARN
+      ResourceIdentifier:
+        is_immutable: true
       SourceEndpointARN:
+        is_immutable: true
         references:
           resource: Endpoint
           path: Status.ACKResourceMetadata.ARN
@@ -641,6 +651,7 @@ resources:
         compare:
           is_ignored: true
       TargetEndpointARN:
+        is_immutable: true
         references:
           resource: Endpoint
           path: Status.ACKResourceMetadata.ARN
@@ -683,6 +694,7 @@ resources:
         CreateReplicationTask:
           input_fields:
             ReplicationTaskIdentifier: Name
+            ReplicationTaskSettings: TaskSettings
           output_fields:
             ReplicationTaskCreationDate: CreationDate
             ReplicationTaskStartDate: StartDate

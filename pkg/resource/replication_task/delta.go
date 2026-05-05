@@ -88,13 +88,6 @@ func newResourceDelta(
 	if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.ReplicationInstanceRef, b.ko.Spec.ReplicationInstanceRef) {
 		delta.Add("Spec.ReplicationInstanceRef", a.ko.Spec.ReplicationInstanceRef, b.ko.Spec.ReplicationInstanceRef)
 	}
-	if ackcompare.HasNilDifference(a.ko.Spec.ReplicationTaskSettings, b.ko.Spec.ReplicationTaskSettings) {
-		delta.Add("Spec.ReplicationTaskSettings", a.ko.Spec.ReplicationTaskSettings, b.ko.Spec.ReplicationTaskSettings)
-	} else if a.ko.Spec.ReplicationTaskSettings != nil && b.ko.Spec.ReplicationTaskSettings != nil {
-		if *a.ko.Spec.ReplicationTaskSettings != *b.ko.Spec.ReplicationTaskSettings {
-			delta.Add("Spec.ReplicationTaskSettings", a.ko.Spec.ReplicationTaskSettings, b.ko.Spec.ReplicationTaskSettings)
-		}
-	}
 	if ackcompare.HasNilDifference(a.ko.Spec.ResourceIdentifier, b.ko.Spec.ResourceIdentifier) {
 		delta.Add("Spec.ResourceIdentifier", a.ko.Spec.ResourceIdentifier, b.ko.Spec.ResourceIdentifier)
 	} else if a.ko.Spec.ResourceIdentifier != nil && b.ko.Spec.ResourceIdentifier != nil {
@@ -141,6 +134,13 @@ func newResourceDelta(
 	} else if a.ko.Spec.TaskData != nil && b.ko.Spec.TaskData != nil {
 		if *a.ko.Spec.TaskData != *b.ko.Spec.TaskData {
 			delta.Add("Spec.TaskData", a.ko.Spec.TaskData, b.ko.Spec.TaskData)
+		}
+	}
+	if ackcompare.HasNilDifference(a.ko.Spec.TaskSettings, b.ko.Spec.TaskSettings) {
+		delta.Add("Spec.TaskSettings", a.ko.Spec.TaskSettings, b.ko.Spec.TaskSettings)
+	} else if a.ko.Spec.TaskSettings != nil && b.ko.Spec.TaskSettings != nil {
+		if *a.ko.Spec.TaskSettings != *b.ko.Spec.TaskSettings {
+			delta.Add("Spec.TaskSettings", a.ko.Spec.TaskSettings, b.ko.Spec.TaskSettings)
 		}
 	}
 

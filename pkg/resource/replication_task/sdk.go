@@ -146,11 +146,6 @@ func (rm *resourceManager) sdkFind(
 		} else {
 			ko.Status.CreationDate = nil
 		}
-		if elem.ReplicationTaskSettings != nil {
-			ko.Spec.ReplicationTaskSettings = elem.ReplicationTaskSettings
-		} else {
-			ko.Spec.ReplicationTaskSettings = nil
-		}
 		if elem.ReplicationTaskStartDate != nil {
 			ko.Status.StartDate = &metav1.Time{*elem.ReplicationTaskStartDate}
 		} else {
@@ -419,9 +414,9 @@ func (rm *resourceManager) sdkCreate(
 		ko.Spec.Name = nil
 	}
 	if resp.ReplicationTask.ReplicationTaskSettings != nil {
-		ko.Spec.ReplicationTaskSettings = resp.ReplicationTask.ReplicationTaskSettings
+		ko.Spec.TaskSettings = resp.ReplicationTask.ReplicationTaskSettings
 	} else {
-		ko.Spec.ReplicationTaskSettings = nil
+		ko.Spec.TaskSettings = nil
 	}
 	if resp.ReplicationTask.ReplicationTaskStartDate != nil {
 		ko.Status.StartDate = &metav1.Time{*resp.ReplicationTask.ReplicationTaskStartDate}
@@ -526,8 +521,8 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.Name != nil {
 		res.ReplicationTaskIdentifier = r.ko.Spec.Name
 	}
-	if r.ko.Spec.ReplicationTaskSettings != nil {
-		res.ReplicationTaskSettings = r.ko.Spec.ReplicationTaskSettings
+	if r.ko.Spec.TaskSettings != nil {
+		res.ReplicationTaskSettings = r.ko.Spec.TaskSettings
 	}
 	if r.ko.Spec.ResourceIdentifier != nil {
 		res.ResourceIdentifier = r.ko.Spec.ResourceIdentifier
@@ -669,11 +664,6 @@ func (rm *resourceManager) sdkUpdate(
 	} else {
 		ko.Status.CreationDate = nil
 	}
-	if resp.ReplicationTask.ReplicationTaskSettings != nil {
-		ko.Spec.ReplicationTaskSettings = resp.ReplicationTask.ReplicationTaskSettings
-	} else {
-		ko.Spec.ReplicationTaskSettings = nil
-	}
 	if resp.ReplicationTask.ReplicationTaskStartDate != nil {
 		ko.Status.StartDate = &metav1.Time{*resp.ReplicationTask.ReplicationTaskStartDate}
 	} else {
@@ -781,9 +771,6 @@ func (rm *resourceManager) newUpdateRequestPayload(
 	}
 	if r.ko.Status.ACKResourceMetadata != nil && r.ko.Status.ACKResourceMetadata.ARN != nil {
 		res.ReplicationTaskArn = (*string)(r.ko.Status.ACKResourceMetadata.ARN)
-	}
-	if r.ko.Spec.ReplicationTaskSettings != nil {
-		res.ReplicationTaskSettings = r.ko.Spec.ReplicationTaskSettings
 	}
 	if r.ko.Spec.TableMappings != nil {
 		res.TableMappings = r.ko.Spec.TableMappings

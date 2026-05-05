@@ -67,6 +67,7 @@ type EndpointSpec struct {
 	// in the Database Migration Service User Guide.
 	ElasticsearchSettings *ElasticsearchSettings `json:"elasticsearchSettings,omitempty"`
 	// The type of endpoint. Valid values are source and target.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	// +kubebuilder:validation:Required
 	EndpointType *string `json:"endpointType"`
 	// The type of engine for the endpoint. Valid values, depending on the EndpointType
@@ -75,6 +76,7 @@ type EndpointSpec struct {
 	// "mongodb", "kinesis", "kafka", "elasticsearch", "docdb", "sqlserver", "neptune",
 	// "babelfish", redshift-serverless, aurora-serverless, aurora-postgresql-serverless,
 	// gcp-mysql, azure-sql-managed-instance, redis, dms-transfer.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	// +kubebuilder:validation:Required
 	EngineName *string `json:"engineName"`
 	// The external table definition.
@@ -174,6 +176,7 @@ type EndpointSpec struct {
 	// For example, this value might result in the EndpointArn value arn:aws:dms:eu-west-1:012345678901:rep:Example-App-ARN1.
 	// If you don't specify a ResourceIdentifier value, DMS generates a default
 	// identifier value for the end of EndpointArn.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	ResourceIdentifier *string `json:"resourceIdentifier,omitempty"`
 	// Settings in JSON format for the target Amazon S3 endpoint. For more information
 	// about the available settings, see Extra Connection Attributes When Using

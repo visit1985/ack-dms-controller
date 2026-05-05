@@ -74,14 +74,11 @@ type ReplicationTaskSpec struct {
 	// +kubebuilder:validation:Required
 	Name *string `json:"name"`
 	// The Amazon Resource Name (ARN) of a replication instance.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	ReplicationInstanceARN *string `json:"replicationInstanceARN,omitempty"`
 	// Reference to an ACK managed replication instance resource for this replication
 	// task.
 	ReplicationInstanceRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"replicationInstanceRef,omitempty"`
-	// Overall settings for the task, in JSON format. For more information, see
-	// Specifying Task Settings for Database Migration Service Tasks (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TaskSettings.html)
-	// in the Database Migration Service User Guide.
-	ReplicationTaskSettings *string `json:"replicationTaskSettings,omitempty"`
 	// A friendly name for the resource identifier at the end of the EndpointArn
 	// response parameter that is returned in the created Endpoint object. The value
 	// for this parameter can have up to 31 characters. It can contain only ASCII
@@ -90,8 +87,10 @@ type ReplicationTaskSpec struct {
 	// For example, this value might result in the EndpointArn value arn:aws:dms:eu-west-1:012345678901:rep:Example-App-ARN1.
 	// If you don't specify a ResourceIdentifier value, DMS generates a default
 	// identifier value for the end of EndpointArn.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	ResourceIdentifier *string `json:"resourceIdentifier,omitempty"`
 	// An Amazon Resource Name (ARN) that uniquely identifies the source endpoint.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	SourceEndpointARN *string `json:"sourceEndpointARN,omitempty"`
 	// Reference to an ACK managed source endpoint resource for this replication task.
 	SourceEndpointRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"sourceEndpointRef,omitempty"`
@@ -105,6 +104,7 @@ type ReplicationTaskSpec struct {
 	// One or more tags to be assigned to the replication task.
 	Tags []*Tag `json:"tags,omitempty"`
 	// An Amazon Resource Name (ARN) that uniquely identifies the target endpoint.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	TargetEndpointARN *string `json:"targetEndpointARN,omitempty"`
 	// Reference to an ACK managed target endpoint resource for this replication task.
 	TargetEndpointRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"targetEndpointRef,omitempty"`
@@ -113,6 +113,10 @@ type ReplicationTaskSpec struct {
 	// Data for Task Settings (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.TaskData.html)
 	// in the Database Migration Service User Guide.
 	TaskData *string `json:"taskData,omitempty"`
+	// Overall settings for the task, in JSON format. For more information, see
+	// Specifying Task Settings for Database Migration Service Tasks (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TaskSettings.html)
+	// in the Database Migration Service User Guide.
+	TaskSettings *string `json:"taskSettings,omitempty"`
 }
 
 // ReplicationTaskStatus defines the observed state of ReplicationTask

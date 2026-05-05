@@ -6203,11 +6203,6 @@ func (in *ReplicationTaskSpec) DeepCopyInto(out *ReplicationTaskSpec) {
 		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
 		(*in).DeepCopyInto(*out)
 	}
-	if in.ReplicationTaskSettings != nil {
-		in, out := &in.ReplicationTaskSettings, &out.ReplicationTaskSettings
-		*out = new(string)
-		**out = **in
-	}
 	if in.ResourceIdentifier != nil {
 		in, out := &in.ResourceIdentifier, &out.ResourceIdentifier
 		*out = new(string)
@@ -6256,6 +6251,11 @@ func (in *ReplicationTaskSpec) DeepCopyInto(out *ReplicationTaskSpec) {
 	}
 	if in.TaskData != nil {
 		in, out := &in.TaskData, &out.TaskData
+		*out = new(string)
+		**out = **in
+	}
+	if in.TaskSettings != nil {
+		in, out := &in.TaskSettings, &out.TaskSettings
 		*out = new(string)
 		**out = **in
 	}
