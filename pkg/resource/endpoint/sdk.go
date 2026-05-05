@@ -993,9 +993,6 @@ func (rm *resourceManager) sdkFind(
 				maxFileSizeCopy := int64(*elem.RedshiftSettings.MaxFileSize)
 				f29.MaxFileSize = &maxFileSizeCopy
 			}
-			if elem.RedshiftSettings.Password != nil {
-				f29.Password = elem.RedshiftSettings.Password
-			}
 			if elem.RedshiftSettings.Port != nil {
 				portCopy := int64(*elem.RedshiftSettings.Port)
 				f29.Port = &portCopy
@@ -1274,6 +1271,17 @@ func (rm *resourceManager) sdkFind(
 			}
 			ko.Spec.Tags = tags
 		}
+	}
+
+	// sdk_read_many_post_set_output hook
+	//
+	// Ensure EndpointType is assigned in lower-case. DMS Endpoint API has a
+	// case-mismatch between input and output EndpointType. All *Endpoint APIs
+	// return EndpointType in upper-case while CreateEndpoint and ModifyEndpoint
+	// expect its input in lower-case.
+	if ko.Spec.EndpointType != nil {
+		lowerEndpointType := strings.ToLower(*ko.Spec.EndpointType)
+		ko.Spec.EndpointType = aws.String(lowerEndpointType)
 	}
 
 	return &resource{ko}, nil
@@ -2206,9 +2214,6 @@ func (rm *resourceManager) sdkCreate(
 			maxFileSizeCopy := int64(*resp.Endpoint.RedshiftSettings.MaxFileSize)
 			f29.MaxFileSize = &maxFileSizeCopy
 		}
-		if resp.Endpoint.RedshiftSettings.Password != nil {
-			f29.Password = resp.Endpoint.RedshiftSettings.Password
-		}
 		if resp.Endpoint.RedshiftSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.RedshiftSettings.Port)
 			f29.Port = &portCopy
@@ -2468,6 +2473,18 @@ func (rm *resourceManager) sdkCreate(
 	}
 
 	rm.setStatusDefaults(ko)
+
+	// sdk_create_post_set_output hook
+	//
+	// Ensure EndpointType is assigned in lower-case. DMS Endpoint API has a
+	// case-mismatch between input and output EndpointType. All *Endpoint APIs
+	// return EndpointType in upper-case while CreateEndpoint and ModifyEndpoint
+	// expect its input in lower-case.
+	if ko.Spec.EndpointType != nil {
+		lowerEndpointType := strings.ToLower(*ko.Spec.EndpointType)
+		ko.Spec.EndpointType = aws.String(lowerEndpointType)
+	}
+
 	return &resource{ko}, nil
 }
 
@@ -3580,7 +3597,13 @@ func (rm *resourceManager) newCreateRequestPayload(
 			f25.MaxFileSize = &maxFileSizeCopy
 		}
 		if r.ko.Spec.RedshiftSettings.Password != nil {
-			f25.Password = r.ko.Spec.RedshiftSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.RedshiftSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f25.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.RedshiftSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.RedshiftSettings.Port
@@ -4810,9 +4833,6 @@ func (rm *resourceManager) sdkUpdate(
 			maxFileSizeCopy := int64(*resp.Endpoint.RedshiftSettings.MaxFileSize)
 			f29.MaxFileSize = &maxFileSizeCopy
 		}
-		if resp.Endpoint.RedshiftSettings.Password != nil {
-			f29.Password = resp.Endpoint.RedshiftSettings.Password
-		}
 		if resp.Endpoint.RedshiftSettings.Port != nil {
 			portCopy := int64(*resp.Endpoint.RedshiftSettings.Port)
 			f29.Port = &portCopy
@@ -5072,6 +5092,18 @@ func (rm *resourceManager) sdkUpdate(
 	}
 
 	rm.setStatusDefaults(ko)
+
+	// sdk_update_post_set_output hook
+	//
+	// Ensure EndpointType is assigned in lower-case. DMS Endpoint API has a
+	// case-mismatch between input and output EndpointType. All *Endpoint APIs
+	// return EndpointType in upper-case while CreateEndpoint and ModifyEndpoint
+	// expect its input in lower-case.
+	if ko.Spec.EndpointType != nil {
+		lowerEndpointType := strings.ToLower(*ko.Spec.EndpointType)
+		ko.Spec.EndpointType = aws.String(lowerEndpointType)
+	}
+
 	return &resource{ko}, nil
 }
 
@@ -6182,7 +6214,13 @@ func (rm *resourceManager) newUpdateRequestPayload(
 			f26.MaxFileSize = &maxFileSizeCopy
 		}
 		if r.ko.Spec.RedshiftSettings.Password != nil {
-			f26.Password = r.ko.Spec.RedshiftSettings.Password
+			tmpSecret, err := rm.rr.SecretValueFromReference(ctx, r.ko.Spec.RedshiftSettings.Password)
+			if err != nil {
+				return nil, ackrequeue.Needed(err)
+			}
+			if tmpSecret != "" {
+				f26.Password = aws.String(tmpSecret)
+			}
 		}
 		if r.ko.Spec.RedshiftSettings.Port != nil {
 			portCopy0 := *r.ko.Spec.RedshiftSettings.Port
@@ -6641,7 +6679,8 @@ func (rm *resourceManager) terminalAWSError(err error) bool {
 		return false
 	}
 	switch terminalErr.ErrorCode() {
-	case "InvalidParameterCombinationException":
+	case "InvalidParameterCombinationException",
+		"InvalidParameterValueException":
 		return true
 	default:
 		return false

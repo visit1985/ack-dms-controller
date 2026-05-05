@@ -104,6 +104,20 @@ spec:
                     type: string
                   serviceAccessRoleARN:
                     type: string
+                  serviceAccessRoleRef:
+                    description: Reference field for ServiceAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                 type: object
               docDBSettings:
                 description: Provides information that defines a DocumentDB endpoint.
@@ -117,6 +131,20 @@ spec:
                     type: boolean
                   kmsKeyID:
                     type: string
+                  kmsKeyRef:
+                    description: Reference field for KMSKeyID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   nestingLevel:
                     type: string
                   password:
@@ -146,8 +174,36 @@ spec:
                     type: boolean
                   secretsManagerAccessRoleARN:
                     type: string
+                  secretsManagerAccessRoleRef:
+                    description: Reference field for SecretsManagerAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   secretsManagerSecretID:
                     type: string
+                  secretsManagerSecretRef:
+                    description: Reference field for SecretsManagerSecretID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   serverName:
                     type: string
                   useUpdateLookUp:
@@ -164,6 +220,20 @@ spec:
                 properties:
                   serviceAccessRoleARN:
                     type: string
+                  serviceAccessRoleRef:
+                    description: Reference field for ServiceAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                 type: object
               elasticsearchSettings:
                 description: |-
@@ -182,6 +252,20 @@ spec:
                     type: integer
                   serviceAccessRoleARN:
                     type: string
+                  serviceAccessRoleRef:
+                    description: Reference field for ServiceAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   useNewMappingType:
                     type: boolean
                 type: object
@@ -252,8 +336,36 @@ spec:
                     type: integer
                   secretsManagerAccessRoleARN:
                     type: string
+                  secretsManagerAccessRoleRef:
+                    description: Reference field for SecretsManagerAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   secretsManagerSecretID:
                     type: string
+                  secretsManagerSecretRef:
+                    description: Reference field for SecretsManagerSecretID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   serverName:
                     type: string
                   serverTimezone:
@@ -310,8 +422,36 @@ spec:
                     type: integer
                   secretsManagerAccessRoleARN:
                     type: string
+                  secretsManagerAccessRoleRef:
+                    description: Reference field for SecretsManagerAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   secretsManagerSecretID:
                     type: string
+                  secretsManagerSecretRef:
+                    description: Reference field for SecretsManagerSecretID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   serverName:
                     type: string
                   setDataCaptureChanges:
@@ -434,8 +574,36 @@ spec:
                     type: boolean
                   serviceAccessRoleARN:
                     type: string
+                  serviceAccessRoleRef:
+                    description: Reference field for ServiceAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   streamARN:
                     type: string
+                  streamRef:
+                    description: Reference field for StreamARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   useLargeIntegerValue:
                     type: boolean
                 type: object
@@ -518,8 +686,36 @@ spec:
                     type: string
                   secretsManagerAccessRoleARN:
                     type: string
+                  secretsManagerAccessRoleRef:
+                    description: Reference field for SecretsManagerAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   secretsManagerSecretID:
                     type: string
+                  secretsManagerSecretRef:
+                    description: Reference field for SecretsManagerSecretID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   serverName:
                     type: string
                   tlogAccessMode:
@@ -554,6 +750,20 @@ spec:
                     type: string
                   kmsKeyID:
                     type: string
+                  kmsKeyRef:
+                    description: Reference field for KMSKeyID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   nestingLevel:
                     type: string
                   password:
@@ -583,8 +793,36 @@ spec:
                     type: boolean
                   secretsManagerAccessRoleARN:
                     type: string
+                  secretsManagerAccessRoleRef:
+                    description: Reference field for SecretsManagerAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   secretsManagerSecretID:
                     type: string
+                  secretsManagerSecretRef:
+                    description: Reference field for SecretsManagerSecretID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   serverName:
                     type: string
                   useUpdateLookUp:
@@ -646,14 +884,56 @@ spec:
                     type: integer
                   secretsManagerAccessRoleARN:
                     type: string
+                  secretsManagerAccessRoleRef:
+                    description: Reference field for SecretsManagerAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   secretsManagerSecretID:
                     type: string
+                  secretsManagerSecretRef:
+                    description: Reference field for SecretsManagerSecretID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   serverName:
                     type: string
                   serverTimezone:
                     type: string
                   serviceAccessRoleARN:
                     type: string
+                  serviceAccessRoleRef:
+                    description: Reference field for ServiceAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   targetDBType:
                     type: string
                   username:
@@ -690,8 +970,36 @@ spec:
                     type: string
                   s3BucketName:
                     type: string
+                  s3BucketRef:
+                    description: Reference field for S3BucketName
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   serviceAccessRoleARN:
                     type: string
+                  serviceAccessRoleRef:
+                    description: Reference field for ServiceAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                 type: object
               oracleSettings:
                 description: |-
@@ -806,12 +1114,40 @@ spec:
                     type: integer
                   secretsManagerAccessRoleARN:
                     type: string
+                  secretsManagerAccessRoleRef:
+                    description: Reference field for SecretsManagerAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   secretsManagerOracleAsmAccessRoleARN:
                     type: string
                   secretsManagerOracleAsmSecretID:
                     type: string
                   secretsManagerSecretID:
                     type: string
+                  secretsManagerSecretRef:
+                    description: Reference field for SecretsManagerSecretID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   securityDBEncryption:
                     type: string
                   securityDBEncryptionName:
@@ -933,12 +1269,54 @@ spec:
                     type: integer
                   secretsManagerAccessRoleARN:
                     type: string
+                  secretsManagerAccessRoleRef:
+                    description: Reference field for SecretsManagerAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   secretsManagerSecretID:
                     type: string
+                  secretsManagerSecretRef:
+                    description: Reference field for SecretsManagerSecretID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   serverName:
                     type: string
                   serviceAccessRoleARN:
                     type: string
+                  serviceAccessRoleRef:
+                    description: Reference field for ServiceAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   slotName:
                     type: string
                   trimSpaceInChar:
@@ -995,6 +1373,20 @@ spec:
                     type: string
                   bucketName:
                     type: string
+                  bucketRef:
+                    description: Reference field for BucketName
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   caseSensitiveNames:
                     type: boolean
                   compUpdate:
@@ -1024,7 +1416,25 @@ spec:
                     format: int64
                     type: integer
                   password:
-                    type: string
+                    description: |-
+                      SecretKeyReference combines a k8s corev1.SecretReference with a
+                      specific key within the referred-to Secret
+                    properties:
+                      key:
+                        description: Key is the key within the secret
+                        type: string
+                      name:
+                        description: name is unique within a namespace to reference
+                          a secret resource.
+                        type: string
+                      namespace:
+                        description: namespace defines the space within which the
+                          secret name must be unique.
+                        type: string
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
                   port:
                     format: int64
                     type: integer
@@ -1036,14 +1446,70 @@ spec:
                     type: string
                   secretsManagerAccessRoleARN:
                     type: string
+                  secretsManagerAccessRoleRef:
+                    description: Reference field for SecretsManagerAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   secretsManagerSecretID:
                     type: string
+                  secretsManagerSecretRef:
+                    description: Reference field for SecretsManagerSecretID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   serverName:
                     type: string
                   serverSideEncryptionKMSKeyID:
                     type: string
+                  serverSideEncryptionKMSKeyRef:
+                    description: Reference field for ServerSideEncryptionKMSKeyID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   serviceAccessRoleARN:
                     type: string
+                  serviceAccessRoleRef:
+                    description: Reference field for ServiceAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   timeFormat:
                     type: string
                   trimBlanks:
@@ -1082,6 +1548,20 @@ spec:
                     type: string
                   bucketName:
                     type: string
+                  bucketRef:
+                    description: Reference field for BucketName
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   cannedACLForObjects:
                     type: string
                   cdcInsertsAndUpdates:
@@ -1155,8 +1635,36 @@ spec:
                     type: integer
                   serverSideEncryptionKMSKeyID:
                     type: string
+                  serverSideEncryptionKMSKeyRef:
+                    description: Reference field for ServerSideEncryptionKMSKeyID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   serviceAccessRoleARN:
                     type: string
+                  serviceAccessRoleRef:
+                    description: Reference field for ServiceAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   timestampColumnName:
                     type: string
                   useCsvNoSupValue:
@@ -1228,8 +1736,36 @@ spec:
                     type: integer
                   secretsManagerAccessRoleARN:
                     type: string
+                  secretsManagerAccessRoleRef:
+                    description: Reference field for SecretsManagerAccessRoleARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   secretsManagerSecretID:
                     type: string
+                  secretsManagerSecretRef:
+                    description: Reference field for SecretsManagerSecretID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   serverName:
                     type: string
                   username:

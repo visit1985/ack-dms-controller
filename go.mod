@@ -6,11 +6,14 @@ require (
 	github.com/aws-controllers-k8s/acm-controller v1.3.6
 	github.com/aws-controllers-k8s/ec2-controller v1.11.1
 	github.com/aws-controllers-k8s/iam-controller v1.6.2
-	github.com/aws-controllers-k8s/kms-controller v1.0.2
-	github.com/aws-controllers-k8s/runtime v0.58.0
+	github.com/aws-controllers-k8s/kinesis-controller v1.2.4
+	github.com/aws-controllers-k8s/kms-controller v1.0.30
+	github.com/aws-controllers-k8s/runtime v0.58.1
+	github.com/aws-controllers-k8s/s3-controller v1.4.0
+	github.com/aws-controllers-k8s/secretsmanager-controller v1.2.4
 	github.com/aws-controllers-k8s/sns-controller v1.4.1
 	github.com/aws/aws-sdk-go v1.55.8
-	github.com/aws/aws-sdk-go-v2 v1.41.4
+	github.com/aws/aws-sdk-go-v2 v1.41.5
 	github.com/aws/aws-sdk-go-v2/service/databasemigrationservice v1.61.9
 	github.com/aws/smithy-go v1.24.2
 	github.com/go-logr/logr v1.4.3
@@ -25,11 +28,11 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.28.6 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.47 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.21 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.4.20 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.7.20 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.4.21 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.7.21 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.8.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.13.5 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.13.18 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.13.7 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.13.21 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.24.7 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.28.6 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.2 // indirect

@@ -124,10 +124,34 @@ rules:
   - get
   - list
 - apiGroups:
+  - kinesis.services.k8s.aws
+  resources:
+  - streams
+  - streams/status
+  verbs:
+  - get
+  - list
+- apiGroups:
   - kms.services.k8s.aws
   resources:
   - keys
   - keys/status
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - s3.services.k8s.aws
+  resources:
+  - buckets
+  - buckets/status
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - secretsmanager.services.k8s.aws
+  resources:
+  - secrets
+  - secrets/status
   verbs:
   - get
   - list
