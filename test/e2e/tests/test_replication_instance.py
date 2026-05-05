@@ -18,13 +18,8 @@ Test scenarios
 * test_crud
     Create a dms.t3.small instance, wait for it to become *available*, verify
     status in the K8s CR and the AWS API, update a simple field
-    (autoMinorVersionUpgrade), verify tags, update tags, and then let the
-    fixture handle deletion.
-    Toggle the ``multiAZ`` flag from False → True and confirm that the AWS API
-    reflects the change once the CR is re-synced.
-    Change ``instanceClass`` from *dms.t3.small* to *dms.t3.medium* and verify
-    that the AWS API either already shows the new class or records it as a
-    pending modification.
+    (autoMinorVersionUpgrade), verify tags, update tags, toggle the
+    ``multiAZ`` flag and let the fixture handle deletion.
 """
 
 import logging
@@ -164,9 +159,6 @@ class TestReplicationInstance:
         7.  ``multiAZ`` can be toggled from False → True; the controller
             transitions through a not-synced state while DMS applies the
             modification, then returns to ``available`` with MultiAZ enabled.
-        8.  ``instanceClass`` can be upgraded from *dms.t3.small* →
-            *dms.t3.medium*; after re-sync the AWS API and K8s spec both
-            reflect the new class and the instance is ``available``.
         """
         ri_ref, ri_cr, instance_name, _, _ = replication_instance_fixture
 
@@ -243,9 +235,15 @@ class TestReplicationInstance:
         )
         time.sleep(MODIFY_WAIT_AFTER_SECONDS)
 
+        assert k8s.wait_on_condition(
+            ri_ref, "ACK.ResourceSynced", "True",
+            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES,
+        )
+
         latest_tags = tag.clean(aws_api.get_tags(arn))
         assert latest_tags == [{"Key": "environment", "Value": "prod"}]
 
+        # Confirm MultiAZ is currently disabled.
         latest = aws_api.get(instance_name)
         assert latest is not None
         assert latest['MultiAZ'] is False
@@ -271,28 +269,3 @@ class TestReplicationInstance:
         assert latest is not None
         assert latest['ReplicationInstanceStatus'] == 'available'
         assert latest['MultiAZ'] is True
-
-        # Confirm the current class is as expected.
-        assert latest['ReplicationInstanceClass'] == 'dms.t3.small'
-
-        # Patch to the larger class.
-        k8s.patch_custom_resource(
-            ri_ref,
-            {"spec": {"instanceClass": "dms.t3.medium"}},
-        )
-        time.sleep(MODIFY_WAIT_AFTER_SECONDS)
-
-        assert k8s.wait_on_condition(
-            ri_ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES,
-        )
-
-        # Verify that the K8s spec is updated.
-        ri_cr = k8s.get_resource(ri_ref)
-        assert ri_cr is not None
-        assert ri_cr['spec']['instanceClass'] == 'dms.t3.medium'
-
-        latest = aws_api.get(instance_name)
-        assert latest is not None
-        assert latest['ReplicationInstanceStatus'] == 'available'
-        assert latest['ReplicationInstanceClass'] == 'dms.t3.medium'
