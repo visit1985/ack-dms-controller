@@ -47,12 +47,12 @@ SUBNET_GROUP_RESOURCE_PLURAL = "replicationsubnetgroups"
 
 # Timeouts for waiting on resource states
 MAX_WAIT_INSTANCE_CREATION_SECONDS = 60 * 20  # 20 minutes
-MAX_WAIT_TASK_SYNCED_PERIODS = 30             # ~5 minutes with 10s interval
-MAX_WAIT_TASK_READY_PERIODS = 18              # ~3 minutes with 10s interval
+MAX_WAIT_SUBNET_GROUP_SYNCED_MINUTES = 5
+MAX_WAIT_ENDPOINT_SYNCED_MINUTES = 5
+MAX_WAIT_TASK_SYNCED_MINUTES = 10
 
 # Time to wait between modifications for controller reconciliation
-MODIFY_WAIT_AFTER_SECONDS = 30
-DELETE_WAIT_AFTER_SECONDS = 60
+MODIFY_WAIT_AFTER_SECONDS = 10
 
 # Table mappings JSON
 DEFAULT_TABLE_MAPPINGS = json.dumps({
@@ -231,7 +231,10 @@ def replication_task_fixture(request):
     k8s.create_custom_resource(sg_ref, sg_resource_data)
     sg_cr = k8s.wait_resource_consumed_by_controller(sg_ref)
     assert sg_cr is not None
-    condition.assert_synced(sg_ref)
+    assert k8s.wait_on_condition(
+        sg_ref, "ACK.ResourceSynced", "True",
+        wait_periods=MAX_WAIT_SUBNET_GROUP_SYNCED_MINUTES * 4, period_length=15,
+    )
     logging.info("Subnet group created and synced")
 
     # ---- Create ReplicationInstance ----
@@ -280,7 +283,7 @@ def replication_task_fixture(request):
     assert source_ep_cr is not None
     assert k8s.wait_on_condition(
         source_ep_ref, "ACK.ResourceSynced", "True",
-        wait_periods=30,
+        wait_periods=MAX_WAIT_ENDPOINT_SYNCED_MINUTES * 4, period_length=15,
     )
     logging.info("Source endpoint created and synced")
 
@@ -304,7 +307,7 @@ def replication_task_fixture(request):
     assert target_ep_cr is not None
     assert k8s.wait_on_condition(
         target_ep_ref, "ACK.ResourceSynced", "True",
-        wait_periods=30,
+        wait_periods=MAX_WAIT_ENDPOINT_SYNCED_MINUTES * 4, period_length=15,
     )
     logging.info("Target endpoint created and synced")
 
@@ -332,7 +335,7 @@ def replication_task_fixture(request):
     logging.info("Waiting for replication task to sync...")
     assert k8s.wait_on_condition(
         task_ref, "ACK.ResourceSynced", "True",
-        wait_periods=MAX_WAIT_TASK_SYNCED_PERIODS,
+        wait_periods=MAX_WAIT_TASK_SYNCED_MINUTES * 4, period_length=15,
     )
     task_arn = task_cr['status']['ackResourceMetadata']['arn']
     logging.info("Replication task created and synced")
@@ -459,7 +462,7 @@ class TestReplicationTask:
 
         assert k8s.wait_on_condition(
             task_ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_TASK_SYNCED_PERIODS,
+            wait_periods=MAX_WAIT_TASK_SYNCED_MINUTES * 4, period_length=15,
         )
 
         latest = rt_aws_api.get(task_arn)
@@ -477,7 +480,7 @@ class TestReplicationTask:
 
         assert k8s.wait_on_condition(
             task_ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_TASK_SYNCED_PERIODS,
+            wait_periods=MAX_WAIT_TASK_SYNCED_MINUTES * 4, period_length=15,
         )
 
         latest_tags = tag.clean(rt_aws_api.get_tags(task_arn))

@@ -45,10 +45,10 @@ from e2e import tag
 RESOURCE_PLURAL = "certificates"
 
 # DMS certificates are created synchronously — wait for sync.
-MAX_WAIT_FOR_SYNCED_PERIODS = 30
+MAX_WAIT_FOR_SYNCED_MINUTES = 5
 
 # Pause between patching and re-checking so the controller can reconcile.
-MODIFY_WAIT_AFTER_SECONDS = 15
+MODIFY_WAIT_AFTER_SECONDS = 10
 
 SECRET_KEY = "certificate.pem"
 
@@ -149,7 +149,7 @@ def certificate(request):
     # Certificates are created synchronously in DMS — wait for sync.
     assert k8s.wait_on_condition(
         ref, "ACK.ResourceSynced", "True",
-        wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+        wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
     )
 
     yield ref, cr, certificate_name
@@ -207,7 +207,7 @@ class TestCertificate:
 
         assert k8s.wait_on_condition(
             ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
         )
 
         latest_tags = tag.clean(aws_api.get_tags(certificate_arn))

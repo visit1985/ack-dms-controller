@@ -37,7 +37,11 @@ from e2e import tag
 from e2e.replacement_values import REPLACEMENT_VALUES
 
 RESOURCE_PLURAL = "eventsubscriptions"
-MAX_WAIT_FOR_SYNCED_PERIODS = 30
+
+# DMS event subscriptions are created synchronously — wait for sync.
+MAX_WAIT_FOR_SYNCED_MINUTES = 5
+
+# Pause between patching and re-checking so the controller can reconcile.
 MODIFY_WAIT_AFTER_SECONDS = 10
 
 
@@ -94,7 +98,7 @@ def event_subscription(request):
 
     assert k8s.wait_on_condition(
         ref, "ACK.ResourceSynced", "True",
-        wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+        wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
     )
 
     yield ref, cr, subscription_name
@@ -146,7 +150,7 @@ class TestEventSubscription:
 
         assert k8s.wait_on_condition(
             ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
         )
 
         latest = aws_api.get(subscription_name)
@@ -161,7 +165,7 @@ class TestEventSubscription:
 
         assert k8s.wait_on_condition(
             ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
         )
 
         latest_tags = tag.clean(aws_api.get_tags(expected_arn))

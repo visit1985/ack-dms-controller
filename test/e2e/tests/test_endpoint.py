@@ -43,11 +43,11 @@ from e2e.replacement_values import REPLACEMENT_VALUES
 
 RESOURCE_PLURAL = "endpoints"
 
-# DMS S3 target endpoints become active within seconds.
-MAX_WAIT_FOR_SYNCED_PERIODS = 30
+# DMS S3 target endpoints become active quickly.
+MAX_WAIT_FOR_SYNCED_MINUTES = 5
 
 # Pause between patching and re-checking so the controller can reconcile.
-MODIFY_WAIT_AFTER_SECONDS = 15
+MODIFY_WAIT_AFTER_SECONDS = 10
 
 INITIAL_BUCKET_FOLDER = "ack-initial"
 UPDATED_BUCKET_FOLDER = "ack-updated"
@@ -115,7 +115,7 @@ def endpoint(request):
     # S3 target endpoints reach active status synchronously — wait for sync.
     assert k8s.wait_on_condition(
         ref, "ACK.ResourceSynced", "True",
-        wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+        wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
     )
 
     yield ref, cr, endpoint_name
@@ -180,7 +180,7 @@ class TestEndpoint:
 
         assert k8s.wait_on_condition(
             ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
         )
 
         latest = aws_api.get(endpoint_name)
@@ -196,7 +196,7 @@ class TestEndpoint:
 
         assert k8s.wait_on_condition(
             ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_FOR_SYNCED_PERIODS,
+            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
         )
 
         latest_tags = tag.clean(aws_api.get_tags(endpoint_arn))

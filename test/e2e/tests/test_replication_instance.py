@@ -47,7 +47,7 @@ RESOURCE_PLURAL = "replicationinstances"
 MAX_WAIT_FOR_SYNCED_MINUTES = 20
 
 # Time to pause between patching a resource and re-checking its AWS state.
-MODIFY_WAIT_AFTER_SECONDS = 60
+MODIFY_WAIT_AFTER_SECONDS = 10
 
 SUBNET_GROUP_RESOURCE_PLURAL = "replicationsubnetgroups"
 SUBNET_GROUP_DESC = "my-replication-subnet-group description"
@@ -197,7 +197,7 @@ class TestReplicationInstance:
         # Wait for the controller to mark the CR as synced (= available).
         assert k8s.wait_on_condition(
             ri_ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES,
+            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
         )
 
         # Confirm the AWS-side status is 'available'.
@@ -225,7 +225,7 @@ class TestReplicationInstance:
 
         assert k8s.wait_on_condition(
             ri_ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES,
+            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
         )
 
         latest = aws_api.get(instance_name)
@@ -241,7 +241,7 @@ class TestReplicationInstance:
 
         assert k8s.wait_on_condition(
             ri_ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES,
+            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
         )
 
         latest = aws_api.get(instance_name)
@@ -263,7 +263,7 @@ class TestReplicationInstance:
 
         assert k8s.wait_on_condition(
             ri_ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES,
+            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
         )
 
         latest_tags = tag.clean(aws_api.get_tags(arn))
@@ -288,7 +288,7 @@ class TestReplicationInstance:
         # Wait for DMS to finish the modification.
         assert k8s.wait_on_condition(
             ri_ref, "ACK.ResourceSynced", "True",
-            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES,
+            wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
         )
 
         latest = aws_api.get(instance_name)
