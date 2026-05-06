@@ -49,8 +49,6 @@ MAX_WAIT_FOR_SYNCED_PERIODS = 30
 # Pause between patching and re-checking so the controller can reconcile.
 MODIFY_WAIT_AFTER_SECONDS = 15
 
-DELETE_WAIT_AFTER_SECONDS = 10
-
 INITIAL_BUCKET_FOLDER = "ack-initial"
 UPDATED_BUCKET_FOLDER = "ack-updated"
 
@@ -60,12 +58,37 @@ UPDATED_BUCKET_FOLDER = "ack-updated"
 # ---------------------------------------------------------------------------
 
 @pytest.fixture
-def endpoint():
+def endpoint(request):
     """Creates an S3 target Endpoint CR and tears it down after the test.
 
     Yields:
         tuple: (ref, cr, endpoint_name, initial_bucket_folder)
     """
+    ref = None
+    endpoint_name = None
+
+    def _cleanup():
+        """Deletes any resources created by this fixture.
+
+        Registered as a finalizer so it runs even if fixture setup fails after
+        creating the Kubernetes Endpoint resource.
+        """
+        if ref is not None:
+            try:
+                if k8s.get_resource_exists(ref):
+                    _, deleted = k8s.delete_custom_resource(ref, 3, 10)
+                    assert deleted
+            except Exception as e:
+                logging.warning(f"failed to delete endpoint CR: {e}")
+
+        if endpoint_name is not None:
+            try:
+                aws_api.wait_until_deleted(endpoint_name)
+            except Exception as e:
+                logging.warning(f"failed waiting for endpoint deletion: {e}")
+
+    request.addfinalizer(_cleanup)
+
     endpoint_name = random_suffix_name("my-dms-endpoint", 21)
 
     replacements = REPLACEMENT_VALUES.copy()
@@ -97,13 +120,6 @@ def endpoint():
 
     yield ref, cr, endpoint_name
 
-    try:
-        _, deleted = k8s.delete_custom_resource(ref, 3, 10)
-        assert deleted
-        aws_api.wait_until_deleted(endpoint_name)
-        time.sleep(DELETE_WAIT_AFTER_SECONDS)
-    except Exception:
-        pass
 
 
 # ---------------------------------------------------------------------------

@@ -19,8 +19,35 @@ import time
 import boto3
 import pytest
 
-DEFAULT_WAIT_UNTIL_DELETED_TIMEOUT_SECONDS = 60*10
+DEFAULT_WAIT_UNTIL_DELETED_TIMEOUT_SECONDS = 60 * 10
 DEFAULT_WAIT_UNTIL_DELETED_INTERVAL_SECONDS = 15
+
+
+def wait_until_deleted(
+    subnet_group_id: str,
+    timeout_seconds: int = DEFAULT_WAIT_UNTIL_DELETED_TIMEOUT_SECONDS,
+    interval_seconds: int = DEFAULT_WAIT_UNTIL_DELETED_INTERVAL_SECONDS,
+) -> None:
+    """Waits until a DMS ReplicationSubnetGroup is no longer returned by the API.
+
+    Raises:
+        pytest.fail upon timeout.
+    """
+    now = datetime.datetime.now()
+    timeout = now + datetime.timedelta(seconds=timeout_seconds)
+
+    while True:
+        if datetime.datetime.now() >= timeout:
+            pytest.fail(
+                "Timed out waiting for ReplicationSubnetGroup to be "
+                "deleted in DMS API"
+            )
+
+        latest = get(subnet_group_id)
+        if latest is None:
+            break
+
+        time.sleep(interval_seconds)
 
 
 def get(subnet_group_id):

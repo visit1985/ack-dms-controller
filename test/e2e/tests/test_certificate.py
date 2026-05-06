@@ -50,8 +50,6 @@ MAX_WAIT_FOR_SYNCED_PERIODS = 30
 # Pause between patching and re-checking so the controller can reconcile.
 MODIFY_WAIT_AFTER_SECONDS = 15
 
-DELETE_WAIT_AFTER_SECONDS = 10
-
 SECRET_KEY = "certificate.pem"
 
 
@@ -81,13 +79,45 @@ def _generate_self_signed_cert_pem() -> str:
 # ---------------------------------------------------------------------------
 
 @pytest.fixture
-def certificate():
+def certificate(request):
     """Creates a Certificate CR with a test PEM certificate stored in a
     Kubernetes Secret and tears it down after the test.
 
     Yields:
         tuple: (ref, cr, certificate_name)
     """
+    ref = None
+    certificate_name = None
+    secret_name = None
+
+    def _cleanup():
+        """Deletes any resources created by this fixture.
+
+        Registered as a finalizer so it runs even if fixture setup fails after
+        creating the Kubernetes Secret and/or Certificate resource.
+        """
+        if ref is not None:
+            try:
+                if k8s.get_resource_exists(ref):
+                    _, deleted = k8s.delete_custom_resource(ref, 3, 10)
+                    assert deleted
+            except Exception as e:
+                logging.warning(f"failed to delete certificate CR: {e}")
+
+        if certificate_name is not None:
+            try:
+                aws_api.wait_until_deleted(certificate_name)
+            except Exception as e:
+                logging.warning(f"failed waiting for certificate deletion: {e}")
+
+        if secret_name is not None:
+            try:
+                k8s.delete_secret("default", secret_name)
+            except Exception as e:
+                logging.warning(f"failed to delete certificate secret: {e}")
+
+    request.addfinalizer(_cleanup)
+
     certificate_name = random_suffix_name("my-dms-certificate", 24)
     secret_name = random_suffix_name("dms-cert-secret", 21)
 
@@ -124,19 +154,6 @@ def certificate():
 
     yield ref, cr, certificate_name
 
-    try:
-        _, deleted = k8s.delete_custom_resource(ref, 3, 10)
-        assert deleted
-        aws_api.wait_until_deleted(certificate_name)
-        time.sleep(DELETE_WAIT_AFTER_SECONDS)
-    except Exception:
-        pass
-    finally:
-        # Always clean up the Kubernetes Secret
-        try:
-            k8s.delete_secret("default", secret_name)
-        except Exception:
-            pass
 
 
 # ---------------------------------------------------------------------------

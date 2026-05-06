@@ -104,7 +104,7 @@ UPDATED_TABLE_MAPPINGS = json.dumps({
 
 
 @pytest.fixture(scope="module")
-def replication_task_fixture():
+def replication_task_fixture(request):
     """Creates all K8s resources needed for ReplicationTask tests.
 
     This is a composite fixture that creates resources in dependency order:
@@ -119,13 +119,94 @@ def replication_task_fixture():
         Tuple of references for all created resources
     """
     bucket_name = REPLACEMENT_VALUES['S3_BUCKET_NAME']
+    sg_ref = None
+    ri_ref = None
+    source_ep_ref = None
+    target_ep_ref = None
+    task_ref = None
+    task_arn: str | None = None
+    instance_name = None
+
+    def _cleanup():
+        """Deletes any resources created by this fixture.
+
+        Registered as a finalizer so it runs even if fixture setup fails after
+        creating one or more Kubernetes resources or S3 test data.
+        """
+        logging.info("Starting cleanup...")
+
+        if task_ref is not None:
+            try:
+                if k8s.get_resource_exists(task_ref):
+                    _, deleted = k8s.delete_custom_resource(task_ref, 3, 10)
+                    assert deleted
+            except Exception as e:
+                logging.warning(f"Error deleting replication task CR: {e}")
+
+        if task_arn is not None:
+            try:
+                rt_aws_api.wait_until_deleted(task_arn)
+                logging.info("Replication task deleted")
+            except Exception as e:
+                logging.warning(f"Error waiting for replication task deletion: {e}")
+
+        if target_ep_ref is not None:
+            try:
+                if k8s.get_resource_exists(target_ep_ref):
+                    _, deleted = k8s.delete_custom_resource(target_ep_ref, 3, 10)
+                    assert deleted
+                    logging.info("Target endpoint deleted")
+            except Exception as e:
+                logging.warning(f"Error deleting target endpoint: {e}")
+
+        if source_ep_ref is not None:
+            try:
+                if k8s.get_resource_exists(source_ep_ref):
+                    _, deleted = k8s.delete_custom_resource(source_ep_ref, 3, 10)
+                    assert deleted
+                    logging.info("Source endpoint deleted")
+            except Exception as e:
+                logging.warning(f"Error deleting source endpoint: {e}")
+
+        if ri_ref is not None:
+            try:
+                if k8s.get_resource_exists(ri_ref):
+                    _, deleted = k8s.delete_custom_resource(ri_ref, 3, 10)
+                    assert deleted
+            except Exception as e:
+                logging.warning(f"Error deleting replication instance CR: {e}")
+
+        if instance_name is not None:
+            try:
+                ri_aws_api.wait_until_deleted(instance_name)
+                logging.info("Replication instance deleted")
+            except Exception as e:
+                logging.warning(f"Error waiting for replication instance deletion: {e}")
+
+        if sg_ref is not None:
+            try:
+                if k8s.get_resource_exists(sg_ref):
+                    _, deleted = k8s.delete_custom_resource(sg_ref, 3, 10)
+                    assert deleted
+                    logging.info("Subnet group deleted")
+            except Exception as e:
+                logging.warning(f"Error deleting subnet group: {e}")
+
+        try:
+            cleanup_s3_folders(bucket_name)
+            logging.info("S3 test data cleaned up")
+        except Exception as e:
+            logging.warning(f"Error cleaning S3: {e}")
+
+    request.addfinalizer(_cleanup)
 
     # Generate resource names
-    task_name = random_suffix_name("my-replication-task", 32)
+    task_name = random_suffix_name("my-replication-task", 25)
     instance_name = random_suffix_name("my-replication-instance", 29)
-    source_ep_name = random_suffix_name("my-source-endpoint", 28)
-    target_ep_name = random_suffix_name("my-target-endpoint", 28)
+    source_ep_name = random_suffix_name("my-source-endpoint", 24)
+    target_ep_name = random_suffix_name("my-target-endpoint", 24)
     subnet_group_name = random_suffix_name("my-replication-subnet-group", 33)
+    assert instance_name is not None
 
     logging.info(f"Setting up resources: task={task_name}, instance={instance_name}")
 
@@ -253,6 +334,7 @@ def replication_task_fixture():
         task_ref, "ACK.ResourceSynced", "True",
         wait_periods=MAX_WAIT_TASK_SYNCED_PERIODS,
     )
+    task_arn = task_cr['status']['ackResourceMetadata']['arn']
     logging.info("Replication task created and synced")
 
     yield (
@@ -261,53 +343,6 @@ def replication_task_fixture():
         subnet_group_name, source_ep_cr, target_ep_cr
     )
 
-    # ---- Teardown: delete resources in reverse order ----
-    logging.info("Starting cleanup...")
-
-    try:
-        _, deleted = k8s.delete_custom_resource(task_ref, 3, 10)
-        assert deleted
-        task_arn = task_cr['status']['ackResourceMetadata']['arn']
-        rt_aws_api.wait_until_deleted(task_arn)
-        time.sleep(DELETE_WAIT_AFTER_SECONDS)
-        logging.info("Replication task deleted")
-    except Exception as e:
-        logging.warning(f"Error deleting replication task: {e}")
-
-    try:
-        _, deleted = k8s.delete_custom_resource(target_ep_ref, 3, 10)
-        assert deleted
-        logging.info("Target endpoint deleted")
-    except Exception as e:
-        logging.warning(f"Error deleting target endpoint: {e}")
-
-    try:
-        _, deleted = k8s.delete_custom_resource(source_ep_ref, 3, 10)
-        assert deleted
-        logging.info("Source endpoint deleted")
-    except Exception as e:
-        logging.warning(f"Error deleting source endpoint: {e}")
-
-    try:
-        _, deleted = k8s.delete_custom_resource(ri_ref, 3, 10)
-        assert deleted
-        ri_aws_api.wait_until_deleted(instance_name)
-        logging.info("Replication instance deleted")
-    except Exception as e:
-        logging.warning(f"Error deleting replication instance: {e}")
-
-    try:
-        _, deleted = k8s.delete_custom_resource(sg_ref, 3, 10)
-        assert deleted
-        logging.info("Subnet group deleted")
-    except Exception as e:
-        logging.warning(f"Error deleting subnet group: {e}")
-
-    try:
-        cleanup_s3_folders(bucket_name)
-        logging.info("S3 test data cleaned up")
-    except Exception as e:
-        logging.warning(f"Error cleaning S3: {e}")
 
 
 # ---------------------------------------------------------------------------

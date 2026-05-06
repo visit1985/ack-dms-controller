@@ -38,13 +38,12 @@ from e2e import tag
 
 RESOURCE_PLURAL = 'replicationsubnetgroups'
 
-DELETE_WAIT_AFTER_SECONDS = 10
 MODIFY_WAIT_AFTER_SECONDS = 10
 
 SUBNET_GROUP_DESC = "my-replication-subnet-group description"
 
 @pytest.fixture
-def subnet_group():
+def subnet_group(request):
     """Creates a ReplicationSubnetGroup K8s CR and tears it down afterwards.
 
     The subnet group is created from the ``replication_subnet_group`` resource
@@ -58,7 +57,33 @@ def subnet_group():
         the K8s object name and the DMS resource name.
     """
 
+    ref = None
+    subnet_group_name = None
+
+    def _cleanup():
+        """Deletes any resources created by this fixture.
+
+        Registered as a finalizer so it runs even if fixture setup fails after
+        creating the Kubernetes ReplicationSubnetGroup resource.
+        """
+        if ref is not None:
+            try:
+                if k8s.get_resource_exists(ref):
+                    _, deleted = k8s.delete_custom_resource(ref, 3, 10)
+                    assert deleted
+            except Exception as e:
+                logging.warning(f"failed to delete subnet group CR: {e}")
+
+        if subnet_group_name is not None:
+            try:
+                aws_api.wait_until_deleted(subnet_group_name)
+            except Exception as e:
+                logging.warning(f"failed waiting for subnet group deletion: {e}")
+
+    request.addfinalizer(_cleanup)
+
     subnet_group_name = random_suffix_name("my-replication-subnet-group", 33)
+    assert subnet_group_name is not None
 
     replacements = REPLACEMENT_VALUES.copy()
     replacements["REPLICATION_SUBNET_GROUP_NAME"] = subnet_group_name
@@ -84,13 +109,6 @@ def subnet_group():
 
     yield ref, cr, subnet_group_name
 
-    # Try to delete, if it does exist
-    try:
-        _, deleted = k8s.delete_custom_resource(ref, 3, 10)
-        assert deleted
-        time.sleep(DELETE_WAIT_AFTER_SECONDS)
-    except:
-        pass
 
 
 @service_marker

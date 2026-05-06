@@ -33,6 +33,7 @@ from e2e import service_marker, CRD_GROUP, CRD_VERSION, load_dms_resource
 from e2e.replacement_values import REPLACEMENT_VALUES
 from e2e import condition
 from e2e import replication_instance as aws_api
+from e2e import replication_subnet_group as sg_aws_api
 from e2e import tag
 
 # ---------------------------------------------------------------------------
@@ -48,9 +49,6 @@ MAX_WAIT_FOR_SYNCED_MINUTES = 20
 # Time to pause between patching a resource and re-checking its AWS state.
 MODIFY_WAIT_AFTER_SECONDS = 60
 
-# Time to wait after issuing a delete before checking teardown status.
-DELETE_WAIT_AFTER_SECONDS = 60 * 2
-
 SUBNET_GROUP_RESOURCE_PLURAL = "replicationsubnetgroups"
 SUBNET_GROUP_DESC = "my-replication-subnet-group description"
 
@@ -60,7 +58,7 @@ SUBNET_GROUP_DESC = "my-replication-subnet-group description"
 # ---------------------------------------------------------------------------
 
 @pytest.fixture(scope="module")
-def replication_instance_fixture():
+def replication_instance_fixture(request):
     """Creates all K8s resources needed for ReplicationInstance tests and
     tears them down in the correct order afterwards.
 
@@ -68,6 +66,50 @@ def replication_instance_fixture():
         tuple: (instance_ref, instance_cr, instance_name, subnet_group_ref,
                 subnet_group_name)
     """
+    sg_ref = None
+    ri_ref = None
+    instance_name = None
+    subnet_group_name = None
+
+    def _cleanup():
+        """Deletes any resources created by this fixture.
+
+        Registered as a finalizer so it runs even if fixture setup fails after
+        creating one or more Kubernetes resources.
+        """
+        if ri_ref is not None:
+            try:
+                if k8s.get_resource_exists(ri_ref):
+                    _, deleted = k8s.delete_custom_resource(ri_ref, 3, 10)
+                    assert deleted
+            except Exception as e:
+                logging.warning(f"failed to delete replication instance CR: {e}")
+
+        if instance_name is not None:
+            try:
+                aws_api.wait_until_deleted(instance_name)
+            except Exception as e:
+                logging.warning(
+                    f"failed waiting for replication instance deletion: {e}"
+                )
+
+        if sg_ref is not None:
+            try:
+                if k8s.get_resource_exists(sg_ref):
+                    _, deleted = k8s.delete_custom_resource(sg_ref, 3, 10)
+                    assert deleted
+            except Exception as e:
+                logging.warning(f"failed to delete subnet group CR: {e}")
+
+        if subnet_group_name is not None:
+            try:
+                sg_aws_api.wait_until_deleted(subnet_group_name)
+                logging.info("Subnet group deleted")
+            except Exception as e:
+                logging.warning(f"failed waiting for subnet group deletion: {e}")
+
+    request.addfinalizer(_cleanup)
+
     # -- Subnet group --------------------------------------------------------
     subnet_group_name = random_suffix_name("my-replication-subnet-group", 33)
 
@@ -117,22 +159,6 @@ def replication_instance_fixture():
     assert k8s.get_resource_exists(ri_ref)
 
     yield ri_ref, ri_cr, instance_name, sg_ref, subnet_group_name
-
-    # -- Teardown: delete RI first, then subnet group ------------------------
-    try:
-        _, deleted = k8s.delete_custom_resource(ri_ref, 3, 10)
-        assert deleted
-    except Exception:
-        pass
-
-    aws_api.wait_until_deleted(instance_name)
-
-    try:
-        _, deleted = k8s.delete_custom_resource(sg_ref, 3, 10)
-        assert deleted
-        time.sleep(DELETE_WAIT_AFTER_SECONDS)
-    except Exception:
-        pass
 
 
 # ---------------------------------------------------------------------------

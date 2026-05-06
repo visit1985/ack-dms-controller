@@ -39,12 +39,38 @@ from e2e.replacement_values import REPLACEMENT_VALUES
 RESOURCE_PLURAL = "eventsubscriptions"
 MAX_WAIT_FOR_SYNCED_PERIODS = 30
 MODIFY_WAIT_AFTER_SECONDS = 10
-DELETE_WAIT_AFTER_SECONDS = 10
 
 
 @pytest.fixture
-def event_subscription():
+def event_subscription(request):
     """Creates an EventSubscription CR and tears it down after the test."""
+    ref = None
+    subscription_name = None
+
+    def _cleanup():
+        """Deletes any resources created by this fixture.
+
+        Registered as a finalizer so it runs even if fixture setup fails after
+        creating the Kubernetes EventSubscription resource.
+        """
+        if ref is not None:
+            try:
+                if k8s.get_resource_exists(ref):
+                    _, deleted = k8s.delete_custom_resource(ref, 3, 10)
+                    assert deleted
+            except Exception as e:
+                logging.warning(f"failed to delete event subscription CR: {e}")
+
+        if subscription_name is not None:
+            try:
+                aws_api.wait_until_deleted(subscription_name)
+            except Exception as e:
+                logging.warning(
+                    f"failed waiting for event subscription deletion: {e}"
+                )
+
+    request.addfinalizer(_cleanup)
+
     subscription_name = random_suffix_name("my-event-subscription", 27)
 
     replacements = REPLACEMENT_VALUES.copy()
@@ -73,13 +99,6 @@ def event_subscription():
 
     yield ref, cr, subscription_name
 
-    try:
-        _, deleted = k8s.delete_custom_resource(ref, 3, 10)
-        assert deleted
-        aws_api.wait_until_deleted(subscription_name)
-        time.sleep(DELETE_WAIT_AFTER_SECONDS)
-    except Exception:
-        pass
 
 
 @service_marker
