@@ -1,0 +1,52 @@
+apiVersion: dms.services.k8s.aws/v1alpha1
+kind: ReplicationTask
+metadata:
+  name: $REPLICATION_TASK_NAME
+spec:
+  name: $REPLICATION_TASK_NAME
+  migrationType: full-load
+  tableMappings: |
+    {
+      "rules": [
+        {
+          "rule-type": "selection",
+          "rule-id": "1",
+          "rule-name": "include-all",
+          "object-locator": {
+            "schema-name": "%",
+            "table-name": "%"
+          },
+          "rule-action": "include"
+        }
+      ]
+    }
+  taskSettings: |
+    {
+      "Logging": {
+        "EnableLogging": false
+      },
+      "TargetMetadata": {
+        "ParallelLoadThreads": 1,
+        "BatchApplyEnabled": false
+      },
+      "FullLoadSettings": {
+        "MaxFullLoadSubTasks": 1,
+        "CommitRate": 10000
+      },
+      "ValidationSettings": {
+        "EnableValidation": false
+      }
+    }
+  replicationInstanceRef:
+    from:
+      name: $REPLICATION_INSTANCE_NAME
+  sourceEndpointRef:
+    from:
+      name: $SOURCE_ENDPOINT_NAME
+  targetEndpointRef:
+    from:
+      name: $TARGET_ENDPOINT_NAME
+  startReplicationTask: true
+  tags:
+    - key: environment
+      value: dev

@@ -1,0 +1,111 @@
+# Copyright Amazon.com Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You may
+# not use this file except in compliance with the License. A copy of the
+# License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+"""Helper utilities for managing Parquet test data."""
+
+import logging
+from pathlib import Path
+
+import boto3
+
+
+def _get_sample_parquet_path() -> Path:
+    """Get path to the static sample parquet file.
+
+    Returns:
+        Path: Absolute path to sample.parquet in test/e2e/resources/data/
+    """
+    current_dir = Path(__file__).parent
+    parquet_path = current_dir / "resources" / "data" / "sample.parquet"
+    if not parquet_path.exists():
+        raise FileNotFoundError(
+            f"Sample parquet file not found at {parquet_path}. "
+            "Please ensure test/e2e/resources/data/sample.parquet exists."
+        )
+    return parquet_path
+
+
+def _load_sample_parquet_bytes() -> bytes:
+    """Load the static sample parquet file as bytes.
+
+    Returns:
+        bytes: Parquet file content
+    """
+    parquet_path = _get_sample_parquet_path()
+    with open(parquet_path, 'rb') as f:
+        return f.read()
+
+
+def upload_parquet_to_s3(
+    bucket_name: str,
+    s3_key: str = 'source/data.parquet'
+) -> str:
+    """Upload static sample parquet data to S3 source folder.
+
+    Args:
+        bucket_name: Name of the S3 bucket
+        s3_key: S3 object key (default: source/data.parquet)
+
+    Returns:
+        str: S3 URI of uploaded file (s3://bucket/key)
+
+    Raises:
+        FileNotFoundError: If sample parquet file is not found
+        Exception: If S3 upload fails
+    """
+    s3 = boto3.client('s3')
+    parquet_bytes = _load_sample_parquet_bytes()
+
+    try:
+        s3.put_object(
+            Bucket=bucket_name,
+            Key=s3_key,
+            Body=parquet_bytes,
+            ContentType='application/octet-stream'
+        )
+        logging.info(f"Uploaded parquet to s3://{bucket_name}/{s3_key} ({len(parquet_bytes)} bytes)")
+        return f"s3://{bucket_name}/{s3_key}"
+    except Exception as e:
+        logging.error(f"Failed to upload parquet to S3: {e}")
+        raise
+
+
+def cleanup_s3_folders(bucket_name: str) -> None:
+    """Delete source and target test folders from S3.
+
+    Args:
+        bucket_name: Name of the S3 bucket
+    """
+    s3 = boto3.client('s3')
+
+    # Delete source/data.parquet
+    try:
+        s3.delete_object(Bucket=bucket_name, Key='source/data.parquet')
+        logging.info(f"Deleted source/data.parquet from {bucket_name}")
+    except Exception as e:
+        logging.warning(f"Failed to delete source data: {e}")
+
+    # Delete everything in target/ folder
+    try:
+        response = s3.list_objects_v2(
+            Bucket=bucket_name,
+            Prefix='target/'
+        )
+        if 'Contents' in response:
+            for obj in response['Contents']:
+                s3.delete_object(Bucket=bucket_name, Key=obj['Key'])
+            logging.info(f"Deleted {len(response['Contents'])} objects from target/")
+        else:
+            logging.info("No objects found in target/ folder")
+    except Exception as e:
+        logging.warning(f"Failed to delete target folder: {e}")

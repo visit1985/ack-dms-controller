@@ -140,6 +140,7 @@ def replication_instance_fixture():
 # ---------------------------------------------------------------------------
 
 @service_marker
+@pytest.mark.slow
 @pytest.mark.canary
 class TestReplicationInstance:
 

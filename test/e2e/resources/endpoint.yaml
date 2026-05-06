@@ -10,6 +10,7 @@ spec:
     bucketName: $S3_BUCKET_NAME
     serviceAccessRoleARN: $DMS_S3_ROLE_ARN
     bucketFolder: $ENDPOINT_BUCKET_FOLDER
+    dataFormat: parquet
   tags:
     - key: environment
       value: dev
