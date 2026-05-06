@@ -88,24 +88,16 @@ def cleanup_s3_folders(bucket_name: str) -> None:
     """
     s3 = boto3.client('s3')
 
-    # Delete source/data.parquet
-    try:
-        s3.delete_object(Bucket=bucket_name, Key='source/data.parquet')
-        logging.info(f"Deleted source/data.parquet from {bucket_name}")
-    except Exception as e:
-        logging.warning(f"Failed to delete source data: {e}")
+    for prefix in ('source/', 'target/'):
+        try:
+            response = s3.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+            contents = response.get('Contents', [])
+            if not contents:
+                logging.info(f"No objects found in {prefix} folder")
+                continue
 
-    # Delete everything in target/ folder
-    try:
-        response = s3.list_objects_v2(
-            Bucket=bucket_name,
-            Prefix='target/'
-        )
-        if 'Contents' in response:
-            for obj in response['Contents']:
+            for obj in contents:
                 s3.delete_object(Bucket=bucket_name, Key=obj['Key'])
-            logging.info(f"Deleted {len(response['Contents'])} objects from target/")
-        else:
-            logging.info("No objects found in target/ folder")
-    except Exception as e:
-        logging.warning(f"Failed to delete target folder: {e}")
+            logging.info(f"Deleted {len(contents)} objects from {prefix}")
+        except Exception as e:
+            logging.warning(f"Failed to delete {prefix} folder: {e}")

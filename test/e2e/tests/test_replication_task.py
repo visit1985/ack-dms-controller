@@ -54,6 +54,28 @@ MAX_WAIT_TASK_SYNCED_MINUTES = 10
 # Time to wait between modifications for controller reconciliation
 MODIFY_WAIT_AFTER_SECONDS = 10
 
+SOURCE_PARQUET_S3_KEY = "source/public/customers/data.parquet"
+
+SOURCE_EXTERNAL_TABLE_DEFINITION = json.dumps({
+    "TableCount": 1,
+    "Tables": [
+        {
+            "TableName": "customers",
+            "TableOwner": "public",
+            "TablePath": "public/customers/",
+            "Columns": [
+                {"ColumnName": "customer_id", "ColumnType": "int8"},
+                {"ColumnName": "name", "ColumnType": "string"},
+                {"ColumnName": "email", "ColumnType": "string"},
+                {"ColumnName": "phone", "ColumnType": "string"},
+                {"ColumnName": "created_at", "ColumnType": "timestamp"},
+                {"ColumnName": "account_balance", "ColumnType": "decimal(10,2)"},
+                {"ColumnName": "status", "ColumnType": "string"},
+            ],
+        }
+    ],
+})
+
 # Table mappings JSON
 DEFAULT_TABLE_MAPPINGS = json.dumps({
     "rules": [
@@ -212,7 +234,7 @@ def replication_task_fixture(request):
 
     # ---- Upload source data to S3 ----
     logging.info(f"Uploading parquet data to s3://{bucket_name}/source/")
-    upload_parquet_to_s3(bucket_name, 'source/data.parquet')
+    upload_parquet_to_s3(bucket_name, SOURCE_PARQUET_S3_KEY)
 
     # ---- Create Source Endpoint ----
     logging.info(f"Creating source endpoint: {source_ep_name}")
@@ -224,6 +246,9 @@ def replication_task_fixture(request):
     source_ep_data = load_dms_resource(
         "endpoint",
         additional_replacements=source_ep_replacements,
+    )
+    source_ep_data["spec"]["s3Settings"]["externalTableDefinition"] = (
+        SOURCE_EXTERNAL_TABLE_DEFINITION
     )
     source_ep_ref = k8s.CustomResourceReference(
         CRD_GROUP, CRD_VERSION, ENDPOINT_RESOURCE_PLURAL,
