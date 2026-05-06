@@ -23,14 +23,14 @@ def _get_sample_parquet_path() -> Path:
     """Get path to the static sample parquet file.
 
     Returns:
-        Path: Absolute path to sample.parquet in test/e2e/resources/data/
+        Path: Absolute path to LOAD00000001.parquet in test/e2e/resources/data/
     """
     current_dir = Path(__file__).parent
-    parquet_path = current_dir / "resources" / "data" / "sample.parquet"
+    parquet_path = current_dir / "resources" / "data" / "LOAD00000001.parquet"
     if not parquet_path.exists():
         raise FileNotFoundError(
             f"Sample parquet file not found at {parquet_path}. "
-            "Please ensure test/e2e/resources/data/sample.parquet exists."
+            "Please ensure test/e2e/resources/data/LOAD00000001.parquet exists."
         )
     return parquet_path
 
