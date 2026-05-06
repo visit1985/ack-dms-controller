@@ -184,6 +184,7 @@ def replication_task_fixture():
     source_ep_replacements = REPLACEMENT_VALUES.copy()
     source_ep_replacements["ENDPOINT_NAME"] = source_ep_name
     source_ep_replacements["ENDPOINT_BUCKET_FOLDER"] = "source/"
+    source_ep_replacements["ENDPOINT_TYPE"] = "source"
 
     source_ep_data = load_dms_resource(
         "endpoint",
@@ -207,6 +208,7 @@ def replication_task_fixture():
     target_ep_replacements = REPLACEMENT_VALUES.copy()
     target_ep_replacements["ENDPOINT_NAME"] = target_ep_name
     target_ep_replacements["ENDPOINT_BUCKET_FOLDER"] = "target/"
+    target_ep_replacements["ENDPOINT_TYPE"] = "target"
 
     target_ep_data = load_dms_resource(
         "endpoint",
@@ -314,7 +316,6 @@ def replication_task_fixture():
 
 
 @service_marker
-@pytest.mark.slow
 @pytest.mark.canary
 class TestReplicationTask:
 

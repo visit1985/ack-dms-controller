@@ -468,6 +468,9 @@ resources:
       errors:
         404:
           code: ResourceNotFoundFault
+      terminal_codes:
+        - InvalidParameterCombinationException
+        - InvalidParameterValueException
     fields:
       AvailabilityZone:
         # Can only be set at creation time, but may change when MultiAZ is
@@ -623,6 +626,7 @@ resources:
           code: ResourceNotFoundFault
       terminal_codes:
         - InvalidParameterCombinationException
+        - InvalidParameterValueException
     fields:
       Name:
         is_primary_key: true

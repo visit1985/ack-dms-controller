@@ -966,7 +966,8 @@ func (rm *resourceManager) terminalAWSError(err error) bool {
 		return false
 	}
 	switch terminalErr.ErrorCode() {
-	case "InvalidParameterCombinationException":
+	case "InvalidParameterCombinationException",
+		"InvalidParameterValueException":
 		return true
 	default:
 		return false

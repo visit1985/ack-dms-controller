@@ -71,6 +71,7 @@ def endpoint():
     replacements = REPLACEMENT_VALUES.copy()
     replacements["ENDPOINT_NAME"] = endpoint_name
     replacements["ENDPOINT_BUCKET_FOLDER"] = INITIAL_BUCKET_FOLDER
+    replacements["ENDPOINT_TYPE"] = "target"
 
     resource_data = load_dms_resource(
         "endpoint",
