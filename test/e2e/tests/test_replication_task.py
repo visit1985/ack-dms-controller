@@ -63,15 +63,16 @@ SOURCE_EXTERNAL_TABLE_DEFINITION = json.dumps({
             "TableName": "customers",
             "TableOwner": "public",
             "TablePath": "public/customers/",
-            "Columns": [
-                {"ColumnName": "customer_id", "ColumnType": "int8"},
-                {"ColumnName": "name", "ColumnType": "string"},
-                {"ColumnName": "email", "ColumnType": "string"},
-                {"ColumnName": "phone", "ColumnType": "string"},
-                {"ColumnName": "created_at", "ColumnType": "timestamp"},
-                {"ColumnName": "account_balance", "ColumnType": "decimal(10,2)"},
-                {"ColumnName": "status", "ColumnType": "string"},
+            "TableColumns": [
+                {"ColumnName": "customer_id", "ColumnType": "INT8"},
+                {"ColumnName": "name", "ColumnType": "STRING", "ColumnLength": "255"},
+                {"ColumnName": "email", "ColumnType": "STRING", "ColumnLength": "255"},
+                {"ColumnName": "phone", "ColumnType": "STRING", "ColumnLength": "50"},
+                {"ColumnName": "created_at", "ColumnType": "DATETIME"},
+                {"ColumnName": "account_balance", "ColumnType": "REAL8"},
+                {"ColumnName": "status", "ColumnType": "STRING", "ColumnLength": "50"},
             ],
+            "TableColumnsTotal": "7"
         }
     ],
 })
