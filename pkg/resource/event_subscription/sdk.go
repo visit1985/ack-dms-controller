@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
-	"time"
 
 	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
@@ -444,18 +443,6 @@ func (rm *resourceManager) sdkDelete(
 	_ = resp
 	resp, err = rm.sdkapi.DeleteEventSubscription(ctx, input)
 	rm.metrics.RecordAPICall("DELETE", "DeleteEventSubscription", err)
-
-	// sdk_delete_post_request hook
-	//
-	// Wait for the event subscription to be deleted before setResourceUnmanaged.
-	if err != nil {
-		return nil, err
-	}
-	r.ko.Status.SubscriptionStatus = aws.String(eventSubscriptionStatusDeleting)
-	return r, ackrequeue.NeededAfter(
-		errors.New(fmt.Sprintf("EventSubscription is in %v state", *r.ko.Status.SubscriptionStatus)),
-		10*time.Second)
-
 	return nil, err
 }
 

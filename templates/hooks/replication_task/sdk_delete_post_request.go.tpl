@@ -8,4 +8,4 @@ if err != nil {
 r.ko.Status.TaskStatus = aws.String(replicationTaskStatusDeleting)
 return r, ackrequeue.NeededAfter(
     errors.New(fmt.Sprintf("ReplicationTask is in %v state", *r.ko.Status.TaskStatus)),
-    10*time.Second)
+    30*time.Second)

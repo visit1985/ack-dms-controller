@@ -900,7 +900,7 @@ func (rm *resourceManager) sdkDelete(
 	if !hasSteadyState(r.ko) {
 		return r, ackrequeue.NeededAfter(
 			errors.New(fmt.Sprintf("ReplicationInstance is in %v state", *r.ko.Status.InstanceStatus)),
-			10*time.Second)
+			60*time.Second)
 	}
 
 	input, err := rm.newDeleteRequestPayload(r)
@@ -921,7 +921,7 @@ func (rm *resourceManager) sdkDelete(
 	r.ko.Status.InstanceStatus = aws.String(replicationInstanceStatusDeleting)
 	return r, ackrequeue.NeededAfter(
 		errors.New(fmt.Sprintf("ReplicationInstance is in %v state", *r.ko.Status.InstanceStatus)),
-		10*time.Second)
+		60*time.Second)
 
 	return nil, err
 }
