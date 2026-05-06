@@ -47,10 +47,10 @@ EVENT_SUBSCRIPTION_TOPIC_POLICY = """
 def service_bootstrap() -> Resources:
     logging.getLogger().setLevel(logging.INFO)
 
-    # S3 bucket for DMS S3 target endpoint tests.
+    # S3 bucket for DMS S3 endpoint and replication task tests.
     # Bucket.__post_init__() computes the random name before bootstrap() runs,
     # so we can reference bucket.name when building the IAM policy below.
-    test_bucket = Bucket(name_prefix="ack-test-dms-endpoint")
+    test_bucket = Bucket(name_prefix="ack-test-dms-bucket")
 
     s3_access_policy = json.dumps({
         "Version": "2012-10-17",
