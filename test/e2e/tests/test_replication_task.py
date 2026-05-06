@@ -150,24 +150,6 @@ def replication_task_fixture(request):
             except Exception as e:
                 logging.warning(f"Error waiting for replication task deletion: {e}")
 
-        if target_ep_ref is not None:
-            try:
-                if k8s.get_resource_exists(target_ep_ref):
-                    _, deleted = k8s.delete_custom_resource(target_ep_ref, 3, 10)
-                    assert deleted
-                    logging.info("Target endpoint deleted")
-            except Exception as e:
-                logging.warning(f"Error deleting target endpoint: {e}")
-
-        if source_ep_ref is not None:
-            try:
-                if k8s.get_resource_exists(source_ep_ref):
-                    _, deleted = k8s.delete_custom_resource(source_ep_ref, 3, 10)
-                    assert deleted
-                    logging.info("Source endpoint deleted")
-            except Exception as e:
-                logging.warning(f"Error deleting source endpoint: {e}")
-
         if ri_ref is not None:
             try:
                 if k8s.get_resource_exists(ri_ref):
@@ -192,6 +174,24 @@ def replication_task_fixture(request):
             except Exception as e:
                 logging.warning(f"Error deleting subnet group: {e}")
 
+        if target_ep_ref is not None:
+            try:
+                if k8s.get_resource_exists(target_ep_ref):
+                    _, deleted = k8s.delete_custom_resource(target_ep_ref, 3, 10)
+                    assert deleted
+                    logging.info("Target endpoint deleted")
+            except Exception as e:
+                logging.warning(f"Error deleting target endpoint: {e}")
+
+        if source_ep_ref is not None:
+            try:
+                if k8s.get_resource_exists(source_ep_ref):
+                    _, deleted = k8s.delete_custom_resource(source_ep_ref, 3, 10)
+                    assert deleted
+                    logging.info("Source endpoint deleted")
+            except Exception as e:
+                logging.warning(f"Error deleting source endpoint: {e}")
+
         try:
             cleanup_s3_folders(bucket_name)
             logging.info("S3 test data cleaned up")
@@ -213,6 +213,54 @@ def replication_task_fixture(request):
     # ---- Upload source data to S3 ----
     logging.info(f"Uploading parquet data to s3://{bucket_name}/source/")
     upload_parquet_to_s3(bucket_name, 'source/data.parquet')
+
+    # ---- Create Source Endpoint ----
+    logging.info(f"Creating source endpoint: {source_ep_name}")
+    source_ep_replacements = REPLACEMENT_VALUES.copy()
+    source_ep_replacements["ENDPOINT_NAME"] = source_ep_name
+    source_ep_replacements["ENDPOINT_BUCKET_FOLDER"] = "source/"
+    source_ep_replacements["ENDPOINT_TYPE"] = "source"
+
+    source_ep_data = load_dms_resource(
+        "endpoint",
+        additional_replacements=source_ep_replacements,
+    )
+    source_ep_ref = k8s.CustomResourceReference(
+        CRD_GROUP, CRD_VERSION, ENDPOINT_RESOURCE_PLURAL,
+        source_ep_name, namespace="default",
+    )
+    k8s.create_custom_resource(source_ep_ref, source_ep_data)
+    source_ep_cr = k8s.wait_resource_consumed_by_controller(source_ep_ref)
+    assert source_ep_cr is not None
+    assert k8s.wait_on_condition(
+        source_ep_ref, "ACK.ResourceSynced", "True",
+        wait_periods=MAX_WAIT_ENDPOINT_SYNCED_MINUTES * 4, period_length=15,
+    )
+    logging.info("Source endpoint created and synced")
+
+    # ---- Create Target Endpoint ----
+    logging.info(f"Creating target endpoint: {target_ep_name}")
+    target_ep_replacements = REPLACEMENT_VALUES.copy()
+    target_ep_replacements["ENDPOINT_NAME"] = target_ep_name
+    target_ep_replacements["ENDPOINT_BUCKET_FOLDER"] = "target/"
+    target_ep_replacements["ENDPOINT_TYPE"] = "target"
+
+    target_ep_data = load_dms_resource(
+        "endpoint",
+        additional_replacements=target_ep_replacements,
+    )
+    target_ep_ref = k8s.CustomResourceReference(
+        CRD_GROUP, CRD_VERSION, ENDPOINT_RESOURCE_PLURAL,
+        target_ep_name, namespace="default",
+    )
+    k8s.create_custom_resource(target_ep_ref, target_ep_data)
+    target_ep_cr = k8s.wait_resource_consumed_by_controller(target_ep_ref)
+    assert target_ep_cr is not None
+    assert k8s.wait_on_condition(
+        target_ep_ref, "ACK.ResourceSynced", "True",
+        wait_periods=MAX_WAIT_ENDPOINT_SYNCED_MINUTES * 4, period_length=15,
+    )
+    logging.info("Target endpoint created and synced")
 
     # ---- Create ReplicationSubnetGroup ----
     logging.info(f"Creating replication subnet group: {subnet_group_name}")
@@ -262,54 +310,6 @@ def replication_task_fixture(request):
         timeout_seconds=MAX_WAIT_INSTANCE_CREATION_SECONDS,
     )
     logging.info("Replication instance is available")
-
-    # ---- Create Source Endpoint ----
-    logging.info(f"Creating source endpoint: {source_ep_name}")
-    source_ep_replacements = REPLACEMENT_VALUES.copy()
-    source_ep_replacements["ENDPOINT_NAME"] = source_ep_name
-    source_ep_replacements["ENDPOINT_BUCKET_FOLDER"] = "source/"
-    source_ep_replacements["ENDPOINT_TYPE"] = "source"
-
-    source_ep_data = load_dms_resource(
-        "endpoint",
-        additional_replacements=source_ep_replacements,
-    )
-    source_ep_ref = k8s.CustomResourceReference(
-        CRD_GROUP, CRD_VERSION, ENDPOINT_RESOURCE_PLURAL,
-        source_ep_name, namespace="default",
-    )
-    k8s.create_custom_resource(source_ep_ref, source_ep_data)
-    source_ep_cr = k8s.wait_resource_consumed_by_controller(source_ep_ref)
-    assert source_ep_cr is not None
-    assert k8s.wait_on_condition(
-        source_ep_ref, "ACK.ResourceSynced", "True",
-        wait_periods=MAX_WAIT_ENDPOINT_SYNCED_MINUTES * 4, period_length=15,
-    )
-    logging.info("Source endpoint created and synced")
-
-    # ---- Create Target Endpoint ----
-    logging.info(f"Creating target endpoint: {target_ep_name}")
-    target_ep_replacements = REPLACEMENT_VALUES.copy()
-    target_ep_replacements["ENDPOINT_NAME"] = target_ep_name
-    target_ep_replacements["ENDPOINT_BUCKET_FOLDER"] = "target/"
-    target_ep_replacements["ENDPOINT_TYPE"] = "target"
-
-    target_ep_data = load_dms_resource(
-        "endpoint",
-        additional_replacements=target_ep_replacements,
-    )
-    target_ep_ref = k8s.CustomResourceReference(
-        CRD_GROUP, CRD_VERSION, ENDPOINT_RESOURCE_PLURAL,
-        target_ep_name, namespace="default",
-    )
-    k8s.create_custom_resource(target_ep_ref, target_ep_data)
-    target_ep_cr = k8s.wait_resource_consumed_by_controller(target_ep_ref)
-    assert target_ep_cr is not None
-    assert k8s.wait_on_condition(
-        target_ep_ref, "ACK.ResourceSynced", "True",
-        wait_periods=MAX_WAIT_ENDPOINT_SYNCED_MINUTES * 4, period_length=15,
-    )
-    logging.info("Target endpoint created and synced")
 
     # ---- Create ReplicationTask ----
     logging.info(f"Creating replication task: {task_name}")
