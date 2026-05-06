@@ -26,7 +26,6 @@ spec:
         "EnableLogging": false
       },
       "TargetMetadata": {
-        "ParallelLoadThreads": 1,
         "BatchApplyEnabled": false
       },
       "FullLoadSettings": {
