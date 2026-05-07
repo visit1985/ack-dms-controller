@@ -158,7 +158,9 @@ class TestEndpoint:
         assert latest.get('S3Settings', {}).get('BucketFolder') == INITIAL_BUCKET_FOLDER
 
         # ARN is written into the CR status by the controller.
-        endpoint_arn = k8s.get_resource_arn(ref)
+        cr = k8s.get_resource(ref)
+        assert cr is not None
+        endpoint_arn = k8s.get_resource_arn(cr)
         assert endpoint_arn is not None
 
         # ---- Verify initial tags -------------------------------------------

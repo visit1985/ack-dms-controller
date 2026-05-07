@@ -368,7 +368,7 @@ def replication_task_fixture(request):
     )
     task_cr = k8s.get_resource(task_ref)
     assert task_cr is not None
-    task_arn = k8s.get_resource_arn(task_ref)
+    task_arn = k8s.get_resource_arn(task_cr)
     assert task_arn is not None
     logging.info("Replication task created and synced")
 

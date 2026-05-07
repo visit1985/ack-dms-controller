@@ -132,7 +132,9 @@ class TestEventSubscription:
 
         condition.assert_synced(ref)
 
-        subscription_arn = k8s.get_resource_arn(ref)
+        cr = k8s.get_resource(ref)
+        assert cr is not None
+        subscription_arn = k8s.get_resource_arn(cr)
         assert subscription_arn is not None
 
         latest_tags = tag.clean(aws_api.get_tags(subscription_arn))

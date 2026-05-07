@@ -185,7 +185,9 @@ class TestCertificate:
         assert latest['CertificateIdentifier'] == certificate_name
 
         # ARN is written into the CR status by the controller.
-        certificate_arn = k8s.get_resource_arn(ref)
+        cr = k8s.get_resource(ref)
+        assert cr is not None
+        certificate_arn = k8s.get_resource_arn(cr)
         assert certificate_arn is not None
 
         # ---- Verify initial tags -------------------------------------------
