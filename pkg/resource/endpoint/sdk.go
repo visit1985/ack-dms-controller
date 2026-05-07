@@ -1248,7 +1248,7 @@ func (rm *resourceManager) sdkFind(
 
 	// sdk_read_many_post_set_output hook
 	//
-	// Retrieves the latest tags
+	// Retrieves the latest tags and replication tasks
 	if ko.ObjectMeta.GetDeletionTimestamp() == nil {
 		if ko.Status.ACKResourceMetadata != nil && ko.Status.ACKResourceMetadata.ARN != nil {
 			resourceARN := (*string)(ko.Status.ACKResourceMetadata.ARN)
@@ -1257,6 +1257,12 @@ func (rm *resourceManager) sdkFind(
 				return nil, err
 			}
 			ko.Spec.Tags = tags
+
+			tasks, err := rm.getReplicationTasks(ctx, *resourceARN)
+			if err != nil {
+				return nil, err
+			}
+			ko.Status.ReplicationTasks = tasks
 		}
 	}
 

@@ -1979,6 +1979,12 @@ spec:
                   arn:
                     type: string
                 type: object
+              replicationTasks:
+                additionalProperties:
+                  type: string
+                description: The replication tasks associated with this endpoint and
+                  their current status.
+                type: object
             type: object
         type: object
     served: true

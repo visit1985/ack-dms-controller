@@ -212,6 +212,10 @@ type ReplicationInstanceStatus struct {
 	// One or more public IP addresses for the replication instance.
 	// +kubebuilder:validation:Optional
 	PublicIPAddresses []*string `json:"publicIPAddresses,omitempty"`
+	// The replication tasks associated with this replication instance and their
+	// current status.
+	// +kubebuilder:validation:Optional
+	ReplicationTasks map[string]*string `json:"replicationTasks,omitempty"`
 	// The Availability Zone of the standby replication instance in a Multi-AZ deployment.
 	// +kubebuilder:validation:Optional
 	SecondaryAvailabilityZone *string `json:"secondaryAvailabilityZone,omitempty"`

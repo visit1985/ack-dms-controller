@@ -14,6 +14,9 @@ resources:
         prepend: |-
           Reference to an ACK managed KMS key that is used to encrypt the connection
           parameters for the endpoint.
+      ReplicationTasks:
+        override: |-
+          The replication tasks associated with this endpoint and their current status.
       ServiceAccessRoleRef:
         prepend: |-
           Reference to an ACK managed IAM role resource that you want to use as the
@@ -30,6 +33,10 @@ resources:
         prepend: |-
           Reference to an ACK managed KMS key that is used to encrypt the data on the
           replication instance.
+      ReplicationTasks:
+        override: |-
+          The replication tasks associated with this replication instance and their
+          current status.
       SubnetGroupRef:
         prepend: |-
           Reference to an ACK managed replication subnet group to associate with this

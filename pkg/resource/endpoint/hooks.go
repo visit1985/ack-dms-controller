@@ -15,13 +15,16 @@ package endpoint
 
 import (
 	"context"
+	"errors"
 
 	svcapitypes "github.com/aws-controllers-k8s/dms-controller/apis/v1alpha1"
 	"github.com/aws-controllers-k8s/dms-controller/pkg/util"
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	ackrtlog "github.com/aws-controllers-k8s/runtime/pkg/runtime/log"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	svcsdk "github.com/aws/aws-sdk-go-v2/service/databasemigrationservice"
 	svcsdktypes "github.com/aws/aws-sdk-go-v2/service/databasemigrationservice/types"
+	"github.com/aws/smithy-go"
 )
 
 const (
@@ -185,4 +188,44 @@ func sdkTagsFromResourceTags(
 		}
 	}
 	return tags
+}
+
+// getReplicationTasks is a custom function to retrieve the replication tasks
+// associated with an endpoint and return their statuses in a map of
+// names (ReplicationTaskIdentifiers).
+func (rm *resourceManager) getReplicationTasks(
+	ctx context.Context,
+	resourceARN string,
+) (res map[string]*string, err error) {
+	input := &svcsdk.DescribeReplicationTasksInput{
+		Filters: []svcsdktypes.Filter{
+			{
+				Name:   aws.String("endpoint-arn"),
+				Values: []string{resourceARN},
+			},
+		},
+	}
+
+	var resp *svcsdk.DescribeReplicationTasksOutput
+	resp, err = rm.sdkapi.DescribeReplicationTasks(ctx, input)
+	rm.metrics.RecordAPICall("READ_MANY", "DescribeReplicationTasks", err)
+	if err != nil {
+		var awsErr smithy.APIError
+		if errors.As(err, &awsErr) && awsErr.ErrorCode() == "ResourceNotFoundFault" {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	respMap := make(map[string]*string)
+	found := false
+	for _, task := range resp.ReplicationTasks {
+		respMap[*task.ReplicationTaskIdentifier] = task.Status
+		found = true
+	}
+	if found {
+		return respMap, nil
+	}
+
+	return nil, nil
 }

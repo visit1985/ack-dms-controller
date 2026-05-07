@@ -244,6 +244,9 @@ type EndpointStatus struct {
 	// data warehouse as part of a zero-ETL integration.
 	// +kubebuilder:validation:Optional
 	LakehouseSettings *LakehouseSettings `json:"lakehouseSettings,omitempty"`
+	// The replication tasks associated with this endpoint and their current status.
+	// +kubebuilder:validation:Optional
+	ReplicationTasks map[string]*string `json:"replicationTasks,omitempty"`
 }
 
 // Endpoint is the Schema for the Endpoints API

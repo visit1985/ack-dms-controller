@@ -329,6 +329,9 @@ resources:
           resource: Role
           service_name: iam
           path: Status.ACKResourceMetadata.ARN
+      ReplicationTasks:
+        is_read_only: true
+        type: "map[string]*string"
       ResourceIdentifier:
         is_immutable: true
       S3Settings.BucketName:
@@ -495,6 +498,9 @@ resources:
         is_immutable: true
       PubliclyAccessible:
         is_immutable: true
+      ReplicationTasks:
+        is_read_only: true
+        type: "map[string]*string"
       ResourceIdentifier:
         is_immutable: true
       SubnetGroupID:

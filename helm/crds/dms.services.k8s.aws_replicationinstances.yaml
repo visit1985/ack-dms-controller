@@ -431,6 +431,13 @@ spec:
                 items:
                   type: string
                 type: array
+              replicationTasks:
+                additionalProperties:
+                  type: string
+                description: |-
+                  The replication tasks associated with this replication instance and their
+                  current status.
+                type: object
               secondaryAvailabilityZone:
                 description: The Availability Zone of the standby replication instance
                   in a Multi-AZ deployment.
