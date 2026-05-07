@@ -211,6 +211,17 @@ func alreadyStarted(ko *svcapitypes.ReplicationTask) bool {
 	return c1 || c2
 }
 
+// alreadyStopped is a custom function to determine if a ReplicationTask
+// is already stopped.
+func alreadyStopped(ko *svcapitypes.ReplicationTask) bool {
+	if ko.Status.TaskStatus == nil {
+		return true
+	}
+	// if status is not running or starting
+	return *ko.Status.TaskStatus == replicationTaskStatusRunning ||
+		*ko.Status.TaskStatus == replicationTaskStatusStarting
+}
+
 // shouldStartReplicationTask is a custom function to determine if a
 // ReplicationTask should be started.
 func shouldStartReplicationTask(ko *svcapitypes.ReplicationTask) bool {
@@ -222,7 +233,7 @@ func shouldStartReplicationTask(ko *svcapitypes.ReplicationTask) bool {
 // ReplicationTask should be stopped.
 func shouldStopReplicationTask(ko *svcapitypes.ReplicationTask, delta *ackcompare.Delta) bool {
 	return (deleteRequested(ko) || !startRequested(ko) || updateRequiresStop(delta)) &&
-		alreadyStarted(ko)
+		!alreadyStopped(ko)
 }
 
 // newStartReplicationTaskRequestPayload is a custom function to

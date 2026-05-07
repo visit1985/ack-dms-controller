@@ -463,8 +463,7 @@ class TestReplicationTask:
         latest = rt_aws_api.get(task_arn)
         assert latest is not None
         assert latest['Status'] == 'stopped'
-        # FIXME: remove debug statement
-        logging.info(json.dumps(latest, default=str))
+        assert latest['StopReason'] == 'Stop Reason FULL_LOAD_ONLY_FINISHED'
 
         stats = latest.get('ReplicationTaskStats', {})
         if stats:
