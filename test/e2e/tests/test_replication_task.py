@@ -34,7 +34,7 @@ from e2e import condition
 from e2e import replication_task as rt_aws_api
 from e2e import replication_instance as ri_aws_api
 from e2e import tag
-from e2e.parquet import upload_parquet_to_s3, cleanup_s3_folders
+from e2e.parquet import upload_parquet_to_s3, get_target_parquet_s3_key, cleanup_s3_folders
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -54,7 +54,7 @@ MAX_WAIT_TASK_SYNCED_MINUTES = 10
 # Time to wait between modifications for controller reconciliation
 MODIFY_WAIT_AFTER_SECONDS = 10
 
-SOURCE_PARQUET_S3_KEY = "source/public/customers/data.parquet"
+SOURCE_PARQUET_S3_KEY = "source/public/customers/LOAD00000001.parquet"
 
 SOURCE_EXTERNAL_TABLE_DEFINITION = json.dumps({
     "TableCount": 1,
@@ -368,8 +368,6 @@ def replication_task_fixture(request):
     )
     task_cr = k8s.get_resource(task_ref)
     assert task_cr is not None
-    task_arn = k8s.get_resource_arn(task_cr)
-    assert task_arn is not None
     logging.info("Replication task created and synced")
 
     yield (
@@ -414,9 +412,7 @@ class TestReplicationTask:
         condition.assert_synced(task_ref)
 
         # Get task ARN from K8s CR
-        assert 'status' in task_cr
-        assert 'ackResourceMetadata' in task_cr['status']
-        task_arn = task_cr['status']['ackResourceMetadata']['arn']
+        task_arn = k8s.get_resource_arn(task_cr)
         assert task_arn is not None
         logging.info(f"Task ARN: {task_arn}")
 
@@ -443,6 +439,18 @@ class TestReplicationTask:
 
         # ---- PHASE 2: TASK EXECUTION ----
         logging.info("PHASE 2: Verifying task execution and data migration...")
+
+        k8s.patch_custom_resource(
+            task_ref,
+            {"spec": {"startReplicationTask": True}},
+        )
+        time.sleep(MODIFY_WAIT_AFTER_SECONDS)
+
+        assert k8s.wait_on_condition(
+            task_ref, "ACK.ResourceSynced", "True",
+            wait_periods=MAX_WAIT_TASK_SYNCED_MINUTES * 4, period_length=15,
+        )
+
         logging.info("Waiting for task to transition to running state...")
         rt_aws_api.wait_until_running(task_arn)
         logging.info("Task is now running")
@@ -455,6 +463,8 @@ class TestReplicationTask:
         latest = rt_aws_api.get(task_arn)
         assert latest is not None
         assert latest['Status'] == 'stopped'
+        # FIXME: remove debug statement
+        logging.info(json.dumps(latest, default=str))
 
         stats = latest.get('ReplicationTaskStats', {})
         if stats:
@@ -462,24 +472,15 @@ class TestReplicationTask:
                          f"Tables errored: {stats.get('TablesErrored', 0)}")
 
         # Check that data was migrated to target S3 folder
-        import boto3
-        s3 = boto3.client('s3')
         bucket_name = REPLACEMENT_VALUES['S3_BUCKET_NAME']
-
-        try:
-            response = s3.list_objects_v2(
-                Bucket=bucket_name,
-                Prefix='target/'
-            )
-            if 'Contents' in response and len(response['Contents']) > 0:
-                logging.info(f"Target folder contains {len(response['Contents'])} objects")
-                for obj in response['Contents']:
-                    logging.info(f"  - {obj['Key']} ({obj['Size']} bytes)")
-                assert True, "Data successfully migrated to target folder"
-            else:
-                logging.warning("Target folder is empty - migration may not have produced output")
-        except Exception as e:
-            logging.warning(f"Could not verify target data: {e}")
+        response = get_target_parquet_s3_key(bucket_name)
+        if response:
+            logging.info(f"Target folder contains {len(response)} objects")
+            for key, size in response:
+                logging.info(f"  - {key} ({size} bytes)")
+            assert True, "Data successfully migrated to target folder"
+        else:
+            assert False, "Target folder is empty - migration may not have produced output"
 
         # ---- PHASE 3: UPDATE ----
         logging.info("PHASE 3: Verifying UPDATE operations...")

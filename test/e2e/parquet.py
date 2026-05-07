@@ -48,13 +48,13 @@ def _load_sample_parquet_bytes() -> bytes:
 
 def upload_parquet_to_s3(
     bucket_name: str,
-    s3_key: str = 'source/data.parquet'
+    s3_key: str = 'source/public/customers/LOAD00000001.parquet'
 ) -> str:
     """Upload static sample parquet data to S3 source folder.
 
     Args:
         bucket_name: Name of the S3 bucket
-        s3_key: S3 object key (default: source/data.parquet)
+        s3_key: S3 object key (default: source/public/customers/LOAD00000001.parquet)
 
     Returns:
         str: S3 URI of uploaded file (s3://bucket/key)
@@ -78,6 +78,28 @@ def upload_parquet_to_s3(
     except Exception as e:
         logging.error(f"Failed to upload parquet to S3: {e}")
         raise
+
+
+def get_target_parquet_s3_key(
+    bucket_name: str
+) -> dict[str, int]:
+    """Get the expected S3 key for the target parquet file.
+
+    Returns:
+        str: Expected S3 key (target/public/customers/LOAD00000001.parquet)
+    """
+    s3 = boto3.client('s3')
+
+    prefix = 'target/'
+    try:
+        response = s3.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+        contents = response.get('Contents', [])
+        if contents:
+            return {str(obj['Key']): int(obj['Size']) for obj in contents}
+        logging.info(f"No objects found in {prefix} folder")
+    except Exception as e:
+        logging.error(f"Failed to list objects in {prefix} folder: {e}")
+    return {}
 
 
 def cleanup_s3_folders(bucket_name: str) -> None:

@@ -196,15 +196,19 @@ func updateInProgress(ko *svcapitypes.ReplicationTask) bool {
 }
 
 // alreadyStarted is a custom function to determine if a ReplicationTask
-// is already started.
+// was already started.
 func alreadyStarted(ko *svcapitypes.ReplicationTask) bool {
-	return ko.Status.TaskStatus != nil && slices.Contains(
-		[]string{
-			replicationTaskStatusRunning,
-			replicationTaskStatusStarting,
-		},
-		*ko.Status.TaskStatus,
-	)
+	if ko.Status.TaskStatus != nil {
+		return false
+	}
+	// if status is running or starting
+	c1 := *ko.Status.TaskStatus == replicationTaskStatusRunning ||
+		*ko.Status.TaskStatus == replicationTaskStatusStarting
+	// if status is stopping or stopped and migration type is full-load
+	c2 := (*ko.Status.TaskStatus == replicationTaskStatusStopping ||
+		*ko.Status.TaskStatus == replicationTaskStatusStopped) &&
+		*ko.Spec.MigrationType == string(svcsdktypes.MigrationTypeValueFullLoad)
+	return c1 || c2
 }
 
 // shouldStartReplicationTask is a custom function to determine if a
