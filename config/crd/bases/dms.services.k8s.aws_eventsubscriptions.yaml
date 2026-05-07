@@ -15,6 +15,9 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
+    - jsonPath: .spec.sourceType
+      name: Source
+      type: string
     - jsonPath: .status.subscriptionStatus
       name: Status
       type: string

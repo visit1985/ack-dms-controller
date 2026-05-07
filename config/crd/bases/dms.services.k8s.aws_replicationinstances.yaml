@@ -15,6 +15,9 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
+    - jsonPath: .status.instanceStatus
+      name: Status
+      type: string
     - jsonPath: .status.conditions[?(@.type=="ACK.ResourceSynced")].status
       name: Synced
       type: string

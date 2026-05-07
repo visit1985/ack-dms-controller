@@ -101,6 +101,7 @@ type EventSubscriptionStatus struct {
 // EventSubscription is the Schema for the EventSubscriptions API
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="Source",type=string,priority=0,JSONPath=`.spec.sourceType`
 // +kubebuilder:printcolumn:name="Status",type=string,priority=0,JSONPath=`.status.subscriptionStatus`
 // +kubebuilder:printcolumn:name="Synced",type="string",priority=0,JSONPath=".status.conditions[?(@.type==\"ACK.ResourceSynced\")].status"
 // +kubebuilder:printcolumn:name="Age",type="date",priority=0,JSONPath=".metadata.creationTimestamp"

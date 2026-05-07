@@ -144,6 +144,8 @@ resources:
           name: Status
       EndpointType:
         is_immutable: true
+        print:
+          name: Type
       GcpMySQLSettings.Password:
         is_secret: true
       GcpMySQLSettings.SecretsManagerAccessRoleARN:
@@ -418,6 +420,9 @@ resources:
           resource: Topic
           service_name: sns
           path: Status.ACKResourceMetadata.ARN
+      SourceType:
+        print:
+          name: Source
       SubscriptionStatus:
         print:
           name: Status
@@ -485,6 +490,9 @@ resources:
       EngineVersion:
         compare:
           is_ignored: true
+      InstanceStatus:
+        print:
+          name: Status
       KMSKeyID:
         is_immutable: true
         references:
@@ -588,6 +596,9 @@ resources:
       Name:
         is_primary_key: true
         is_immutable: true
+      SubnetGroupStatus:
+        print:
+          name: Status
       SubnetIDs:
         references:
           service_name: ec2

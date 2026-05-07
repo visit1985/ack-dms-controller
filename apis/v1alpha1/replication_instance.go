@@ -224,6 +224,7 @@ type ReplicationInstanceStatus struct {
 // ReplicationInstance is the Schema for the ReplicationInstances API
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="Status",type=string,priority=0,JSONPath=`.status.instanceStatus`
 // +kubebuilder:printcolumn:name="Synced",type="string",priority=0,JSONPath=".status.conditions[?(@.type==\"ACK.ResourceSynced\")].status"
 // +kubebuilder:printcolumn:name="Age",type="date",priority=0,JSONPath=".metadata.creationTimestamp"
 type ReplicationInstance struct {

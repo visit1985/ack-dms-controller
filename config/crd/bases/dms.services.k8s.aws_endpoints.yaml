@@ -18,6 +18,9 @@ spec:
     - jsonPath: .status.endpointStatus
       name: Status
       type: string
+    - jsonPath: .spec.endpointType
+      name: Type
+      type: string
     - jsonPath: .status.conditions[?(@.type=="ACK.ResourceSynced")].status
       name: Synced
       type: string
