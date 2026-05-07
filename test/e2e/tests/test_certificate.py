@@ -171,9 +171,8 @@ class TestCertificate:
         1.  After creation the K8s CR has ``ACK.ResourceSynced=True`` and the
             DMS API reports the certificate as existing.
         2.  The AWS API matches the spec fields: identifier.
-        3.  The CR ``status.ackResourceMetadata.arn`` is populated.
-        4.  The initial ``environment=dev`` tag is present in the AWS API.
-        5.  Tags can be updated from ``environment=dev`` to
+        3.  The initial ``environment=dev`` tag is present in the AWS API.
+        4.  Tags can be updated from ``environment=dev`` to
             ``environment=prod``; the AWS API reflects the new value.
         """
         ref, cr, certificate_name = certificate
@@ -186,11 +185,7 @@ class TestCertificate:
         assert latest['CertificateIdentifier'] == certificate_name
 
         # ARN is written into the CR status by the controller.
-        cr = k8s.get_resource(ref)
-        assert cr is not None
-        assert 'status' in cr
-        assert 'ackResourceMetadata' in cr['status']
-        certificate_arn = cr['status']['ackResourceMetadata']['arn']
+        certificate_arn = k8s.get_resource_arn(ref)
         assert certificate_arn is not None
 
         # ---- Verify initial tags -------------------------------------------

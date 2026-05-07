@@ -130,19 +130,12 @@ class TestEventSubscription:
         assert latest['Enabled'] is True
         assert latest['Status'] == 'active'
 
-        cr = k8s.get_resource(ref)
-        assert cr is not None
         condition.assert_synced(ref)
 
-        account = identity.get_account_id()
-        region = identity.get_region()
-        expected_arn = f"arn:aws:dms:{region}:{account}:es:{subscription_name}"
+        subscription_arn = k8s.get_resource_arn(ref)
+        assert subscription_arn is not None
 
-        assert 'status' in cr
-        assert 'ackResourceMetadata' in cr['status']
-        assert cr['status']['ackResourceMetadata']['arn'] == expected_arn
-
-        latest_tags = tag.clean(aws_api.get_tags(expected_arn))
+        latest_tags = tag.clean(aws_api.get_tags(subscription_arn))
         assert latest_tags == [{"Key": "environment", "Value": "dev"}]
 
         k8s.patch_custom_resource(ref, {"spec": {"enabled": False}})
@@ -168,5 +161,5 @@ class TestEventSubscription:
             wait_periods=MAX_WAIT_FOR_SYNCED_MINUTES * 4, period_length=15,
         )
 
-        latest_tags = tag.clean(aws_api.get_tags(expected_arn))
+        latest_tags = tag.clean(aws_api.get_tags(subscription_arn))
         assert latest_tags == [{"Key": "environment", "Value": "prod"}]

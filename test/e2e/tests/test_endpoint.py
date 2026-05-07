@@ -138,11 +138,10 @@ class TestEndpoint:
             DMS API reports the endpoint as ``active``.
         2.  The AWS API matches the spec fields: identifier, endpoint type,
             engine name, and initial bucket folder.
-        3.  The CR ``status.ackResourceMetadata.arn`` is populated.
-        4.  The initial ``environment=dev`` tag is present in the AWS API.
-        5.  ``s3Settings.bucketFolder`` can be updated; the AWS API reflects
+        3.  The initial ``environment=dev`` tag is present in the AWS API.
+        4.  ``s3Settings.bucketFolder`` can be updated; the AWS API reflects
             the new value after re-sync.
-        6.  Tags can be updated from ``environment=dev`` to
+        5.  Tags can be updated from ``environment=dev`` to
             ``environment=prod``; the AWS API reflects the new value.
         """
         ref, cr, endpoint_name = endpoint
@@ -159,11 +158,7 @@ class TestEndpoint:
         assert latest.get('S3Settings', {}).get('BucketFolder') == INITIAL_BUCKET_FOLDER
 
         # ARN is written into the CR status by the controller.
-        cr = k8s.get_resource(ref)
-        assert cr is not None
-        assert 'status' in cr
-        assert 'ackResourceMetadata' in cr['status']
-        endpoint_arn = cr['status']['ackResourceMetadata']['arn']
+        endpoint_arn = k8s.get_resource_arn(ref)
         assert endpoint_arn is not None
 
         # ---- Verify initial tags -------------------------------------------

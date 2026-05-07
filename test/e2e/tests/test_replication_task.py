@@ -335,6 +335,10 @@ def replication_task_fixture(request):
         ri_aws_api.status_matches("available"),
         timeout_seconds=MAX_WAIT_INSTANCE_CREATION_SECONDS,
     )
+    assert k8s.wait_on_condition(
+        ri_ref, "ACK.ResourceSynced", "True",
+        wait_periods=4, period_length=15,
+    )
     logging.info("Replication instance is available")
 
     # ---- Create ReplicationTask ----
@@ -356,14 +360,16 @@ def replication_task_fixture(request):
     k8s.create_custom_resource(task_ref, task_resource_data)
     task_cr = k8s.wait_resource_consumed_by_controller(task_ref)
     assert task_cr is not None
-    assert k8s.get_resource_exists(task_ref)
 
     logging.info("Waiting for replication task to sync...")
     assert k8s.wait_on_condition(
         task_ref, "ACK.ResourceSynced", "True",
         wait_periods=MAX_WAIT_TASK_SYNCED_MINUTES * 4, period_length=15,
     )
-    task_arn = task_cr['status']['ackResourceMetadata']['arn']
+    task_cr = k8s.get_resource(task_ref)
+    assert task_cr is not None
+    task_arn = k8s.get_resource_arn(task_ref)
+    assert task_arn is not None
     logging.info("Replication task created and synced")
 
     yield (
