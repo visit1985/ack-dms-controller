@@ -198,7 +198,7 @@ func updateInProgress(ko *svcapitypes.ReplicationTask) bool {
 // alreadyStarted is a custom function to determine if a ReplicationTask
 // was already started.
 func alreadyStarted(ko *svcapitypes.ReplicationTask) bool {
-	if ko.Status.TaskStatus != nil {
+	if ko.Status.TaskStatus == nil {
 		return false
 	}
 	// if status is running or starting
