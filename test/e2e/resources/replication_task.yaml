@@ -45,7 +45,6 @@ spec:
   targetEndpointRef:
     from:
       name: $TARGET_ENDPOINT_NAME
-  startReplicationTask: true
   tags:
     - key: environment
       value: dev
