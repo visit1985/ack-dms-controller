@@ -11,7 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-"""Helper utilities for managing Parquet test data."""
+"""Helper utilities for managing test data."""
 
 import logging
 from pathlib import Path
@@ -19,71 +19,71 @@ from pathlib import Path
 import boto3
 
 
-def _get_sample_parquet_path() -> Path:
-    """Get path to the static sample parquet file.
+def _get_sample_csv_path() -> Path:
+    """Get path to the static sample csv file.
 
     Returns:
-        Path: Absolute path to LOAD00000001.parquet in test/e2e/resources/data/
+        Path: Absolute path to LOAD001.csv in test/e2e/resources/data/
     """
     current_dir = Path(__file__).parent
-    parquet_path = current_dir / "resources" / "data" / "LOAD00000001.parquet"
-    if not parquet_path.exists():
+    csv_path = current_dir / "resources" / "data" / "LOAD001.csv"
+    if not csv_path.exists():
         raise FileNotFoundError(
-            f"Sample parquet file not found at {parquet_path}. "
-            "Please ensure test/e2e/resources/data/LOAD00000001.parquet exists."
+            f"Sample csv file not found at {csv_path}. "
+            "Please ensure test/e2e/resources/data/LOAD001.csv exists."
         )
-    return parquet_path
+    return csv_path
 
 
-def _load_sample_parquet_bytes() -> bytes:
-    """Load the static sample parquet file as bytes.
+def _load_sample_csv_bytes() -> bytes:
+    """Load the static sample csv file as bytes.
 
     Returns:
-        bytes: Parquet file content
+        bytes: csv file content
     """
-    parquet_path = _get_sample_parquet_path()
-    with open(parquet_path, 'rb') as f:
+    csv_path = _get_sample_csv_path()
+    with open(csv_path, 'rb') as f:
         return f.read()
 
 
-def upload_parquet_to_s3(
+def upload_csv_to_s3(
     bucket_name: str,
-    s3_key: str = 'source/public/customers/LOAD00000001.parquet'
+    s3_key: str = 'source/public/customers/LOAD001.csv'
 ) -> str:
-    """Upload static sample parquet data to S3 source folder.
+    """Upload static sample csv data to S3 source folder.
 
     Args:
         bucket_name: Name of the S3 bucket
-        s3_key: S3 object key (default: source/public/customers/LOAD00000001.parquet)
+        s3_key: S3 object key (default: source/public/customers/LOAD001.csv)
 
     Returns:
         str: S3 URI of uploaded file (s3://bucket/key)
 
     Raises:
-        FileNotFoundError: If sample parquet file is not found
+        FileNotFoundError: If sample csv file is not found
         Exception: If S3 upload fails
     """
     s3 = boto3.client('s3')
-    parquet_bytes = _load_sample_parquet_bytes()
+    csv_bytes = _load_sample_csv_bytes()
 
     try:
         s3.put_object(
             Bucket=bucket_name,
             Key=s3_key,
-            Body=parquet_bytes,
+            Body=csv_bytes,
             ContentType='application/octet-stream'
         )
-        logging.info(f"Uploaded parquet to s3://{bucket_name}/{s3_key} ({len(parquet_bytes)} bytes)")
+        logging.info(f"Uploaded csv to s3://{bucket_name}/{s3_key} ({len(csv_bytes)} bytes)")
         return f"s3://{bucket_name}/{s3_key}"
     except Exception as e:
-        logging.error(f"Failed to upload parquet to S3: {e}")
+        logging.error(f"Failed to upload csv to S3: {e}")
         raise
 
 
-def get_target_parquet_s3_key(
+def get_target_data_s3_key(
     bucket_name: str
 ) -> dict[str, int]:
-    """Get the expected S3 key for the target parquet file.
+    """Get the expected S3 key for the target data file.
 
     Returns:
         str: Expected S3 key (target/public/customers/LOAD00000001.parquet)

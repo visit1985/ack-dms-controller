@@ -1,0 +1,6 @@
+customer_id,name,email,phone,created_at,account_balance,status
+1,Alice Johnson,alice@company.com,555-0001,2024-01-01,1000.0,Active
+2,Bob Smith,bob@company.com,555-0002,2024-01-02,2500.5,Active
+3,Charlie Brown,charlie@company.com,555-0003,2024-01-03,5000.75,Inactive
+4,David Lee,david@company.com,555-0004,2024-01-04,750.25,Active
+5,Eve Davis,eve@company.com,555-0005,2024-01-05,3200.0,Active

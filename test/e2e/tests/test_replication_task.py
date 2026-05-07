@@ -34,7 +34,7 @@ from e2e import condition
 from e2e import replication_task as rt_aws_api
 from e2e import replication_instance as ri_aws_api
 from e2e import tag
-from e2e.parquet import upload_parquet_to_s3, get_target_parquet_s3_key, cleanup_s3_folders
+from e2e.test_data import upload_csv_to_s3, get_target_data_s3_key, cleanup_s3_folders
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -54,7 +54,7 @@ MAX_WAIT_TASK_SYNCED_MINUTES = 10
 # Time to wait between modifications for controller reconciliation
 MODIFY_WAIT_AFTER_SECONDS = 10
 
-SOURCE_PARQUET_S3_KEY = "source/public/customers/LOAD00000001.parquet"
+SOURCE_CSV_S3_KEY = "source/public/customers/LOAD001.csv"
 
 SOURCE_EXTERNAL_TABLE_DEFINITION = json.dumps({
     "TableCount": 1,
@@ -131,7 +131,7 @@ def replication_task_fixture(request):
     """Creates all K8s resources needed for ReplicationTask tests.
 
     This is a composite fixture that creates resources in dependency order:
-    1. Upload sample parquet data to S3 source folder
+    1. Upload sample csv data to S3 source folder
     2. Create replication subnet group
     3. Create replication instance
     4. Create source S3 endpoint
@@ -234,8 +234,8 @@ def replication_task_fixture(request):
     logging.info(f"Setting up resources: task={task_name}, instance={instance_name}")
 
     # ---- Upload source data to S3 ----
-    logging.info(f"Uploading parquet data to s3://{bucket_name}/source/")
-    upload_parquet_to_s3(bucket_name, SOURCE_PARQUET_S3_KEY)
+    logging.info(f"Uploading csv data to s3://{bucket_name}/source/")
+    upload_csv_to_s3(bucket_name, SOURCE_CSV_S3_KEY)
 
     # ---- Create Source Endpoint ----
     logging.info(f"Creating source endpoint: {source_ep_name}")
@@ -248,6 +248,7 @@ def replication_task_fixture(request):
         "endpoint",
         additional_replacements=source_ep_replacements,
     )
+    source_ep_data["spec"]["s3Settings"]["ignoreHeaderRows"] = 1
     source_ep_data["spec"]["s3Settings"]["externalTableDefinition"] = (
         SOURCE_EXTERNAL_TABLE_DEFINITION
     )
@@ -275,6 +276,7 @@ def replication_task_fixture(request):
         "endpoint",
         additional_replacements=target_ep_replacements,
     )
+    target_ep_data["spec"]["dataFormat"] = "parquet"
     target_ep_ref = k8s.CustomResourceReference(
         CRD_GROUP, CRD_VERSION, ENDPOINT_RESOURCE_PLURAL,
         target_ep_name, namespace="default",
@@ -398,7 +400,7 @@ class TestReplicationTask:
         4. Initial tags are applied.
         5. Task starts running when startReplicationTask=true.
         6. Task completes migration (reaches stopped state).
-        7. Parquet data is migrated to target S3 folder.
+        7. Data is migrated to target S3 folder.
         8. Table mappings can be updated; AWS API reflects the change.
         9. Tags can be updated; AWS API reflects the change.
         10. Task can be deleted cleanly.
@@ -472,7 +474,7 @@ class TestReplicationTask:
 
         # Check that data was migrated to target S3 folder
         bucket_name = REPLACEMENT_VALUES['S3_BUCKET_NAME']
-        response = get_target_parquet_s3_key(bucket_name)
+        response = get_target_data_s3_key(bucket_name)
         if response:
             logging.info(f"Target folder contains {len(response)} objects")
             for key, size in response:

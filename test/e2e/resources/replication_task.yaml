@@ -25,15 +25,8 @@ spec:
       "Logging": {
         "EnableLogging": false
       },
-      "TargetMetadata": {
-        "BatchApplyEnabled": false
-      },
       "FullLoadSettings": {
-        "MaxFullLoadSubTasks": 1,
-        "CommitRate": 10000
-      },
-      "ValidationSettings": {
-        "EnableValidation": false
+        "MaxFullLoadSubTasks": 1
       }
     }
   replicationInstanceRef:
