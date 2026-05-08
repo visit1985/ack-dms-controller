@@ -218,8 +218,8 @@ func alreadyStopped(ko *svcapitypes.ReplicationTask) bool {
 		return true
 	}
 	// if status is not running or starting
-	return *ko.Status.TaskStatus == replicationTaskStatusRunning ||
-		*ko.Status.TaskStatus == replicationTaskStatusStarting
+	return *ko.Status.TaskStatus != replicationTaskStatusRunning &&
+		*ko.Status.TaskStatus != replicationTaskStatusStarting
 }
 
 // shouldStartReplicationTask is a custom function to determine if a
